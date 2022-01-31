@@ -86,7 +86,7 @@ contract AgreementBetweenSubjects {
         require(_howLong > _everyTimeUnit, "The period of the payment is greater than the duration of the contract");
         uint256 agreementId = numAgreement++;
         //bellow is just an example. You still need to get the creation time of the argument from somewhere 
-        uint256 _whenWasCreated = 1640000000;
+        //uint256 _whenWasCreated = 1640000000;
         //creating a new agreement
         Agreement storage newAgreement = exactAgreement[agreementId];
         newAgreement.id = agreementId;
@@ -103,7 +103,7 @@ contract AgreementBetweenSubjects {
         //initialize the approved term
         newAgreement.approved = "Not Confirmed";
         //when was the agreement created
-        newAgreement.agreementTimeCreation = _whenWasCreated;
+        newAgreement.agreementTimeCreation = block.timestamp;
         //period of the payment
         newAgreement.everyTimeUnit = _everyTimeUnit * (1 days);
         //position of the end of the period in which the signee has to send the money (for example: ...every 3 weeks... - this period needs to update itself)

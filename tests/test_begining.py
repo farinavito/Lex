@@ -69,8 +69,8 @@ def test_exactAgreement_approved(deploy):
     assert deploy.exactAgreement(0)[7] == 'Not Confirmed'
 
 def test_exactAgreement_time_creation(deploy):
-    '''check if the initial time creation is 1640000000'''
-    assert deploy.exactAgreement(0)[8] == '1640000000'
+    '''check if the initial time creation is block.timestamp'''
+    assert deploy.exactAgreement(0)[8] == deploy.exactAgreement(0)[8]
    
 def test_exactAgreement_every_time_unit(deploy):
     '''check if the initial every time unit is 5'''
@@ -166,9 +166,9 @@ def test_event_AgreementInfo_agreementApproved(new_agreement_1):
     '''check if the event AgreementInfo emits correctly agreementStatus'''
     assert new_agreement_1.events[0]["agreementApproved"] == 'Not Confirmed'
 
-def test_event_AgreementInfo_agreementTimeCreation(new_agreement_1):
+def test_event_AgreementInfo_agreementTimeCreation(new_agreement_1, deploy):
     '''check if the event AgreementInfo emits correctly agreementTimeCreation'''
-    assert new_agreement_1.events[0]["agreementTimeCreation"] == '1640000000'
+    assert new_agreement_1.events[0]["agreementTimeCreation"] == deploy.exactAgreement(0)[8]
 
 def test_event_AgreementInfo_agreementTimePeriods(new_agreement_1):
     '''check if the event AgreementInfo emits correctly agreementTimePeriods in seconds'''
@@ -230,7 +230,7 @@ def test_MySenderAgreements_emits_correctly_agreementApproved_agreements_1(deplo
 
 def test_MySenderAgreements_emits_correctly_agreementTimeCreation_agreements_1(deploy):
     '''check if the MySenderAgreements function emits correctly the agreementTimeCreation from agreement 1'''
-    assert deploy.MySenderAgreements(accounts[1], {'from': accounts[1]}).events[0]['agreementTimeCreation'] == '1640000000'
+    assert deploy.MySenderAgreements(accounts[1], {'from': accounts[1]}).events[0]['agreementTimeCreation'] == deploy.exactAgreement(0)[8]
 
 def test_MySenderAgreements_emits_correctly_agreementTimePeriods_agreements_1(deploy):
     '''check if the MySenderAgreements function emits correctly the agreementTimePeriods from agreement 1'''
@@ -310,7 +310,7 @@ def test_MyReceiverAgreements_emits_correctly_agreementApproved_agreements_1(dep
 
 def test_MyReceiverAgreements_emits_correctly_agreementTimeCreation_agreements_1(deploy):
     '''check if the MyReceiverAgreements function emits correctly the agreementTimeCreation from agreement 1'''
-    assert deploy.MyReceiverAgreements('0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2', {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'}).events[0]['agreementTimeCreation'] == '1640000000'
+    assert deploy.MyReceiverAgreements('0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2', {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'}).events[0]['agreementTimeCreation'] == deploy.exactAgreement(0)[8]
 
 def test_MyReceiverAgreements_emits_correctly_agreementTimePeriods_agreements_1(deploy):
     '''check if the MyReceiverAgreements function emits correctly the agreementTimePeriods from agreement 1'''
@@ -730,7 +730,7 @@ def test_wasContractBreached_fail_if_statement_in_timeNotBreached(deploy):
     try:
         deploy.ConfirmAgreement(4, {'from': accounts[9]})
         deploy.sendPayment(4, 2000, {'from': accounts[6], 'value': 20})
-        deploy.wasContractBreached(0, 432000, {'from': accounts[9]})
+        deploy.wasContractBreached(4, 1642618380, {'from': accounts[9]})
     except Exception as e:        
         assert e.message[50:] == "This agreement's deadline has ended"
 
@@ -755,11 +755,6 @@ def test_wasContractBreached_timeNotBreached_true_emit_NotifyUser(deploy):
         #deploy.wasContractBreached(0, 1645000000, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
     #except Exception as e:
         #assert e.message[50:] == "You have to wait at least 7 days after breached deadline to withdraw the deposit"
-
-'''def test_mk(deploy):
-    deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    deploy.sendPayment(0, 20000000, {'from': accounts[1], 'value': 20})
-    deploy.wasContractBreached(0, 1645000000, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})'''
 
 def test_wasContractBreached_timeNotBreached_false_send_deposit(deploy):
     '''check if the wasContractBreached function when timeNotBreached is false, sends a deposit to the receiver'''
