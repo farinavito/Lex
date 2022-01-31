@@ -179,7 +179,6 @@ contract AgreementBetweenSubjects {
   /// @notice Verifying that the transaction created was sooner than its deadline 
   function timeNotBreached(uint256 _id, uint256 _transactionCreated) private returns(bool){
       //if the transaction sent was on time and transaction was sent before the agreement's deadline
-      //if (exactAgreement[_id].positionPeriod  >= _transactionCreated){
 	    if (exactAgreement[_id].positionPeriod  >= _transactionCreated && exactAgreement[_id].howLong + exactAgreement[_id].agreementTimeCreation >= block.timestamp){ 
         exactAgreement[_id].positionPeriod += exactAgreement[_id].everyTimeUnit;
 		    return true;
@@ -253,7 +252,6 @@ contract AgreementBetweenSubjects {
       require(exactAgreement[_id].signee == msg.sender, "Only the owner can terminate the agreement");
       exactAgreement[_id].status = "Terminated";
       //return the deposit to the signee
-      //payable(exactAgreement[_id].signee).transfer(exactAgreement[_id].deposit);
       (bool sent, ) = exactAgreement[_id].signee.call{value: exactAgreement[_id].deposit}("");
       require(sent, "Failed to send Ether");
       //ensure that the deposit is reduced to 0
