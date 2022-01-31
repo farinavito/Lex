@@ -573,6 +573,15 @@ def test_transactionCreated_updated(deploy):
     deploy.sendPayment(0, 432000, {'from': accounts[1], 'value': 20})  
     assert deploy.exactAgreement(0)[4] != '0'
 
+def test_transactionCreated_updated_once_again(deploy):
+    '''check if the time of the call to function sendPayment changes after another call to this function'''
+    deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
+    deploy.sendPayment(0, 432000, {'from': accounts[1], 'value': 20})
+    deploy.sendPayment(0, 432000, {'from': accounts[1], 'value': 20})  
+    first_call = deploy.exactAgreement(0)[4] != '0'
+    deploy.sendPayment(0, 432000, {'from': accounts[1], 'value': 20})
+    assert deploy.exactAgreement(0)[4] != first_call
+
     #if the amount <= msg.value
 
 def test_timeNotBreached_fail_if_statement(deploy):
