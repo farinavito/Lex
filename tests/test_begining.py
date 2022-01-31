@@ -28,7 +28,7 @@ def new_agreement_5(deploy, module_isolation):
 
 @pytest.fixture(autouse=True)
 def new_agreement_6(deploy):
-    return deploy.createAgreement('0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2', 2, 0.0001, 10, {'from': accounts[1]})
+    return deploy.createAgreement(accounts[9], 2, 0.0001, 10, {'from': accounts[1]})
 '''
 @pytest.fixture(autouse=True)
 def new_agreement_6(deploy):
@@ -664,31 +664,31 @@ def test_timeNotBreached_value_smaller_amount_emit_Terminated(deploy):
 
 def test_timeNotBreached_breached_value_larger_amount_status(deploy):
     '''check if the status is changed when timeNotBreached is breached in the timeNotBreached'''
-    deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    deploy.sendPayment(0, 432000, {'from': accounts[1], 'value': 20})
+    deploy.ConfirmAgreement(5, {'from': accounts[9]})
+    deploy.sendPayment(5, 432000, {'from': accounts[1], 'value': 20})
     #the contract has been activated, now send the smaller quantity of money again
-    deploy.sendPayment(0, 1646000000, {'from': accounts[1], 'value': 20})
-    assert deploy.exactAgreement(0)[6] == "Terminated"
+    deploy.sendPayment(5, 1646000000, {'from': accounts[1], 'value': 20})
+    assert deploy.exactAgreement(5)[6] == "Terminated"
 
 def test_timeNotBreached_breached_value_larger_amount_send_deposit(deploy):
     '''check if the deposit is sent to the receiver when timeNotBreached is breached in the timeNotBreached'''
-    deploy.ConfirmAgreement(3, {'from': accounts[9]})
-    deploy.sendPayment(3, 432000, {'from': accounts[6], 'value': 20})
+    deploy.ConfirmAgreement(5, {'from': accounts[9]})
+    deploy.sendPayment(5, 432000, {'from': accounts[1], 'value': 20})
     balance_receiver = accounts[9].balance() 
-    deploy.sendPayment(3, 1645000000, {'from': accounts[6], 'value': 20}) 
+    deploy.sendPayment(5, 1645000000, {'from': accounts[1], 'value': 20}) 
     assert accounts[9].balance() == balance_receiver + 20
 
 def test_timeNotBreached_breached_value_larger_amount_return_transaction(deploy):
     '''check if the transaction is sent back to the signee when timeNotBreached is breached in the timeNotBreached'''
-    deploy.ConfirmAgreement(3, {'from': accounts[9]})
-    deploy.sendPayment(3, 432000, {'from': accounts[6], 'value': 20})  
-    balance_signee = accounts[6].balance() 
-    deploy.sendPayment(3, 1645000000, {'from': accounts[6], 'value': 5}) 
-    assert accounts[6].balance() == balance_signee
-@pytest.mark.mmm
+    deploy.ConfirmAgreement(5, {'from': accounts[9]})
+    deploy.sendPayment(5, 432000, {'from': accounts[1], 'value': 20})  
+    balance_signee = accounts[1].balance() 
+    deploy.sendPayment(5, 1645000000, {'from': accounts[1], 'value': 5}) 
+    assert accounts[1].balance() == balance_signee
+
 def test_timeNotBreached_breached_value_larger_amount_emit_Terminated(deploy):
     '''check if the evant Terminated is emitted when timeNotBreached is breached in the timeNotBreached'''
-    deploy.ConfirmAgreement(5, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
+    deploy.ConfirmAgreement(5, {'from': accounts[9]})
     deploy.sendPayment(5, 432000, {'from': accounts[1], 'value': 20})
     #the contract has been activated, now send the smaller quantity of money again
     function_initialize = deploy.sendPayment(5, 1646000000, {'from': accounts[1], 'value': 20})
