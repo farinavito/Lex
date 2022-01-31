@@ -212,9 +212,9 @@ def test_MySenderAgreements_emits_correctly_agreementAmount_agreements_1(deploy)
     '''check if the MySenderAgreements function emits correctly the agreementAmount from agreement 1'''
     assert deploy.MySenderAgreements(accounts[1], {'from': accounts[1]}).events[0]['agreementAmount'] == '2'
 
-def test_MySenderAgreements_emits_correctly_agreementAgreedDeposit_agreements_1(deploy):
-    '''check if the MySenderAgreements function emits correctly the agreementAgreedDeposit from agreement 1'''
-    assert deploy.MySenderAgreements(accounts[1], {'from': accounts[1]}).events[0]['agreementAgreedDeposit'] == '2'
+def test_MySenderAgreements_emits_correctly_agreementTransactionCreated(deploy):
+    '''check if the MySenderAgreements function emits correctly the agreementTransactionCreated from agreement 1'''
+    assert deploy.MySenderAgreements(accounts[1], {'from': accounts[1]}).events[0]['agreementTransactionCreated'] == '0'
 
 def test_MySenderAgreements_emits_correctly_agreementDeposit_agreements_1(deploy):
     '''check if the MySenderAgreements function emits correctly the agreementDeposit from agreement 1'''
