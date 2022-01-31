@@ -280,8 +280,6 @@ contract AgreementBetweenSubjects {
   function wasContractBreached(uint256 _id, uint256 _transactionCreated) public noReentrant{
     require(exactAgreement[_id].receiver == msg.sender, "The receiver in the agreement's id isn't the same as the address you're logged in");
     //checking if the deadline was breached
-    //require(exactAgreement[_id].positionPeriod < block.timestamp, "The agreement wasn't breached 1");
-    //if (exactAgreement[_id].positionPeriod < block.timestamp){
     if(timeNotBreached(_id, _transactionCreated)){
       emit NotifyUser("The agreement wasn't breached");
     } else {
