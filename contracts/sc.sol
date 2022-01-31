@@ -10,6 +10,7 @@ contract AgreementBetweenSubjects {
   /// @param signee The person who commits sending the the money to the receiver 
   /// @param receiver The person receiving the money
   /// @param amount The quantity of money that the signee commits sending to the receiver
+  /// @param transactionCreated Unix timestamp when transaction was sent
   /// @param deposit The agreed amount of the deposit by both sides for the contract. Initial state will be zero
   /// @param status Representation of different stages in the agreement: Created, Activated, Terminated
   /// @param approved Confirmation of the agreedDeposit by the receiver. Stages: Not Confirmed, Confirmed
@@ -22,7 +23,7 @@ contract AgreementBetweenSubjects {
     address signee;
     address payable receiver; 
     uint256 amount;
-
+    uint256 transactionCreated;
     uint256 deposit;
     string status;
     string approved;
@@ -59,7 +60,7 @@ contract AgreementBetweenSubjects {
     address agreementSignee, 
     address agreementReceiver, 
     uint256 agreementAmount,
-    
+    uint256 agreementTransactionCreated,
     string agreementStatus,
     string agreementApproved,
     uint256 agreementTimeCreation,
