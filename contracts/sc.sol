@@ -189,6 +189,16 @@ contract AgreementBetweenSubjects {
 	    }
     }
 
+  /// @notice Verifying that the transaction created was sooner than its deadline without incrementing positionPeriod
+  function timeWasntBreached(uint256 _id) private returns(bool){
+      //if the transaction sent was on time and transaction was sent before the agreement's deadline
+	    if (exactAgreement[_id].positionPeriod  >= exactAgreement[_id].transactionCreated && exactAgreement[_id].howLong + exactAgreement[_id].agreementTimeCreation >= block.timestamp){ 
+		    return true;
+	    } else{
+		    return false;
+	    }
+    }
+
   /// @notice Sending the payment based on the status of the agreement
   function sendPayment(uint256 _id) public payable noReentrant{
     require(exactAgreement[_id].signee == msg.sender, "Only the owner can pay the agreement's terms");
@@ -270,7 +280,7 @@ contract AgreementBetweenSubjects {
   function wasContractBreached(uint256 _id) public noReentrant{
     require(exactAgreement[_id].receiver == msg.sender, "The receiver in the agreement's id isn't the same as the address you're logged in");
     //checking if the deadline was breached
-    if(timeNotBreached(_id)){
+    if(timeWasntBreached(_id)){
       emit NotifyUser("The agreement wasn't breached");
     } else {
         //receiver has to wait 7 days after the breached date to withdraw the deposit
