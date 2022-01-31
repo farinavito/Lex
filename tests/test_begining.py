@@ -292,9 +292,9 @@ def test_MyReceiverAgreements_emits_correctly_agreementAmount_agreements_1(deplo
     '''check if the MyReceiverAgreements function emits correctly the agreementAmount from agreement 1'''
     assert deploy.MyReceiverAgreements('0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2', {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'}).events[0]['agreementAmount'] == '2'
 
-def test_MyReceiverAgreements_emits_correctly_agreementAgreedDeposit_agreements_1(deploy):
-    '''check if the MyReceiverAgreements function emits correctly the agreementAgreedDeposit from agreement 1'''
-    assert deploy.MyReceiverAgreements('0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2', {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'}).events[0]['agreementAgreedDeposit'] == '2'
+def test_MyReceiverAgreements_emits_correctly_agreementTransactionCreated_agreements_1(deploy):
+    '''check if the MyReceiverAgreements function emits correctly the agreementTransactionCreated from agreement 1'''
+    assert deploy.MyReceiverAgreements('0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2', {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'}).events[0]['agreementTransactionCreated'] == '0'
 
 def test_MyReceiverAgreements_emits_correctly_agreementDeposit_agreements_1(deploy):
     '''check if the MyReceiverAgreements function emits correctly the agreementDeposit from agreement 1'''
