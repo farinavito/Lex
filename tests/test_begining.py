@@ -561,6 +561,9 @@ def test_sendPayments_fails_require_smaller_deposit_initial_status_created(deplo
 #Checking when the agreement's status is "Activated"
 #if the transaction sent was on time
 
+def test_timeNotBreached_received_on_time(deploy):
+    '''check if the transaction received was on time'''
+
 def test_timeNotBreached(deploy):
     '''check if the timeNotBreached function correctly increments positionPeriod. This is for checing inside sendPayments function'''
     deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
@@ -804,6 +807,9 @@ def test_wasContractBreached_timeNotBreached_false_emit_Terminated(deploy):
     deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
     function_initialize = deploy.wasContractBreached(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
     assert function_initialize.events[0][0]['message'] == "This agreement has been terminated"
+
+def test_wasContractBreached_received_on_time(deploy):
+    '''check if the transaction received was on time'''
 
 
 #check what happens if we send money to this contract with no matching function
