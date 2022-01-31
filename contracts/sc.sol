@@ -180,8 +180,10 @@ contract AgreementBetweenSubjects {
 
   /// @notice Verifying that the transaction created was sooner than its deadline 
   function timeNotBreached(uint256 _id) private returns(bool){
-      //if the transaction sent was on time and transaction was sent before the agreement's deadline
-	    if (exactAgreement[_id].positionPeriod  >= exactAgreement[_id].transactionCreated && exactAgreement[_id].howLong + exactAgreement[_id].agreementTimeCreation >= block.timestamp){ 
+      //period till when we have to receive the transaction
+      uint256 extendedPeriod = exactAgreement[_id].positionPeriod + (5 * days);
+      //if the transaction sent was on time, transaction was received on time and transaction was sent before the agreement's deadline
+	    if (exactAgreement[_id].positionPeriod  >= exactAgreement[_id].transactionCreated && extendedPeriod >= block.timestamp && exactAgreement[_id].howLong + exactAgreement[_id].agreementTimeCreation >= block.timestamp){ 
         exactAgreement[_id].positionPeriod += exactAgreement[_id].everyTimeUnit;
 		    return true;
 	    } else{
@@ -191,8 +193,10 @@ contract AgreementBetweenSubjects {
 
   /// @notice Verifying that the transaction created was sooner than its deadline without incrementing positionPeriod
   function timeWasntBreached(uint256 _id) private view returns(bool){
-      //if the transaction sent was on time and transaction was sent before the agreement's deadline
-	    if (exactAgreement[_id].positionPeriod  >= exactAgreement[_id].transactionCreated && exactAgreement[_id].howLong + exactAgreement[_id].agreementTimeCreation >= block.timestamp){ 
+      //period till when we have to receive the transaction
+      uint256 extendedPeriod = exactAgreement[_id].positionPeriod + (5 * days);
+      //if the transaction sent was on time, transaction was received on time and transaction was sent before the agreement's deadline
+	    if (exactAgreement[_id].positionPeriod  >= exactAgreement[_id].transactionCreated && extendedPeriod >= block.timestamp && exactAgreement[_id].howLong + exactAgreement[_id].agreementTimeCreation >= block.timestamp){ 
 		    return true;
 	    } else{
 		    return false;
