@@ -8,23 +8,23 @@ def deploy(AgreementBetweenSubjects):
 
 @pytest.fixture(autouse=True)
 def new_agreement_1(deploy):
-    return deploy.createAgreement('0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2', 2, 2, 5, 500, {'from': accounts[1]})
+    return deploy.createAgreement('0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2', 2, 5, 500, {'from': accounts[1]})
 
 @pytest.fixture(autouse=True)
 def new_agreement_2(deploy):   
-    return deploy.createAgreement('0xdD870fA1b7C4700F2BD7f44238821C26f7392148', 100000000000000000000000000000000000000000000000000000000000000000000000000000, 100000000000000000000000000000000000000000000000000000000000000000000000000000, 499, 1000000000000000000000000000000000000000000000000000000000000000000000000, {'from': accounts[1]})
+    return deploy.createAgreement('0xdD870fA1b7C4700F2BD7f44238821C26f7392148', 100000000000000000000000000000000000000000000000000000000000000000000000000000, 499, 1000000000000000000000000000000000000000000000000000000000000000000000000, {'from': accounts[1]})
 
 @pytest.fixture(autouse=True)
 def new_agreement_3(deploy):
-    return deploy.createAgreement('0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2', 2, 2, 5, 500, {'from': accounts[3]})
+    return deploy.createAgreement('0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2', 2, 5, 500, {'from': accounts[3]})
 
 @pytest.fixture(autouse=True)
 def new_agreement_4(deploy, module_isolation):
-    return deploy.createAgreement(accounts[9], 2, 2, 5, 500, {'from': accounts[6]})
+    return deploy.createAgreement(accounts[9], 2, 5, 500, {'from': accounts[6]})
 
 @pytest.fixture(autouse=True)
 def new_agreement_5(deploy, module_isolation):
-    return deploy.createAgreement(accounts[9], 2, 2, 5, 10, {'from': accounts[6]})
+    return deploy.createAgreement(accounts[9], 2, 5, 10, {'from': accounts[6]})
 '''
 @pytest.fixture(autouse=True)
 def new_agreement_6(deploy):
