@@ -150,9 +150,9 @@ def test_event_AgreementInfo_agreementAmount(new_agreement_1):
     '''check if the event AgreementInfo emits correctly agreementAmount'''
     assert new_agreement_1.events[0]["agreementAmount"] == '2'
 
-def test_event_AgreementInfo_agreementAgreedDeposit(new_agreement_1):
+def test_event_AgreementInfo_transactionCreated(new_agreement_1):
     '''check if the event AgreementInfo emits correctly agreementAmount'''
-    assert new_agreement_1.events[0]["agreementAgreedDeposit"] == '2'
+    assert new_agreement_1.events[0]["agreementTransactionCreated"] == '0'
 
 def test_event_AgreementInfo_agreementDeposit(new_agreement_1):
     '''check if the event AgreementInfo emits correctly agreementAmount'''
