@@ -61,6 +61,7 @@ contract AgreementBetweenSubjects {
     address agreementReceiver, 
     uint256 agreementAmount,
     uint256 agreementTransactionCreated,
+    uint256 agreementDeposit,
     string agreementStatus,
     string agreementApproved,
     uint256 agreementTimeCreation,
