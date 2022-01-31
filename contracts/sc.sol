@@ -114,7 +114,7 @@ contract AgreementBetweenSubjects {
           newAgreement.signee, 
           newAgreement.receiver, 
           newAgreement.amount,
-          
+          newAgreement.transactionCreated,
           newAgreement.deposit, 
           newAgreement.status,
           newAgreement.approved,
@@ -136,7 +136,7 @@ contract AgreementBetweenSubjects {
             newAgreement.signee, 
             newAgreement.receiver, 
             newAgreement.amount,
-            
+            newAgreement.transactionCreated,
             newAgreement.deposit, 
             newAgreement.status,
             newAgreement.approved,
@@ -159,7 +159,7 @@ contract AgreementBetweenSubjects {
             newAgreement.signee, 
             newAgreement.receiver, 
             newAgreement.amount,
-            
+            newAgreement.transactionCreated,
             newAgreement.deposit, 
             newAgreement.status,
             newAgreement.approved,
