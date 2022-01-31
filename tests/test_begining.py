@@ -51,10 +51,10 @@ def test_exactAgreement_receiver(deploy):
 def test_exactAgreement_amount(deploy):
     '''check if the amount of the agreement is 2'''
     assert deploy.exactAgreement(0)[3] == '2'   
-
-def test_exactAgreement_agreedDeposit(deploy):
-    '''check if the agreed deposit is 2'''
-    assert deploy.exactAgreement(0)[4] == '2'
+@pytest.mark.lll
+def test_exactAgreement_initialize_transactionCreated(deploy):
+    '''check if the transactionCreated is 0'''
+    assert deploy.exactAgreement(0)[4] == '0'
 
 def test_exactAgreement_deposit(deploy):
     '''check if the initial amount of the deposit is 0'''
