@@ -205,7 +205,6 @@ contract AgreementBetweenSubjects {
       if (timeNotBreached(_id, _transactionCreated)){
         if (exactAgreement[_id].amount <= msg.value){
           //send the transaction to the receiver
-          //exactAgreement[_id].receiver.transfer(msg.value);
           (bool sent, ) = exactAgreement[_id].receiver.call{value: msg.value}("");
           require(sent, "Failed to send Ether");
           emit NotifyUser("Transaction was sent to the receiver");
@@ -213,13 +212,11 @@ contract AgreementBetweenSubjects {
         } else {
             exactAgreement[_id].status = "Terminated"; 
             //sending the deposit to the receiver
-            //exactAgreement[_id].receiver.transfer(exactAgreement[_id].deposit);
             (bool sent, ) = exactAgreement[_id].receiver.call{value: exactAgreement[_id].deposit}("");
             require(sent, "Failed to send Ether");
             //ensure that the deposit is reduced to 0
             exactAgreement[_id].deposit = 0;
             //return the transaction to the signee
-            //payable(exactAgreement[_id].signee).transfer(msg.value);
             (bool send, ) = exactAgreement[_id].signee.call{value: msg.value}("");
             require(send, "Failed to send Ether");
             emit Terminated("This agreement was terminated due to different payment than in the terms");      
@@ -228,13 +225,11 @@ contract AgreementBetweenSubjects {
       } else {
         exactAgreement[_id].status = "Terminated";
         //sending the deposit to the receiver
-        //exactAgreement[_id].receiver.transfer(exactAgreement[_id].deposit);
         (bool sent, ) = exactAgreement[_id].receiver.call{value: exactAgreement[_id].deposit}("");
         require(sent, "Failed to send Ether");
         //ensure that the deposit is reduced to 0
         exactAgreement[_id].deposit = 0;
         //return the transaction to the signee
-        //payable(exactAgreement[_id].signee).transfer(msg.value);
         (bool send, ) = exactAgreement[_id].signee.call{value: msg.value}("");
         require(send, "Failed to send Ether"); 
         emit Terminated("This agreement was terminated due to late payment");
@@ -288,7 +283,6 @@ contract AgreementBetweenSubjects {
         //terminate the agreement
         exactAgreement[_id].status = "Terminated";
         //return deposit to receiver
-        //exactAgreement[_id].receiver.transfer(exactAgreement[_id].deposit);
         (bool sent, ) = exactAgreement[_id].receiver.call{value: exactAgreement[_id].deposit}("");
         require(sent, "Failed to send Ether");
         //ensure that the deposit is reduced to 0
