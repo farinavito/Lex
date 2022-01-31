@@ -98,7 +98,7 @@ def test_new_agreement_fails_require(deploy):
     '''check if the new agreement fails, because howLong > _everyTimeUnit in the require statement'''
     try:
         #length of the agreement is longer than _everyTimeUnit
-        deploy.createAgreement('0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2', 2, 2, 500, 5, {'from': accounts[3]})
+        deploy.createAgreement('0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2', 2, 500, 5, {'from': accounts[3]})
     except Exception as e:
         assert e.message[50:] == 'The period of the payment is greater than the duration of the contract'
     
