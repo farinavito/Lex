@@ -10,7 +10,6 @@ contract AgreementBetweenSubjects {
   /// @param signee The person who commits sending the the money to the receiver 
   /// @param receiver The person receiving the money
   /// @param amount The quantity of money that the signee commits sending to the receiver
-  /// @param agreedDeposit The proposed amount of the deposit by the signee. It has to be confirmed receiver.
   /// @param deposit The agreed amount of the deposit by both sides for the contract. Initial state will be zero
   /// @param status Representation of different stages in the agreement: Created, Activated, Terminated
   /// @param approved Confirmation of the agreedDeposit by the receiver. Stages: Not Confirmed, Confirmed
@@ -23,7 +22,7 @@ contract AgreementBetweenSubjects {
     address signee;
     address payable receiver; 
     uint256 amount;
-    uint256 agreedDeposit;
+
     uint256 deposit;
     string status;
     string approved;
@@ -60,8 +59,7 @@ contract AgreementBetweenSubjects {
     address agreementSignee, 
     address agreementReceiver, 
     uint256 agreementAmount,
-    uint256 agreementAgreedDeposit,
-    uint256 agreementDeposit,
+    
     string agreementStatus,
     string agreementApproved,
     uint256 agreementTimeCreation,
@@ -79,7 +77,6 @@ contract AgreementBetweenSubjects {
   function createAgreement(
     address payable _receiver, 
     uint256 _amount,
-    uint256 _agreedDeposit,
     uint256 _everyTimeUnit,
     uint256 _howLong
     ) public {
@@ -94,8 +91,6 @@ contract AgreementBetweenSubjects {
         newAgreement.receiver = _receiver;
         newAgreement.amount = _amount;
 
-        //the amount of the deposit they agreed upon
-        newAgreement.agreedDeposit = _agreedDeposit;
         //the amount that is actually deposited to the agreement. We initialize it with 0
         newAgreement.deposit = 0;
         //the status of the agreement when its created
@@ -120,7 +115,7 @@ contract AgreementBetweenSubjects {
           newAgreement.signee, 
           newAgreement.receiver, 
           newAgreement.amount,
-          newAgreement.agreedDeposit,
+          
           newAgreement.deposit, 
           newAgreement.status,
           newAgreement.approved,
@@ -142,7 +137,7 @@ contract AgreementBetweenSubjects {
             newAgreement.signee, 
             newAgreement.receiver, 
             newAgreement.amount,
-            newAgreement.agreedDeposit,
+            
             newAgreement.deposit, 
             newAgreement.status,
             newAgreement.approved,
@@ -165,7 +160,7 @@ contract AgreementBetweenSubjects {
             newAgreement.signee, 
             newAgreement.receiver, 
             newAgreement.amount,
-            newAgreement.agreedDeposit,
+            
             newAgreement.deposit, 
             newAgreement.status,
             newAgreement.approved,
@@ -236,7 +231,7 @@ contract AgreementBetweenSubjects {
       }
     } else if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Created"))){
         require(exactAgreement[_id].howLong + exactAgreement[_id].agreementTimeCreation > block.timestamp, "This agreement's deadline has ended");
-        require(exactAgreement[_id].agreedDeposit <= msg.value, "The deposit is not the same as the agreed in the terms");
+        require(exactAgreement[_id].amount <= msg.value, "The deposit is not the same as the agreed in the terms");
         exactAgreement[_id].status = "Activated";
         //set the position period
         initializingPositionPeriod(_id);
