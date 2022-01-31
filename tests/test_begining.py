@@ -566,6 +566,13 @@ def test_timeNotBreached(deploy):
     deploy.sendPayment(0, 432000, {'from': accounts[1], 'value': 20})    
     assert deploy.exactAgreement(0)[10] == new_agreement_position + deploy.exactAgreement(0)[9]
 
+def test_transactionCreated_updated(deploy):
+    '''check if the time of the call to function sendPayment is stored'''
+    deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
+    deploy.sendPayment(0, 432000, {'from': accounts[1], 'value': 20})
+    deploy.sendPayment(0, 432000, {'from': accounts[1], 'value': 20})  
+    assert deploy.exactAgreement(0)[4] != '0'
+
     #if the amount <= msg.value
 
 def test_timeNotBreached_fail_if_statement(deploy):
