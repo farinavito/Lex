@@ -190,7 +190,7 @@ contract AgreementBetweenSubjects {
     }
 
   /// @notice Verifying that the transaction created was sooner than its deadline without incrementing positionPeriod
-  function timeWasntBreached(uint256 _id) private returns(bool){
+  function timeWasntBreached(uint256 _id) private view returns(bool){
       //if the transaction sent was on time and transaction was sent before the agreement's deadline
 	    if (exactAgreement[_id].positionPeriod  >= exactAgreement[_id].transactionCreated && exactAgreement[_id].howLong + exactAgreement[_id].agreementTimeCreation >= block.timestamp){ 
 		    return true;
