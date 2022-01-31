@@ -82,8 +82,6 @@ contract AgreementBetweenSubjects {
     ) public {
         require(_howLong > _everyTimeUnit, "The period of the payment is greater than the duration of the contract");
         uint256 agreementId = numAgreement++;
-        //bellow is just an example. You still need to get the creation time of the argument from somewhere 
-        //uint256 _whenWasCreated = 1640000000;
         //creating a new agreement
         Agreement storage newAgreement = exactAgreement[agreementId];
         newAgreement.id = agreementId;
