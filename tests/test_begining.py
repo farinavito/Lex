@@ -25,6 +25,10 @@ def new_agreement_4(deploy, module_isolation):
 @pytest.fixture(autouse=True)
 def new_agreement_5(deploy, module_isolation):
     return deploy.createAgreement(accounts[9], 2, 5, 10, {'from': accounts[6]})
+
+@pytest.fixture(autouse=True)
+def new_agreement_6(deploy):
+    return deploy.createAgreement('0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2', 2, 0.0001, 10, {'from': accounts[1]})
 '''
 @pytest.fixture(autouse=True)
 def new_agreement_6(deploy):
@@ -681,13 +685,13 @@ def test_timeNotBreached_breached_value_larger_amount_return_transaction(deploy)
     balance_signee = accounts[6].balance() 
     deploy.sendPayment(3, 1645000000, {'from': accounts[6], 'value': 5}) 
     assert accounts[6].balance() == balance_signee
-
+@pytest.mark.mmm
 def test_timeNotBreached_breached_value_larger_amount_emit_Terminated(deploy):
     '''check if the evant Terminated is emitted when timeNotBreached is breached in the timeNotBreached'''
-    deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    deploy.sendPayment(0, 432000, {'from': accounts[1], 'value': 20})
+    deploy.ConfirmAgreement(5, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
+    deploy.sendPayment(5, 432000, {'from': accounts[1], 'value': 20})
     #the contract has been activated, now send the smaller quantity of money again
-    function_initialize = deploy.sendPayment(0, 1646000000, {'from': accounts[1], 'value': 20})
+    function_initialize = deploy.sendPayment(5, 1646000000, {'from': accounts[1], 'value': 20})
     assert function_initialize.events[0][0]['message'] == "This agreement was terminated due to late payment"
 
 #Checking when the agreement's status is "Terminated"
