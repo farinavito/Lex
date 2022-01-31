@@ -195,6 +195,8 @@ contract AgreementBetweenSubjects {
     //the agreement has to be confirmed from the receiver of the agreement
     require(keccak256(bytes(exactAgreement[_id].approved)) == keccak256(bytes("Confirmed")), "The receiver has to confirm the contract");
     if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Activated"))){
+      //save the time of calling this function
+      exactAgreement[_id].transactionCreated = block.timestamp;
       //if the transaction sent was on time and transaction was sent before the agreement's deadline
       if (timeNotBreached(_id, _transactionCreated)){
         if (exactAgreement[_id].amount <= msg.value){
