@@ -114,9 +114,9 @@ def test_exactAgreement_check_large_amount(deploy):
     '''the max number of digits in "amount"'''
     assert deploy.exactAgreement(1)[3] == '100000000000000000000000000000000000000000000000000000000000000000000000000000' 
 
-def test_exactAgreement_check_large_agreedDeposit(deploy):
-    '''the max number of digits in "agreedDeposit"'''
-    assert deploy.exactAgreement(1)[4] == '100000000000000000000000000000000000000000000000000000000000000000000000000000' 
+def test_exactAgreement_transactionCreated(deploy):
+    '''check that transactionCreated is 0'''
+    assert deploy.exactAgreement(1)[4] == '0' 
 
 def test_exactAgreement_check_large_everyTimeUnit(deploy):
     '''the max number of digits in "_everyTimeUnit"'''
