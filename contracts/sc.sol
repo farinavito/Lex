@@ -179,7 +179,7 @@ contract AgreementBetweenSubjects {
     }
 
   /// @notice Verifying that the transaction created was sooner than its deadline 
-  function timeNotBreached(uint256 _id, uint256 _transactionCreated) private returns(bool){
+  function timeNotBreached(uint256 _id) private returns(bool){
       //if the transaction sent was on time and transaction was sent before the agreement's deadline
 	    if (exactAgreement[_id].positionPeriod  >= exactAgreement[_id].transactionCreated && exactAgreement[_id].howLong + exactAgreement[_id].agreementTimeCreation >= block.timestamp){ 
         exactAgreement[_id].positionPeriod += exactAgreement[_id].everyTimeUnit;
@@ -190,7 +190,7 @@ contract AgreementBetweenSubjects {
     }
 
   /// @notice Sending the payment based on the status of the agreement
-  function sendPayment(uint256 _id, uint256 _transactionCreated) public payable noReentrant{
+  function sendPayment(uint256 _id) public payable noReentrant{
     require(exactAgreement[_id].signee == msg.sender, "Only the owner can pay the agreement's terms");
     //the agreement has to be confirmed from the receiver of the agreement
     require(keccak256(bytes(exactAgreement[_id].approved)) == keccak256(bytes("Confirmed")), "The receiver has to confirm the contract");
@@ -198,7 +198,7 @@ contract AgreementBetweenSubjects {
       //save the time of calling this function
       exactAgreement[_id].transactionCreated = block.timestamp;
       //if the transaction sent was on time and transaction was sent before the agreement's deadline
-      if (timeNotBreached(_id, _transactionCreated)){
+      if (timeNotBreached(_id)){
         if (exactAgreement[_id].amount <= msg.value){
           //send the transaction to the receiver
           (bool sent, ) = exactAgreement[_id].receiver.call{value: msg.value}("");
@@ -267,10 +267,10 @@ contract AgreementBetweenSubjects {
   }
 
   /// @notice Receiver checking if the contract has been breached
-  function wasContractBreached(uint256 _id, uint256 _transactionCreated) public noReentrant{
+  function wasContractBreached(uint256 _id) public noReentrant{
     require(exactAgreement[_id].receiver == msg.sender, "The receiver in the agreement's id isn't the same as the address you're logged in");
     //checking if the deadline was breached
-    if(timeNotBreached(_id, _transactionCreated)){
+    if(timeNotBreached(_id)){
       emit NotifyUser("The agreement wasn't breached");
     } else {
         //receiver has to wait 7 days after the breached date to withdraw the deposit

@@ -403,7 +403,7 @@ def test_ConfirmAgreement_fail_require_1_agreement_1(deploy):
 def test_terminateContract_emit_Terminated_initial_status_activated_already_terminated(deploy):
     '''checking if the event Terminated has been emitted as "This agreement has been terminated" when you want to terminate a contract'''
     deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    deploy.sendPayment(0, 1643000000, {'from': accounts[1], 'value': 2})
+    deploy.sendPayment(0, {'from': accounts[1], 'value': 2})
     deploy.terminateContract(0, {'from': accounts[1]})
     function_enabled = deploy.terminateContract(0, {'from': accounts[1]})
     message = function_enabled.events[0][0]['message']
@@ -413,7 +413,7 @@ def test_terminateContract_fails_require_wrong_address_initial_status_activated(
     '''check if the function terminateContract fails, because require(exactAgreement[_id].signee == msg.sender in the require statement'''
     try:
         deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-        deploy.sendPayment(0, 1643000000, {'from': accounts[1], 'value': 2})
+        deploy.sendPayment(0, {'from': accounts[1], 'value': 2})
         #wrong sender's address
         deploy.terminateContract(0, {'from': accounts[5]})
     except Exception as e:
@@ -422,14 +422,14 @@ def test_terminateContract_fails_require_wrong_address_initial_status_activated(
 def test_terminateContract_function_change_status_terminated(deploy):
     '''check if the function terminateContract changes status of the agreement to "Terminated"'''
     deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    deploy.sendPayment(0, 1643000000, {'from': accounts[1], 'value': 20})
+    deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
     deploy.terminateContract(0, {'from': accounts[1]})
     assert deploy.exactAgreement(0)[6] == 'Terminated'
 
 def test_transfer_deposit_back_to_signee(deploy):
     '''check if the deposit is transfered back to the signee'''
     deploy.ConfirmAgreement(3, {'from': accounts[9]})
-    deploy.sendPayment(3, 432000, {'from': accounts[6], 'value': 20})
+    deploy.sendPayment(3, {'from': accounts[6], 'value': 20})
     balance_signee = accounts[6].balance() 
     deploy.terminateContract(3, {'from': accounts[6]})
     assert accounts[6].balance() == balance_signee + 20
@@ -440,9 +440,9 @@ not implemented
 def test_transfer_msg_value_back_to_signee(deploy):
     check if the deposit is transfered back to the signee
     deploy.ConfirmAgreement(3, {'from': accounts[9]})
-    deploy.sendPayment(3, 432000, {'from': accounts[6], 'value': 20})
+    deploy.sendPayment(3, {'from': accounts[6], 'value': 20})
     balance_signee = accounts[6].balance() 
-    deploy.sendPayment(3, 432000, {'from': accounts[6], 'value': 20})
+    deploy.sendPayment(3, {'from': accounts[6], 'value': 20})
     deploy.terminateContract(3, {'from': accounts[6]})
     assert accounts[6].balance() == balance_signee + 20
 '''
@@ -453,7 +453,7 @@ def test_transfer_msg_value_back_to_signee(deploy):
 def test_terminateContract_emit_Terminated_initial_status_activated(deploy):
     '''checking if the event Terminated has been emitted as "This agreement has been terminated" when you want to terminate a contract'''
     deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    deploy.sendPayment(0, 1643000000, {'from': accounts[1], 'value': 2})
+    deploy.sendPayment(0, {'from': accounts[1], 'value': 2})
     function_enabled = deploy.terminateContract(0, {'from': accounts[1]})
     message = function_enabled.events[0][0]['message']
     assert message == 'This agreement has been terminated'
@@ -464,7 +464,7 @@ def test_terminateContract_fails_require_wrong_address_initial_status_activated_
     '''check if the function terminateContract fails, because require(exactAgreement[_id].signee == msg.sender in the require statement'''
     try:
         deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-        #deploy.sendPayment(0, 1643000000, {'from': accounts[1], 'value': 2})
+        #deploy.sendPayment(0, {'from': accounts[1], 'value': 2})
         #wrong sender's address
         deploy.terminateContract(0, {'from': accounts[5]})
     except Exception as e:
@@ -473,14 +473,14 @@ def test_terminateContract_fails_require_wrong_address_initial_status_activated_
 def test_terminateContract_function_change_status_terminated_without_sendPayments(deploy):
     '''check if the function terminateContract changes status of the agreement to "Terminated"'''
     deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    #deploy.sendPayment(0, 1643000000, {'from': accounts[1], 'value': 20})
+    #deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
     deploy.terminateContract(0, {'from': accounts[1]})
     assert deploy.exactAgreement(0)[6] == 'Terminated'
 
 def test_terminateContract_emit_Terminated_initial_status_activated_without_sendPayments(deploy):
     '''checking if the event Terminated has been emitted as "This agreement has been terminated" when you want to terminate a contract'''
     deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    #deploy.sendPayment(0, 1643000000, {'from': accounts[1], 'value': 2})
+    #deploy.sendPayment(0, {'from': accounts[1], 'value': 2})
     function_enabled = deploy.terminateContract(0, {'from': accounts[1]})
     message = function_enabled.events[0][0]['message']
     assert message == 'This agreement has been terminated'
@@ -501,7 +501,7 @@ def test_sendPayments_fails_require_wrong_address(deploy):
     try:
         deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
         #wrong signer's address
-        deploy.sendPayment(0, 1643000000, {'from': accounts[3], 'value': 20})
+        deploy.sendPayment(0, {'from': accounts[3], 'value': 20})
     except Exception as e:
         assert e.message[50:] == "Only the owner can pay the agreement's terms"
 
@@ -509,7 +509,7 @@ def test_sendPayments_fails_require_not_confirmed(deploy):
     '''check if the sendPayments fails, because exactAgreement[_id].approved)) == "Confirmed" in the require statement'''
     try:
         #no confirmation
-        deploy.sendPayment(0, 1643000000, {'from': accounts[1], 'value': 20})
+        deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
     except Exception as e:
         assert e.message[50:] == "The receiver has to confirm the contract"
 
@@ -519,32 +519,32 @@ def test_sendPayments_require_statement_fails_agreement_not_ended(deploy):
     '''check if the require statement fails when the agreement's deadline has ended'''
     try:
         deploy.ConfirmAgreement(4, {'from': accounts[9]})
-        deploy.sendPayment(4, 500, {'from': accounts[6], 'value': 20})        
+        deploy.sendPayment(4, {'from': accounts[6], 'value': 20})        
     except Exception as e:
         assert e.message[50:] == "This agreement's deadline has ended"
 
 def test_sendPayments_change_status_initial_status_created(deploy):
     '''checking if the status is changed to "Activated" when msg.value is larger or equal to agreedDeposit'''
     deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    deploy.sendPayment(0, 1643000000, {'from': accounts[1], 'value': 20})
+    deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
     assert deploy.exactAgreement(0)[6] == 'Activated'
 
 def test_sendPayments_change_initializePeriod_initial_status_created(deploy):
     '''checking if the InitializedPeriod is initialize (sum of agreementTimeCreation and everyTimeUnit) when msg.value is larger or equal to agreedDeposit'''
     deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    deploy.sendPayment(0, 1643000000, {'from': accounts[1], 'value': 20})
+    deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
     assert deploy.exactAgreement(0)[10] == deploy.exactAgreement(0)[8] + deploy.exactAgreement(0)[9]
 
 def test_sendPayments_change_agreementDeposit_initial_status_created(deploy):
     '''checking if the deposit has been initialized to msg.value when msg.value is larger or equal to agreedDeposit'''
     deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    deploy.sendPayment(0, 1643000000, {'from': accounts[1], 'value': 20})
+    deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
     assert deploy.exactAgreement(0)[5] == '20'
 
 def test_sendPayments_emit_NotifyUser_initial_status_created(deploy):
     '''checking if the event has been emitted as "We have activate the agreement" when msg.value is larger or equal to agreedDeposit'''
     deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    function_enabled = deploy.sendPayment(0, 1643000000, {'from': accounts[1], 'value': 20})
+    function_enabled = deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
     message = function_enabled.events[0][0]['message']
     assert message == 'We have activate the agreement'
 
@@ -553,7 +553,7 @@ def test_sendPayments_fails_require_smaller_deposit_initial_status_created(deplo
     try:
         deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
         #'value' is smaller than it should be
-        deploy.sendPayment(0, 1643000000, {'from': accounts[1], 'value': 1})
+        deploy.sendPayment(0, {'from': accounts[1], 'value': 1})
     except Exception as e:
         assert e.message[50:] == "The deposit is not the same as the agreed in the terms"
 
@@ -564,26 +564,26 @@ def test_sendPayments_fails_require_smaller_deposit_initial_status_created(deplo
 def test_timeNotBreached(deploy):
     '''check if the timeNotBreached function correctly increments positionPeriod. This is for checing inside sendPayments function'''
     deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    deploy.sendPayment(0, 432000, {'from': accounts[1], 'value': 20})
+    deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
     new_agreement_position = deploy.exactAgreement(0)[10]
     #the contract has been activated, now send the the money again
-    deploy.sendPayment(0, 432000, {'from': accounts[1], 'value': 20})    
+    deploy.sendPayment(0, {'from': accounts[1], 'value': 20})    
     assert deploy.exactAgreement(0)[10] == new_agreement_position + deploy.exactAgreement(0)[9]
 
 def test_transactionCreated_updated(deploy):
     '''check if the time of the call to function sendPayment is stored'''
     deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    deploy.sendPayment(0, 432000, {'from': accounts[1], 'value': 20})
-    deploy.sendPayment(0, 432000, {'from': accounts[1], 'value': 20})  
+    deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
+    deploy.sendPayment(0, {'from': accounts[1], 'value': 20})  
     assert deploy.exactAgreement(0)[4] != '0'
 
 def test_transactionCreated_updated_once_again(deploy):
     '''check if the time of the call to function sendPayment changes after another call to this function'''
     deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    deploy.sendPayment(0, 432000, {'from': accounts[1], 'value': 20})
-    deploy.sendPayment(0, 432000, {'from': accounts[1], 'value': 20})  
+    deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
+    deploy.sendPayment(0, {'from': accounts[1], 'value': 20})  
     first_call = deploy.exactAgreement(0)[4] != '0'
-    deploy.sendPayment(0, 432000, {'from': accounts[1], 'value': 20})
+    deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
     assert deploy.exactAgreement(0)[4] != first_call
 
     #if the amount <= msg.value
@@ -592,16 +592,16 @@ def test_timeNotBreached_fail_if_statement(deploy):
     '''check if the timeNotBreached fails because transaction was sent after the agreement's deadline - it fails because of the check in the ConfirmAgreement function'''
     try:
         deploy.ConfirmAgreement(4, {'from': accounts[9]})
-        deploy.sendPayment(4, 2000, {'from': accounts[6], 'value': 20})
+        deploy.sendPayment(4, {'from': accounts[6], 'value': 20})
     except Exception as e:        
         assert e.message[50:] == "This agreement's deadline has ended"
 
 def test_timeNotBreached_value_large_amount_send_value(deploy):
     '''check if the msg.value is sent when amount <= msg.value in the timeNotBreached'''
     deploy.ConfirmAgreement(3, {'from': accounts[9]})
-    deploy.sendPayment(3, 432000, {'from': accounts[6], 'value': 20})
+    deploy.sendPayment(3, {'from': accounts[6], 'value': 20})
     balance_receiver = accounts[9].balance() 
-    deploy.sendPayment(3, 432000, {'from': accounts[6], 'value': 30}) 
+    deploy.sendPayment(3, {'from': accounts[6], 'value': 30}) 
     assert accounts[9].balance() == balance_receiver + 30
 '''
 tried to test failed sent , but couldn't fugure it out
@@ -610,8 +610,8 @@ def test_timeNotBreached_value_large_amount_fail_sending(deploy):
     check if the "Failed to send Ether" is outposted when sending the money fails
     try:
         deploy.ConfirmAgreement(5, {'from': "0x0000000000000000000000000000000000000000"})
-        deploy.sendPayment(5, 2000, {'from': accounts[6]})
-        #deploy.sendPayment(5, 2000, {'from': accounts[6], 'value': 20})
+        deploy.sendPayment(5, {'from': accounts[6]})
+        #deploy.sendPayment(5, {'from': accounts[6], 'value': 20})
     except Exception as e:        
         assert e.message[50:] == "Failed to send Ether"'''
     
@@ -619,9 +619,9 @@ def test_timeNotBreached_value_large_amount_fail_sending(deploy):
 def test_timeNotBreached_value_large_amount_emit_NotifyUser(deploy):
     '''check if the event NotifyUser is emitted when amount <= msg.value in the timeNotBreached'''
     deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    deploy.sendPayment(0, 432000, {'from': accounts[1], 'value': 20})
+    deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
     #the contract has been activated, now send the money again
-    function_initialize = deploy.sendPayment(0, 432000, {'from': accounts[1], 'value': 20})
+    function_initialize = deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
     assert function_initialize.events[0][0]['message'] == "Transaction was sent to the receiver"
 
     #if the amount > msg.value
@@ -629,33 +629,33 @@ def test_timeNotBreached_value_large_amount_emit_NotifyUser(deploy):
 def test_timeNotBreached_value_smaller_amount_status(deploy):
     '''check if the status is changed when amount > msg.value in the timeNotBreached'''
     deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    deploy.sendPayment(0, 432000, {'from': accounts[1], 'value': 20})
+    deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
     #the contract has been activated, now send the smaller quantity of money again
-    deploy.sendPayment(0, 432000, {'from': accounts[1], 'value': 1})
+    deploy.sendPayment(0, {'from': accounts[1], 'value': 1})
     assert deploy.exactAgreement(0)[6] == "Terminated"
 
 def test_timeNotBreached_value_smaller_amount_send_deposit(deploy):
     '''check if the deposit is sent to the receiver when amount > msg.value in the timeNotBreached'''
     deploy.ConfirmAgreement(3, {'from': accounts[9]})
-    deploy.sendPayment(3, 432000, {'from': accounts[6], 'value': 20})
+    deploy.sendPayment(3, {'from': accounts[6], 'value': 20})
     balance_receiver = accounts[9].balance() 
-    deploy.sendPayment(3, 432000, {'from': accounts[6], 'value': 1}) 
+    deploy.sendPayment(3, {'from': accounts[6], 'value': 1}) 
     assert accounts[9].balance() == balance_receiver + 20
 
 def test_timeNotBreached_value_smaller_amount_return_transaction(deploy):
     '''check if the transaction is sent back to the signee when amount > msg.value in the timeNotBreached'''
     deploy.ConfirmAgreement(3, {'from': accounts[9]})
-    deploy.sendPayment(3, 432000, {'from': accounts[6], 'value': 20})  
+    deploy.sendPayment(3, {'from': accounts[6], 'value': 20})  
     balance_signee = accounts[6].balance() 
-    deploy.sendPayment(3, 432000, {'from': accounts[6], 'value': 1}) 
+    deploy.sendPayment(3, {'from': accounts[6], 'value': 1}) 
     assert accounts[6].balance() == balance_signee
     
 def test_timeNotBreached_value_smaller_amount_emit_Terminated(deploy):
     '''check if the evant Terminated is emitted when amount > msg.value in the timeNotBreached'''
     deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    deploy.sendPayment(0, 432000, {'from': accounts[1], 'value': 20})
+    deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
     #the contract has been activated, now send the smaller quantity of money again
-    function_initialize = deploy.sendPayment(0, 432000, {'from': accounts[1], 'value': 1})
+    function_initialize = deploy.sendPayment(0, {'from': accounts[1], 'value': 1})
     assert function_initialize.events[0][0]['message'] == "This agreement was terminated due to different payment than in the terms"
 
     
@@ -665,33 +665,33 @@ def test_timeNotBreached_value_smaller_amount_emit_Terminated(deploy):
 def test_timeNotBreached_breached_value_larger_amount_status(deploy):
     '''check if the status is changed when timeNotBreached is breached in the timeNotBreached'''
     deploy.ConfirmAgreement(5, {'from': accounts[9]})
-    deploy.sendPayment(5, 432000, {'from': accounts[1], 'value': 20})
+    deploy.sendPayment(5, {'from': accounts[1], 'value': 20})
     #the contract has been activated, now send the smaller quantity of money again
-    deploy.sendPayment(5, 1646000000, {'from': accounts[1], 'value': 20})
+    deploy.sendPayment(5, {'from': accounts[1], 'value': 20})
     assert deploy.exactAgreement(5)[6] == "Terminated"
 
 def test_timeNotBreached_breached_value_larger_amount_send_deposit(deploy):
     '''check if the deposit is sent to the receiver when timeNotBreached is breached in the timeNotBreached'''
     deploy.ConfirmAgreement(5, {'from': accounts[9]})
-    deploy.sendPayment(5, 432000, {'from': accounts[1], 'value': 20})
+    deploy.sendPayment(5, {'from': accounts[1], 'value': 20})
     balance_receiver = accounts[9].balance() 
-    deploy.sendPayment(5, 1645000000, {'from': accounts[1], 'value': 20}) 
+    deploy.sendPayment(5, {'from': accounts[1], 'value': 20}) 
     assert accounts[9].balance() == balance_receiver + 20
 
 def test_timeNotBreached_breached_value_larger_amount_return_transaction(deploy):
     '''check if the transaction is sent back to the signee when timeNotBreached is breached in the timeNotBreached'''
     deploy.ConfirmAgreement(5, {'from': accounts[9]})
-    deploy.sendPayment(5, 432000, {'from': accounts[1], 'value': 20})  
+    deploy.sendPayment(5, {'from': accounts[1], 'value': 20})  
     balance_signee = accounts[1].balance() 
-    deploy.sendPayment(5, 1645000000, {'from': accounts[1], 'value': 5}) 
+    deploy.sendPayment(5, {'from': accounts[1], 'value': 5}) 
     assert accounts[1].balance() == balance_signee
 
 def test_timeNotBreached_breached_value_larger_amount_emit_Terminated(deploy):
     '''check if the evant Terminated is emitted when timeNotBreached is breached in the timeNotBreached'''
     deploy.ConfirmAgreement(5, {'from': accounts[9]})
-    deploy.sendPayment(5, 432000, {'from': accounts[1], 'value': 20})
+    deploy.sendPayment(5, {'from': accounts[1], 'value': 20})
     #the contract has been activated, now send the smaller quantity of money again
-    function_initialize = deploy.sendPayment(5, 1646000000, {'from': accounts[1], 'value': 20})
+    function_initialize = deploy.sendPayment(5, {'from': accounts[1], 'value': 20})
     assert function_initialize.events[0][0]['message'] == "This agreement was terminated due to late payment"
 
 #Checking when the agreement's status is "Terminated"
@@ -699,10 +699,10 @@ def test_timeNotBreached_breached_value_larger_amount_emit_Terminated(deploy):
 def test_terminateContract_emit_Terminated_initial_status_terminated(deploy):
     '''check if the sendPayments emits correctly the message when the status is "Terminated"'''
     deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    deploy.sendPayment(0, 1643000000, {'from': accounts[1], 'value': 20})
+    deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
     deploy.terminateContract(0, {'from': accounts[1]})
     with brownie.reverts("This agreement was already terminated"):
-        deploy.sendPayment(0, 1643000000, {'from': accounts[1], 'value': 20})
+        deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
     
 
 
@@ -711,12 +711,12 @@ def test_terminateContract_emit_Terminated_initial_status_terminated(deploy):
 #def test_timeNotBreached_breached_value_larger_amount_status_not_defined(deploy):
     '''check if the status is changed when timeNotBreached is breached in the timeNotBreached'''
     #deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    #deploy.sendPayment(0, 432000, {'from': accounts[1], 'value': 20})
+    #deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
     #deploy.exactAgreement(0).status = "The status is something else"
     #assert deploy.exactAgreement(0)[6] == "The status is something else"
     #the contract has been activated, now send the smaller quantity of money again
     #with brownie.reverts("There is no agreement with this id"):
-        #deploy.sendPayment(0, 432000, {'from': accounts[1], 'value': 20})
+        #deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
 
 
 
@@ -729,28 +729,28 @@ def test_terminateContract_emit_Terminated_initial_status_terminated(deploy):
 def test_wasContractBreached_require_receiver_equals_msg_sender(deploy):
     '''check if the wasContractBreached fails, because exactAgreement[_id].receiver == msg.sender is the require statement'''
     deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    deploy.sendPayment(0, 432000, {'from': accounts[1], 'value': 20})
+    deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
     with brownie.reverts("The receiver in the agreement's id isn't the same as the address you're logged in"):
         #wrong signee's address
-        deploy.wasContractBreached(0, 432000, {'from': accounts[2]})
+        deploy.wasContractBreached(0, {'from': accounts[2]})
 '''
 def test_wasContractBreached_require_positionPeriod_less_block_timestamp(deploy):
     check if the wasContractBreached fails, because exactAgreement[_id].positionPeriod < block.timestamp is the require statement
     deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    deploy.sendPayment(0, 432000, {'from': accounts[1], 'value': 20})
+    deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
     //this will work until 3805 * 432000 < block.timestamp
     for x in range(3805):
-        deploy.sendPayment(0, 432000, {'from': accounts[1], 'value': 20})
+        deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
     with brownie.reverts("The agreement wasn't breached"):
-        deploy.wasContractBreached(0, 165000, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
+        deploy.wasContractBreached(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
 '''
 
 def test_wasContractBreached_fail_if_statement_in_timeNotBreached(deploy):
     '''check if the timeNotBreached fails because transaction was sent after the agreement's deadline - it fails because of the check in the ConfirmAgreement function'''
     try:
         deploy.ConfirmAgreement(4, {'from': accounts[9]})
-        deploy.sendPayment(4, 2000, {'from': accounts[6], 'value': 20})
-        deploy.wasContractBreached(4, 1642618380, {'from': accounts[9]})
+        deploy.sendPayment(4, {'from': accounts[6], 'value': 20})
+        deploy.wasContractBreached(4, {'from': accounts[9]})
     except Exception as e:        
         assert e.message[50:] == "This agreement's deadline has ended"
 
@@ -760,8 +760,8 @@ def test_wasContractBreached_fail_if_statement_in_timeNotBreached(deploy):
 def test_wasContractBreached_timeNotBreached_true_emit_NotifyUser(deploy):
     '''check if the wasContractBreached function when timeNotBreached is true, emits NotifyUser'''
     deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    deploy.sendPayment(0, 432000, {'from': accounts[1], 'value': 20})
-    function_initialize = deploy.wasContractBreached(0, 432000, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
+    deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
+    function_initialize = deploy.wasContractBreached(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
     assert function_initialize.events[0][0]['message'] == "The agreement wasn't breached"
 
 #if timeNotBreached is False
@@ -771,38 +771,38 @@ def test_wasContractBreached_timeNotBreached_true_emit_NotifyUser(deploy):
     #try:
         #deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
         #for x in range(3805):
-            #deploy.sendPayment(0, 20000000, {'from': accounts[1], 'value': 20})
-        #deploy.wasContractBreached(0, 1645000000, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
+            #deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
+        #deploy.wasContractBreached(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
     #except Exception as e:
         #assert e.message[50:] == "You have to wait at least 7 days after breached deadline to withdraw the deposit"
 @pytest.mark.skip(reason="fails, because of the requirement statement of 7 days")
 def test_wasContractBreached_timeNotBreached_false_send_deposit(deploy):
     '''check if the wasContractBreached function when timeNotBreached is false, sends a deposit to the receiver'''
     deploy.ConfirmAgreement(3, {'from': accounts[9]})
-    deploy.sendPayment(3, 432000, {'from': accounts[6], 'value': 20})
+    deploy.sendPayment(3, {'from': accounts[6], 'value': 20})
     balance_receiver = accounts[9].balance()
-    deploy.wasContractBreached(3, 1645000000, {'from': accounts[9]})
+    deploy.wasContractBreached(3, {'from': accounts[9]})
     assert accounts[9].balance() == balance_receiver + 20
 @pytest.mark.skip(reason="fails, because of the requirement statement of 7 days")
 def test_wasContractBreached_timeNotBreached_false_status_Terminated(deploy):
     '''check if the wasContractBreached function when timeNotBreached is false, changes status to Terminated'''
     deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    deploy.sendPayment(0, 432000, {'from': accounts[1], 'value': 20})
-    deploy.wasContractBreached(0, 1645000000, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
+    deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
+    deploy.wasContractBreached(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
     assert deploy.exactAgreement(0)[6] == "Terminated"
 @pytest.mark.skip(reason="fails, because of the requirement statement of 7 days")
 def test_wasContractBreached_timeNotBreached_false_status_deposit_equals_zero(deploy):
     '''check if the wasContractBreached function when timeNotBreached is false, changes deposit to 0'''
     deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    deploy.sendPayment(0, 432000, {'from': accounts[1], 'value': 20})
-    deploy.wasContractBreached(0, 1645000000, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
+    deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
+    deploy.wasContractBreached(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
     assert deploy.exactAgreement(0)[5] == "0"
 @pytest.mark.skip(reason="fails, because of the requirement statement of 7 days")
 def test_wasContractBreached_timeNotBreached_false_emit_Terminated(deploy):
     '''check if the wasContractBreached function when timeNotBreached is false, emits NotifyUser'''
     deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    deploy.sendPayment(0, 432000, {'from': accounts[1], 'value': 20})
-    function_initialize = deploy.wasContractBreached(0, 1645000000, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
+    deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
+    function_initialize = deploy.wasContractBreached(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
     assert function_initialize.events[0][0]['message'] == "This agreement has been terminated"
 
 
