@@ -564,6 +564,11 @@ def test_sendPayments_fails_require_smaller_deposit_initial_status_created(deplo
 
 def test_timeNotBreached_received_on_time_false(deploy):
     '''check if the timeNotBreached returns false, when transaction received wasn't on time'''
+    deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
+    deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
+    rpc.sleep(60*60*24*6)
+    deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
+    assert deploy.exactAgreement(0)[6] == 'Terminated'
 
 def test_timeNotBreached(deploy):
     '''check if the timeNotBreached function correctly increments positionPeriod. This is for checing inside sendPayments function'''
