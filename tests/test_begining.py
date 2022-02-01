@@ -580,14 +580,6 @@ def test_sendPayments_emit_NotifyUser_initial_status_created(deploy):
 #Checking when the agreement's status is "Activated"
 #if the transaction sent was on time
 
-def test_timeNotBreached_received_on_time_false(deploy):
-    '''check if the timeNotBreached returns false, when transaction received wasn't on time'''
-    deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
-    rpc.sleep(60*60*24*6)
-    deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
-    assert deploy.exactAgreement(0)[6] == 'Terminated'
-
 def test_timeNotBreached(deploy):
     '''check if the timeNotBreached function correctly increments positionPeriod. This is for checing inside sendPayments function'''
     deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
@@ -688,6 +680,14 @@ def test_timeNotBreached_value_smaller_amount_emit_Terminated(deploy):
     
 
 #if the transaction wasn't sent on time
+
+def test_timeNotBreached_received_on_time_false(deploy):
+    '''check if the timeNotBreached returns false, when transaction received wasn't on time'''
+    deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
+    deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
+    rpc.sleep(60*60*24*6)
+    deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
+    assert deploy.exactAgreement(0)[6] == 'Terminated'
 
 def test_timeNotBreached_breached_value_larger_amount_status(deploy):
     '''check if the status is changed when timeNotBreached is breached in the timeNotBreached'''
