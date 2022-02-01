@@ -581,7 +581,7 @@ def test_sendPayments_emit_NotifyUser_initial_status_created(deploy):
 #if the transaction sent was on time
 
 def test_timeNotBreached(deploy):
-    '''check if the timeNotBreached function correctly increments positionPeriod. This is for checing inside sendPayments function'''
+    '''check if the timeNotBreached function correctly increments positionPeriod. This is for checking inside sendPayments function'''
     deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
     deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
     new_agreement_position = deploy.exactAgreement(0)[10]
@@ -660,6 +660,13 @@ def test_timeNotBreached_value_smaller_amount_send_deposit(deploy):
     balance_receiver = accounts[9].balance() 
     deploy.sendPayment(3, {'from': accounts[6], 'value': 1}) 
     assert accounts[9].balance() == balance_receiver + 20
+
+def test_timeNotBreached_value_smaller_amount_deposit_equals_zero(deploy):
+    '''check if the deposit is back on zero when amount > msg.value in the timeNotBreached'''
+    deploy.ConfirmAgreement(3, {'from': accounts[9]})
+    deploy.sendPayment(3, {'from': accounts[6], 'value': 20})
+    deploy.sendPayment(3, {'from': accounts[6], 'value': 1}) 
+    assert deploy.exactAgreement(0)[5] == "0"
 
 def test_timeNotBreached_value_smaller_amount_return_transaction(deploy):
     '''check if the transaction is sent back to the signee when amount > msg.value in the timeNotBreached'''
