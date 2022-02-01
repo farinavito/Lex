@@ -820,10 +820,17 @@ def test_wasContractBreached_timeNotBreached_false_emit_Terminated(deploy):
     rpc.sleep(60*60*24*7)
     function_initialize = deploy.wasContractBreached(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
     assert function_initialize.events[0][0]['message'] == "This agreement has been terminated"
-
+@pytest.mark.lll
 def test_wasContractBreached_received_on_time_false(deploy):
-    '''check if the wasContractBreached returns false, when transaction received wasn't on time'''
-
+    '''check if the wasContractBreached returns false, when transaction received wasn't on time, but doesn't wait 7 days for withdraw'''
+    try:
+        deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
+        deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
+        rpc.sleep(60*60*24*6)
+        deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
+        deploy.wasContractBreached(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
+    except Exception as e:        
+        assert e.message[50:] == "You have to wait at least 7 days after breached deadline to withdraw the deposit"
 
 #check what happens if we send money to this contract with no matching function
 #check if we cannot send money to the contract (receiver)
