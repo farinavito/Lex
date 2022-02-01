@@ -712,6 +712,13 @@ def test_timeNotBreached_breached_value_larger_amount_send_deposit(deploy):
     deploy.sendPayment(5, {'from': accounts[1], 'value': 20}) 
     assert accounts[9].balance() == balance_receiver + 20
 
+def test_timeNotBreached_breached_deposit_equals_zero(deploy):
+    '''check if the deposit is equal zero when timeNotBreached is breached in the timeNotBreached'''
+    deploy.ConfirmAgreement(5, {'from': accounts[9]})
+    deploy.sendPayment(5, {'from': accounts[1], 'value': 20})
+    deploy.sendPayment(5, {'from': accounts[1], 'value': 20}) 
+    assert deploy.exactAgreement(5)[5] == "0"
+
 def test_timeNotBreached_breached_value_larger_amount_return_transaction(deploy):
     '''check if the transaction is sent back to the signee when timeNotBreached is breached in the timeNotBreached'''
     deploy.ConfirmAgreement(5, {'from': accounts[9]})
@@ -721,7 +728,7 @@ def test_timeNotBreached_breached_value_larger_amount_return_transaction(deploy)
     assert accounts[1].balance() == balance_signee
 
 def test_timeNotBreached_breached_value_larger_amount_emit_Terminated(deploy):
-    '''check if the evant Terminated is emitted when timeNotBreached is breached in the timeNotBreached'''
+    '''check if the event Terminated is emitted when timeNotBreached is breached in the timeNotBreached'''
     deploy.ConfirmAgreement(5, {'from': accounts[9]})
     deploy.sendPayment(5, {'from': accounts[1], 'value': 20})
     #the contract has been activated, now send the smaller quantity of money again
