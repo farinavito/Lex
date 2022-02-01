@@ -775,15 +775,15 @@ def test_wasContractBreached_timeNotBreached_true_emit_NotifyUser(deploy):
 
 #if timeNotBreached is False
 
-#def test_wasContractBreached_timeNotBreached_false_status_deposit_equals_zero_1(deploy):
+def test_wasContractBreached_timeNotBreached_false_status_deposit_equals_zero_1(deploy):
     '''check if the wasContractBreached function when timeNotBreached is false, changes deposit to 0'''
-    #try:
-        #deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-        #for x in range(3805):
-            #deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
-        #deploy.wasContractBreached(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    #except Exception as e:
-        #assert e.message[50:] == "You have to wait at least 7 days after breached deadline to withdraw the deposit"
+    deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
+    rpc.sleep(60*60*24*5)
+    deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
+    rpc.sleep(60*60*24*7)
+    deploy.wasContractBreached(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
+    assert deploy.exactAgreement(0)[5] == '0'
+    
 
 def test_wasContractBreached_timeNotBreached_false_send_deposit(deploy):
     '''check if the wasContractBreached function when timeNotBreached is false, sends a deposit to the receiver'''
