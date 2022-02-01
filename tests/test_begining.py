@@ -541,6 +541,15 @@ def test_sendPayments_require_statement_fails_agreement_not_ended(deploy):
     except Exception as e:
         assert e.message[50:] == "This agreement's deadline has ended"
 
+def test_sendPayments_fails_require_smaller_deposit_initial_status_created(deploy):
+    '''check if the sendPayments fails, because exactAgreement[_id].agreedDeposit <= msg.value in the require statement'''
+    try:
+        deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
+        #'value' is smaller than it should be
+        deploy.sendPayment(0, {'from': accounts[1], 'value': 1})
+    except Exception as e:
+        assert e.message[50:] == "The deposit is not the same as the agreed in the terms"
+
 def test_sendPayments_change_status_initial_status_created(deploy):
     '''checking if the status is changed to "Activated" when msg.value is larger or equal to agreedDeposit'''
     deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
@@ -566,14 +575,6 @@ def test_sendPayments_emit_NotifyUser_initial_status_created(deploy):
     message = function_enabled.events[0][0]['message']
     assert message == 'We have activate the agreement'
 
-def test_sendPayments_fails_require_smaller_deposit_initial_status_created(deploy):
-    '''check if the sendPayments fails, because exactAgreement[_id].agreedDeposit <= msg.value in the require statement'''
-    try:
-        deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-        #'value' is smaller than it should be
-        deploy.sendPayment(0, {'from': accounts[1], 'value': 1})
-    except Exception as e:
-        assert e.message[50:] == "The deposit is not the same as the agreed in the terms"
 
 
 #Checking when the agreement's status is "Activated"
