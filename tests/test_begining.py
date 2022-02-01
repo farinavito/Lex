@@ -364,6 +364,19 @@ def test_ConfirmAgreement_agreement_1_already_confirmed(deploy):
     message = function_enabled.events[0][0]['message']
     assert message == 'This agreement is already confirmed'
 
+def test_ConfirmAgreement_fail_require_1_agreement_1(deploy):
+    '''check if the ConfirmAgreement fails if the receiver wants to confirm an agreement that has ended'''
+    try:
+        deploy.ConfirmAgreement(4, {'from': accounts[9]})        
+    except Exception as e:
+        assert e.message[50:] == "This agreement's deadline has ended"
+
+def test_ConfirmAgreement_fail_require_2_agreement_1(deploy):
+    '''check if the ConfirmAgreement fails if the receiver is wrong'''
+    try:
+        deploy.ConfirmAgreement(0, {'from': accounts[4]})        
+    except Exception as e:
+        assert e.message[50:] == "Only the receiver confirm the agreement"
 
 def test_ConfirmAgreement_agreement_1(deploy):
     '''check if the ConfirmAgreement changes status to "Confirmed"'''
@@ -375,19 +388,7 @@ def test_ConfirmAgreement_agreement_2(deploy):
     deploy.ConfirmAgreement(1, {'from': '0xdD870fA1b7C4700F2BD7f44238821C26f7392148'})
     assert deploy.exactAgreement(1)[7] == 'Confirmed'
 
-def test_ConfirmAgreement_fail_require_2_agreement_1(deploy):
-    '''check if the ConfirmAgreement fails if the receiver is wrong'''
-    try:
-        deploy.ConfirmAgreement(0, {'from': accounts[4]})        
-    except Exception as e:
-        assert e.message[50:] == "Only the receiver confirm the agreement"
 
-def test_ConfirmAgreement_fail_require_1_agreement_1(deploy):
-    '''check if the ConfirmAgreement fails if the receiver wants to confirm an agreement that has ended'''
-    try:
-        deploy.ConfirmAgreement(4, {'from': accounts[9]})        
-    except Exception as e:
-        assert e.message[50:] == "This agreement's deadline has ended"
 
 
 
@@ -432,8 +433,7 @@ def test_transfer_deposit_back_to_signee(deploy):
     assert accounts[6].balance() == balance_signee + 20
 
 '''
-not implemented 
-
+#not implemented 
 def test_transfer_msg_value_back_to_signee(deploy):
     check if the deposit is transfered back to the signee
     deploy.ConfirmAgreement(3, {'from': accounts[9]})
