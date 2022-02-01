@@ -742,17 +742,6 @@ def test_wasContractBreached_require_receiver_equals_msg_sender(deploy):
     with brownie.reverts("The receiver in the agreement's id isn't the same as the address you're logged in"):
         #wrong signee's address
         deploy.wasContractBreached(0, {'from': accounts[2]})
-'''
-def test_wasContractBreached_require_positionPeriod_less_block_timestamp(deploy):
-    check if the wasContractBreached fails, because exactAgreement[_id].positionPeriod < block.timestamp is the require statement
-    deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
-    //this will work until 3805 * 432000 < block.timestamp
-    for x in range(3805):
-        deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
-    with brownie.reverts("The agreement wasn't breached"):
-        deploy.wasContractBreached(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-'''
 
 def test_wasContractBreached_fail_if_statement_in_timeNotBreached(deploy):
     '''check if the timeNotBreached fails because transaction was sent after the agreement's deadline - it fails because of the check in the ConfirmAgreement function'''
