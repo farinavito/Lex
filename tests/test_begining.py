@@ -388,6 +388,13 @@ def test_ConfirmAgreement_agreement_2(deploy):
     deploy.ConfirmAgreement(1, {'from': '0xdD870fA1b7C4700F2BD7f44238821C26f7392148'})
     assert deploy.exactAgreement(1)[7] == 'Confirmed'
 
+def test_ConfirmAgreement_agreement_1_notify_user_confirmed(deploy):
+    '''check if the ConfirmAgreement emits "The agreement was confirmed" when the agreement was confirmed'''
+    deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
+    function_enabled = deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
+    message = function_enabled.events[0][0]['message']
+    assert message == 'This agreement is already confirmed'
+
 
 
 
