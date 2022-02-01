@@ -835,7 +835,7 @@ def test_wasContractBreached_timeNotBreached_false_status_deposit_equals_zero_1(
     rpc.sleep(60*60*24*7)
     deploy.wasContractBreached(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
     assert deploy.exactAgreement(0)[5] == '0'
-    
+  
 def test_wasContractBreached_timeNotBreached_false_status_deposit_equals_zero(deploy):
     '''check if the wasContractBreached function when timeNotBreached is false, changes deposit to 0'''
     deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
@@ -854,9 +854,12 @@ def test_wasContractBreached_timeNotBreached_false_emit_Terminated(deploy):
     deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
     rpc.sleep(60*60*24*7)
     function_initialize = deploy.wasContractBreached(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    assert function_initialize.events[0][0]['message'] == "This agreement has been terminated"
+    assert function_initialize.events[0][0]['message'] == "This agreement is already terminated"
 
-
-
+def test_wasContractBreached_agreement_not_activated(deploy):
+    '''check if the wasContractBreached function emits NotifyUser when timeNotBreached is false'''
+    deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
+    function_initialize = deploy.wasContractBreached(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
+    assert function_initialize.events[0][0]['message'] == "This agreement hasn't been activated"
 #check what happens if we send money to this contract with no matching function
 #check if we cannot send money to the contract (receiver)

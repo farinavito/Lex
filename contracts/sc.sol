@@ -300,8 +300,10 @@ contract AgreementBetweenSubjects {
         exactAgreement[_id].deposit = 0;
         emit Terminated("This agreement has been terminated");
       }
+    } else if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Terminated"))){
+        emit NotifyUser("This agreement is already terminated");
     } else {
-       emit NotifyUser("This agreement hasn't been activated");
+        emit NotifyUser("This agreement hasn't been activated");
     }
     
   }
