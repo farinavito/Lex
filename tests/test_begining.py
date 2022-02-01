@@ -30,11 +30,7 @@ def new_agreement_5(deploy, module_isolation):
 @pytest.fixture(autouse=True)
 def new_agreement_6(deploy):
     return deploy.createAgreement(accounts[9], 2, 0.0001, 10, {'from': accounts[1]})
-'''
-@pytest.fixture(autouse=True)
-def new_agreement_6(deploy):
-    return deploy.createAgreement('0x0000000000000000000000000000000000000000', 2, 2, 5, 10, {'from': accounts[6]})
-'''
+
 
 
 '''TESTING CREATEAGREEMENT FUNCTION AGREEMENT 1'''
@@ -751,7 +747,6 @@ def test_wasContractBreached_fail_if_statement_in_timeNotBreached(deploy):
         deploy.wasContractBreached(4, {'from': accounts[9]})
     except Exception as e:        
         assert e.message[50:] == "This agreement's deadline has ended"
-
 
 #if timeNotBreached is True
 
