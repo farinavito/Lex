@@ -283,10 +283,12 @@ contract AgreementBetweenSubjects {
   /// @notice Receiver checking if the contract has been breached
   function wasContractBreached(uint256 _id) public noReentrant{
     require(exactAgreement[_id].receiver == msg.sender, "The receiver in the agreement's id isn't the same as the address you're logged in");
-    //checking if the deadline was breached
-    if(timeWasntBreached(_id)){
-      emit NotifyUser("The agreement wasn't breached");
-    } else {
+    //checking if the agreement was Activated
+    if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Activated"))){
+      //checking if the deadline was breached
+      if(timeWasntBreached(_id)){
+        emit NotifyUser("The agreement wasn't breached");
+      } else {
         //receiver has to wait 7 days after the breached date to withdraw the deposit
         require(exactAgreement[_id].positionPeriod + (60*60*24*7) < block.timestamp, "You have to wait at least 7 days after breached deadline to withdraw the deposit");
         //terminate the agreement
@@ -297,7 +299,11 @@ contract AgreementBetweenSubjects {
         //ensure that the deposit is reduced to 0
         exactAgreement[_id].deposit = 0;
         emit Terminated("This agreement has been terminated");
+      }
+    } else {
+       emit NotifyUser("This agreement hasn't been activated");
     }
+    
   }
 
   //function for the receiver - wether he agrees with the terms or not, approves the contract or not. If he does, we are able to activate it, otherwise we can't
