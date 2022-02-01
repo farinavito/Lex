@@ -307,7 +307,7 @@ contract AgreementBetweenSubjects {
 	  }else{
       require(exactAgreement[_id].receiver == msg.sender, "Only the receiver confirm the agreement");
       //cannot confirm an agreement that ends in the past
-      require(exactAgreement[_id].howLong + exactAgreement[_id].agreementTimeCreation > block.timestamp, "This agreement's deadline has ended");
+      require(exactAgreement[_id].howLong + exactAgreement[_id].agreementTimeCreation >= block.timestamp, "This agreement's deadline has ended");
       //confirm the agreement
       exactAgreement[_id].approved = "Confirmed";
       //emit that the agreement was confirmed
