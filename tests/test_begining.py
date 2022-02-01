@@ -472,7 +472,6 @@ def test_terminateContract_fails_require_wrong_address_initial_status_activated_
     '''check if the function terminateContract fails, because require(exactAgreement[_id].signee == msg.sender in the require statement'''
     try:
         deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-        #deploy.sendPayment(0, {'from': accounts[1], 'value': 2})
         #wrong sender's address
         deploy.terminateContract(0, {'from': accounts[5]})
     except Exception as e:
@@ -481,14 +480,19 @@ def test_terminateContract_fails_require_wrong_address_initial_status_activated_
 def test_terminateContract_function_change_status_terminated_without_sendPayments(deploy):
     '''check if the function terminateContract changes status of the agreement to "Terminated"'''
     deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    #deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
     deploy.terminateContract(0, {'from': accounts[1]})
     assert deploy.exactAgreement(0)[6] == 'Terminated'
+
+def test_transfer_deposit_back_to_signee_2(deploy):
+    '''check if the deposit is transfered back to the signee'''
+    deploy.ConfirmAgreement(3, {'from': accounts[9]})
+    balance_signee = accounts[6].balance() 
+    deploy.terminateContract(3, {'from': accounts[6]})
+    assert accounts[6].balance() == balance_signee
 
 def test_terminateContract_emit_Terminated_initial_status_activated_without_sendPayments(deploy):
     '''checking if the event Terminated has been emitted as "This agreement has been terminated" when you want to terminate a contract'''
     deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    #deploy.sendPayment(0, {'from': accounts[1], 'value': 2})
     function_enabled = deploy.terminateContract(0, {'from': accounts[1]})
     message = function_enabled.events[0][0]['message']
     assert message == 'This agreement has been terminated'
