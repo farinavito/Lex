@@ -181,7 +181,7 @@ contract AgreementBetweenSubjects {
   /// @notice Verifying that the transaction created was sooner than its deadline 
   function timeNotBreached(uint256 _id) private returns(bool){
       //period till when we have to receive the transaction
-      uint256 extendedPeriod = exactAgreement[_id].positionPeriod + (6 * days);
+      uint256 extendedPeriod = exactAgreement[_id].positionPeriod + (6*60*60*24);
       //if the transaction sent was on time, transaction was received on time and transaction was sent before the agreement's deadline
 	    if (exactAgreement[_id].positionPeriod  >= exactAgreement[_id].transactionCreated && extendedPeriod >= block.timestamp && exactAgreement[_id].howLong + exactAgreement[_id].agreementTimeCreation >= block.timestamp){ 
         exactAgreement[_id].positionPeriod += exactAgreement[_id].everyTimeUnit;
@@ -194,7 +194,7 @@ contract AgreementBetweenSubjects {
   /// @notice Verifying that the transaction created was sooner than its deadline without incrementing positionPeriod
   function timeWasntBreached(uint256 _id) private view returns(bool){
       //period till when we have to receive the transaction
-      uint256 extendedPeriod = exactAgreement[_id].positionPeriod + (6 * days);
+      uint256 extendedPeriod = exactAgreement[_id].positionPeriod + (6*60*60*24);
       //if the transaction sent was on time, transaction was received on time and transaction was sent before the agreement's deadline
 	    if (exactAgreement[_id].positionPeriod  >= exactAgreement[_id].transactionCreated && extendedPeriod >= block.timestamp && exactAgreement[_id].howLong + exactAgreement[_id].agreementTimeCreation >= block.timestamp){ 
 		    return true;
