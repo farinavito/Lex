@@ -432,10 +432,10 @@ def test_terminateContract_emit_Terminated_initial_status_activated_already_term
 def test_terminateContract_fails_require_wrong_address_initial_status_activated(deploy, accounts_number):
     '''check if the function terminateContract fails, because require(exactAgreement[_id].signee == msg.sender in the require statement'''
     try:
-        deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-        deploy.sendPayment(0, {'from': accounts[1], 'value': 2})
+        deploy.ConfirmAgreement(6, {'from': accounts[9]})
+        deploy.sendPayment(6, {'from': accounts[1], 'value': 10**18})
         #wrong sender's address
-        deploy.terminateContract(0, {'from': accounts[accounts_number]})
+        deploy.terminateContract(6, {'from': accounts[accounts_number]})
     except Exception as e:
         assert e.message[50:] == "Only the owner can terminate the agreement"
 
