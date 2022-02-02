@@ -364,8 +364,8 @@ def test_MyReceiverAgreements_fails_require(deploy):
 
 def test_ConfirmAgreement_agreement_already_confirmed(deploy):
     '''check if the ConfirmAgreement checks if the agreement is already confirmed'''
-    deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    function_enabled = deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
+    deploy.ConfirmAgreement(6, {'from': accounts[9]})
+    function_enabled = deploy.ConfirmAgreement(6, {'from': accounts[9]})
     message = function_enabled.events[0][0]['message']
     assert message == 'This agreement is already confirmed'
 
