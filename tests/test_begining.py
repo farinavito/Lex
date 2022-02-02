@@ -588,7 +588,7 @@ def test_sendPayments_fails_require_not_confirmed(deploy):
     '''check if the sendPayments fails, because exactAgreement[_id].approved)) == "Confirmed" in the require statement'''
     try:
         #no confirmation
-        deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
+        deploy.sendPayment(6, {'from': accounts[1], 'value': 10**18}) 
     except Exception as e:
         assert e.message[50:] == "The receiver has to confirm the contract"
 
