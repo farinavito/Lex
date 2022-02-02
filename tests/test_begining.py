@@ -466,6 +466,18 @@ def test_transfer_deposit_back_to_signee(deploy, value_sent):
     deploy.terminateContract(6, {'from': accounts[1]})
     assert accounts[1].balance() == balance_signee + value_sent
 
+@pytest.mark.parametrize("value_sent", [1, 7**18, 9**18])
+def test_transfer_deposit_back_to_signee_pair(deploy, value_sent):
+    '''check if the deposit is not transfered back to the signee'''
+    try:
+        deploy.ConfirmAgreement(6, {'from': accounts[9]})
+        deploy.sendPayment(6, {'from': accounts[1], 'value': value_sent})
+        balance_signee = accounts[1].balance() 
+        deploy.terminateContract(6, {'from': accounts[1]})
+    except Exception as e:
+        assert e.message[50:] == "The deposit is not the same as the agreed in the terms"
+    
+
 '''
 #not implemented 
 def test_transfer_msg_value_back_to_signee(deploy):
