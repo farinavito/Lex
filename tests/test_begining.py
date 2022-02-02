@@ -535,10 +535,10 @@ def test_terminateContract_function_change_status_terminated_without_sendPayment
 
 def test_transfer_deposit_back_to_signee_2(deploy):
     '''check if the deposit is transfered back to the signee'''
-    deploy.ConfirmAgreement(3, {'from': accounts[9]})
-    balance_signee = accounts[6].balance() 
-    deploy.terminateContract(3, {'from': accounts[6]})
-    assert accounts[6].balance() == balance_signee
+    deploy.ConfirmAgreement(6, {'from': accounts[9]})
+    balance_signee = accounts[1].balance() 
+    deploy.terminateContract(6, {'from': accounts[1]})
+    assert accounts[1].balance() == balance_signee
 
 def test_terminateContract_function_change_status_terminated_2(deploy):
     '''check if the function terminateContract changes status of the agreement to "Terminated"'''
