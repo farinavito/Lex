@@ -362,7 +362,7 @@ def test_MyReceiverAgreements_fails_require(deploy):
 
 
 
-def test_ConfirmAgreement_agreement_1_already_confirmed(deploy):
+def test_ConfirmAgreement_agreement_already_confirmed(deploy):
     '''check if the ConfirmAgreement checks if the agreement is already confirmed'''
     deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
     function_enabled = deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
@@ -370,18 +370,26 @@ def test_ConfirmAgreement_agreement_1_already_confirmed(deploy):
     assert message == 'This agreement is already confirmed'
 
 @pytest.mark.parametrize("seconds_sleep", [2629743, 2630000, 2640000])
-def test_ConfirmAgreement_fail_require_1_agreement_1(deploy, seconds_sleep):
+def test_ConfirmAgreement_fail_require_2(deploy, seconds_sleep):
     '''check if the ConfirmAgreement fails if the receiver wants to confirm an agreement that has ended'''
     try:
         rpc.sleep(seconds_sleep)
         deploy.ConfirmAgreement(6, {'from': accounts[9]})        
     except Exception as e:
         assert e.message[50:] == "This agreement's deadline has ended"
+
+@pytest.mark.parametrize("seconds_sleep", [0, 260, 2640])
+def test_ConfirmAgreement_fail_require_2_pair(deploy, seconds_sleep):
+    '''check if the ConfirmAgreement fails if the receiver wants to confirm an agreement that has ended'''
+    rpc.sleep(seconds_sleep)
+    deploy.ConfirmAgreement(6, {'from': accounts[9]})
+    assert deploy.exactAgreement(0)[7] == 'Confirmed'    
     
-def test_ConfirmAgreement_fail_require_2_agreement_1(deploy):
+@pytest.mark.parametrize("accounts_number", [1, 2, 3, 4, 5, 6, 7])
+def test_ConfirmAgreement_fail_require_1(deploy, accounts_number):
     '''check if the ConfirmAgreement fails if the receiver is wrong'''
     try:
-        deploy.ConfirmAgreement(0, {'from': accounts[4]})        
+        deploy.ConfirmAgreement(6, {'from': accounts[accounts_number]})        
     except Exception as e:
         assert e.message[50:] == "Only the receiver confirm the agreement"
 
