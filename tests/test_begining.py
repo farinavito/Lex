@@ -477,12 +477,12 @@ def test_transfer_msg_value_back_to_signee(deploy):
     assert accounts[6].balance() == balance_signee + 20
 '''
 
-def test_terminateContract_function_change_status_terminated_2(deploy):
-    '''check if the function terminateContract changes status of the agreement to "Terminated"'''
-    deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
-    deploy.terminateContract(0, {'from': accounts[1]})
-    assert deploy.exactAgreement(0)[5] == '0'
+def test_terminateContract_function_change_status_terminated_deposit(deploy):
+    '''check if the function terminateContract changes deposit to zero"'''
+    deploy.ConfirmAgreement(6, {'from': accounts[9]})
+    deploy.sendPayment(6, {'from': accounts[1], 'value': 10**18})
+    deploy.terminateContract(6, {'from': accounts[1]})
+    assert deploy.exactAgreement(6)[5] == '0'
 
 def test_terminateContract_emit_Terminated_initial_status_activated(deploy):
     '''checking if the event Terminated has been emitted as "This agreement has been terminated" when you want to terminate a contract'''
