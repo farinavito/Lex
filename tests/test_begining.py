@@ -3,10 +3,11 @@ import brownie
 from brownie import accounts
 from brownie.network import rpc
 
-@pytest.fixture
+
+@pytest.fixture()
 def deploy(AgreementBetweenSubjects):
     return AgreementBetweenSubjects.deploy({'from': accounts[0]})
-
+  
 @pytest.fixture(autouse=True)
 def new_agreement_1(deploy):
     return deploy.createAgreement('0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2', 2, 5, 500, {'from': accounts[1]})
@@ -34,6 +35,8 @@ def new_agreement_6(deploy):
 @pytest.fixture(autouse=True)
 def new_agreement_7(deploy):
     return deploy.createAgreement(accounts[9], 10**18, 604800, 2629743, {'from': accounts[1]})
+
+
 
 '''TESTING CREATEAGREEMENT FUNCTION AGREEMENT 1'''
 
@@ -366,13 +369,15 @@ def test_ConfirmAgreement_agreement_1_already_confirmed(deploy):
     message = function_enabled.events[0][0]['message']
     assert message == 'This agreement is already confirmed'
 
-def test_ConfirmAgreement_fail_require_1_agreement_1(deploy):
+@pytest.mark.parametrize("seconds_sleep", [2629743, 2630000, 2640000])
+def test_ConfirmAgreement_fail_require_1_agreement_1(deploy, seconds_sleep):
     '''check if the ConfirmAgreement fails if the receiver wants to confirm an agreement that has ended'''
     try:
-        deploy.ConfirmAgreement(4, {'from': accounts[9]})        
+        rpc.sleep(seconds_sleep)
+        deploy.ConfirmAgreement(6, {'from': accounts[9]})        
     except Exception as e:
         assert e.message[50:] == "This agreement's deadline has ended"
-
+    
 def test_ConfirmAgreement_fail_require_2_agreement_1(deploy):
     '''check if the ConfirmAgreement fails if the receiver is wrong'''
     try:
@@ -863,3 +868,4 @@ def test_wasContractBreached_agreement_not_activated(deploy):
     deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
     function_initialize = deploy.wasContractBreached(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
     assert function_initialize.events[0][0]['message'] == "This agreement hasn't been activated"
+
