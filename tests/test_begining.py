@@ -564,12 +564,13 @@ def test_terminateContract_emit_Terminated_initial_status_activated_without_send
 
 #Checking the require statements 
 
-def test_sendPayments_fails_require_wrong_address(deploy):
+@pytest.mark.parametrize("accounts_number", [2, 3, 4, 5, 6, 7, 8, 9])
+def test_sendPayments_fails_require_wrong_address(deploy, accounts_number):
     '''check if the sendPayments fails, because exactAgreement[_id].signee == msg.sender in the require statement'''
     try:
-        deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
+        deploy.ConfirmAgreement(6, {'from': accounts[9]})
         #wrong signer's address
-        deploy.sendPayment(0, {'from': accounts[3], 'value': 20})
+        deploy.sendPayment(6, {'from': accounts[accounts_number], 'value': 20})
     except Exception as e:
         assert e.message[50:] == "Only the owner can pay the agreement's terms"
 
