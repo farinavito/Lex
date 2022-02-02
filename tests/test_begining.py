@@ -383,7 +383,7 @@ def test_ConfirmAgreement_fail_require_2_pair(deploy, seconds_sleep):
     '''check if the ConfirmAgreement fails if the receiver wants to confirm an agreement that has ended'''
     rpc.sleep(seconds_sleep)
     deploy.ConfirmAgreement(6, {'from': accounts[9]})
-    assert deploy.exactAgreement(0)[7] == 'Confirmed'    
+    assert deploy.exactAgreement(6)[7] == 'Confirmed'    
     
 @pytest.mark.parametrize("accounts_number", [1, 2, 3, 4, 5, 6, 7])
 def test_ConfirmAgreement_fail_require_1(deploy, accounts_number):
