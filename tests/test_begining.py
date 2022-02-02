@@ -421,20 +421,21 @@ def test_ConfirmAgreement_agreement_status_confirmed(deploy):
 
 def test_terminateContract_emit_Terminated_initial_status_activated_already_terminated(deploy):
     '''checking if the event Terminated has been emitted as "This agreement has been terminated" when you want to terminate a contract'''
-    deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    deploy.sendPayment(0, {'from': accounts[1], 'value': 2})
-    deploy.terminateContract(0, {'from': accounts[1]})
-    function_enabled = deploy.terminateContract(0, {'from': accounts[1]})
+    deploy.ConfirmAgreement(6, {'from': accounts[9]})
+    deploy.sendPayment(6, {'from': accounts[1], 'value': 10**18})
+    deploy.terminateContract(6, {'from': accounts[1]})
+    function_enabled = deploy.terminateContract(6, {'from': accounts[1]})
     message = function_enabled.events[0][0]['message']
     assert message == 'This agreement is already terminated'
 
-def test_terminateContract_fails_require_wrong_address_initial_status_activated(deploy):
+@pytest.mark.parametrize("accounts_number", [2, 3, 4, 5, 6, 7])
+def test_terminateContract_fails_require_wrong_address_initial_status_activated(deploy, accounts_number):
     '''check if the function terminateContract fails, because require(exactAgreement[_id].signee == msg.sender in the require statement'''
     try:
         deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
         deploy.sendPayment(0, {'from': accounts[1], 'value': 2})
         #wrong sender's address
-        deploy.terminateContract(0, {'from': accounts[5]})
+        deploy.terminateContract(0, {'from': accounts[accounts_number]})
     except Exception as e:
         assert e.message[50:] == "Only the owner can terminate the agreement"
 
