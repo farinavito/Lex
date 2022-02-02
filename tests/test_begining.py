@@ -457,13 +457,14 @@ def test_terminateContract_function_change_status_terminated(deploy):
     deploy.terminateContract(6, {'from': accounts[1]})
     assert deploy.exactAgreement(6)[6] == 'Terminated'
 
-def test_transfer_deposit_back_to_signee(deploy):
+@pytest.mark.parametrize("value_sent", [10**18, 11**18, 12**18])
+def test_transfer_deposit_back_to_signee(deploy, value_sent):
     '''check if the deposit is transfered back to the signee'''
     deploy.ConfirmAgreement(6, {'from': accounts[9]})
-    deploy.sendPayment(6, {'from': accounts[1], 'value': 10**18})
+    deploy.sendPayment(6, {'from': accounts[1], 'value': value_sent})
     balance_signee = accounts[1].balance() 
     deploy.terminateContract(6, {'from': accounts[1]})
-    assert accounts[1].balance() == balance_signee + 10**18
+    assert accounts[1].balance() == balance_signee + value_sent
 
 '''
 #not implemented 
