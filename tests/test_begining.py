@@ -31,7 +31,9 @@ def new_agreement_5(deploy, module_isolation):
 def new_agreement_6(deploy):
     return deploy.createAgreement(accounts[9], 2, 0.0001, 10, {'from': accounts[1]})
 
-
+@pytest.fixture(autouse=True)
+def new_agreement_7(deploy):
+    return deploy.createAgreement(accounts[9], 10**18, 604800, 2629743, {'from': accounts[1]})
 
 '''TESTING CREATEAGREEMENT FUNCTION AGREEMENT 1'''
 
