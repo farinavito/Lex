@@ -393,6 +393,14 @@ def test_ConfirmAgreement_fail_require_1(deploy, accounts_number):
     except Exception as e:
         assert e.message[50:] == "Only the receiver confirm the agreement"
 
+@pytest.mark.parametrize("accounts_number", [9])
+def test_ConfirmAgreement_fail_require_1_pair(deploy, accounts_number):
+    '''check if the ConfirmAgreement fails if the receiver is wrong'''
+    try:
+        deploy.ConfirmAgreement(6, {'from': accounts[accounts_number]})        
+    except Exception as e:
+        assert e.message[50:] != "Only the receiver confirm the agreement"
+
 def test_ConfirmAgreement_agreement_1(deploy):
     '''check if the ConfirmAgreement changes status to "Confirmed"'''
     deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
