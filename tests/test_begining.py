@@ -507,12 +507,13 @@ def test_terminateContract_emit_Terminated_initial_status_activated(deploy):
 
 #here we aren't contacting sendPayments prior terminating the contract
 
-def test_terminateContract_fails_require_wrong_address_initial_status_activated_without_sendPayments(deploy):
+@pytest.mark.parametrize("accounts_number", [2, 3, 4, 5, 6, 7])
+def test_terminateContract_fails_require_wrong_address_initial_status_activated_without_sendPayments(deploy, accounts_number):
     '''check if the function terminateContract fails, because require(exactAgreement[_id].signee == msg.sender in the require statement'''
     try:
-        deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
+        deploy.ConfirmAgreement(6, {'from': accounts[9]})
         #wrong sender's address
-        deploy.terminateContract(0, {'from': accounts[5]})
+        deploy.terminateContract(6, {'from': accounts[accounts_number]})
     except Exception as e:
         assert e.message[50:] == "Only the owner can terminate the agreement"
 
