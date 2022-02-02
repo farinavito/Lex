@@ -863,5 +863,3 @@ def test_wasContractBreached_agreement_not_activated(deploy):
     deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
     function_initialize = deploy.wasContractBreached(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
     assert function_initialize.events[0][0]['message'] == "This agreement hasn't been activated"
-#check what happens if we send money to this contract with no matching function
-#check if we cannot send money to the contract (receiver)
