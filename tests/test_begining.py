@@ -570,9 +570,19 @@ def test_sendPayments_fails_require_wrong_address(deploy, accounts_number):
     try:
         deploy.ConfirmAgreement(6, {'from': accounts[9]})
         #wrong signer's address
-        deploy.sendPayment(6, {'from': accounts[accounts_number], 'value': 20})
+        deploy.sendPayment(6, {'from': accounts[accounts_number], 'value': 10**18})
     except Exception as e:
         assert e.message[50:] == "Only the owner can pay the agreement's terms"
+
+@pytest.mark.parametrize("accounts_number", [1])
+def test_sendPayments_fails_require_wrong_address_pair(deploy, accounts_number):
+    '''check if the sendPayments fails, because exactAgreement[_id].signee == msg.sender in the require statement'''
+    try:
+        deploy.ConfirmAgreement(6, {'from': accounts[9]})
+        #wrong signer's address
+        deploy.sendPayment(6, {'from': accounts[accounts_number], 'value': 10**18})
+    except Exception as e:
+        assert e.message[50:] != "Only the owner can pay the agreement's terms"
 
 def test_sendPayments_fails_require_not_confirmed(deploy):
     '''check if the sendPayments fails, because exactAgreement[_id].approved)) == "Confirmed" in the require statement'''
