@@ -2,7 +2,7 @@ import pytest
 import brownie
 from brownie import accounts
 from brownie.network import rpc
-
+from brownie.network.state import Chain
 
 @pytest.fixture()
 def deploy(AgreementBetweenSubjects):
@@ -35,6 +35,7 @@ def new_agreement_6(deploy):
 @pytest.fixture(autouse=True)
 def new_agreement_7(deploy):
     return deploy.createAgreement(accounts[9], 10**18, 604800, 2629743, {'from': accounts[1]})
+    
 
 
 
@@ -368,20 +369,29 @@ def test_ConfirmAgreement_agreement_already_confirmed(deploy):
     function_enabled = deploy.ConfirmAgreement(6, {'from': accounts[9]})
     message = function_enabled.events[0][0]['message']
     assert message == 'This agreement is already confirmed'
-
-@pytest.mark.parametrize("seconds_sleep", [2629743, 2630000, 2640000])
+@pytest.mark.mmm
+@pytest.mark.parametrize("seconds_sleep",  [0, 260, 2640, 2629742, 2629743, 2630000, 2640000])
 def test_ConfirmAgreement_fail_require_2(deploy, seconds_sleep):
     '''check if the ConfirmAgreement fails if the receiver wants to confirm an agreement that has ended'''
     try:
-        rpc.sleep(seconds_sleep)
+        chain = Chain()
+        chain.sleep(seconds_sleep)
+    #blockstamp2 = chain.time()
+    #assert deploy.exactAgreement(6)[11] + deploy.exactAgreement(6)[8] == blockstamp2
         deploy.ConfirmAgreement(6, {'from': accounts[9]})        
     except Exception as e:
-        assert e.message[50:] == "This agreement's deadline has ended"
-
-@pytest.mark.parametrize("seconds_sleep", [0, 260, 2640])
+        assert e.message[50:] == "The agreement's deadline has ended"
+@pytest.mark.sss
+@pytest.mark.parametrize("seconds_sleep", [0, 260, 2640, 2629742, 2629743, 2630000, 2640000])
 def test_ConfirmAgreement_fail_require_2_pair(deploy, seconds_sleep):
     '''check if the ConfirmAgreement fails if the receiver wants to confirm an agreement that has ended'''
-    rpc.sleep(seconds_sleep)
+    #rpc.sleep(seconds_sleep)
+    chain = Chain()
+    #chain.sleep(seconds_sleep)
+    #blockstamp = chain.time()
+    chain.sleep(seconds_sleep)
+    #blockstamp2 = chain.time()
+    #assert deploy.exactAgreement(6)[11] + deploy.exactAgreement(6)[8] == blockstamp2
     deploy.ConfirmAgreement(6, {'from': accounts[9]})
     assert deploy.exactAgreement(6)[7] == 'Confirmed'    
    
@@ -400,7 +410,7 @@ def test_ConfirmAgreement_fail_require_1_pair(deploy, accounts_number):
         deploy.ConfirmAgreement(6, {'from': accounts[accounts_number]})        
     except Exception as e:
         assert e.message[50:] != "Only the receiver can confirm the agreement"
-@pytest.mark.mmm
+
 def test_ConfirmAgreement_agreement_status_confirmed(deploy):
     '''check if the ConfirmAgreement changes status to "Confirmed"'''
     deploy.ConfirmAgreement(6, {'from': accounts[9]})

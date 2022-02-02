@@ -100,11 +100,11 @@ contract AgreementBetweenSubjects {
         //when was the agreement created
         newAgreement.agreementTimeCreation = block.timestamp;
         //period of the payment
-        newAgreement.everyTimeUnit = _everyTimeUnit * (1 days);
+        newAgreement.everyTimeUnit = _everyTimeUnit;
         //position of the end of the period in which the signee has to send the money (for example: ...every 3 weeks... - this period needs to update itself)
         newAgreement.positionPeriod = 0;
         //how long will the agreement last
-        newAgreement.howLong = _howLong * (1 days);
+        newAgreement.howLong = _howLong;
         //storing the ids of the agreements and connecting them to msg.sender's address so we can display them to the frontend
         mySenderAgreements[msg.sender].push(agreementId);
         //storing the ids of the agreements and connecting them to _receiver's address so we can display them to the frontend
@@ -315,7 +315,7 @@ contract AgreementBetweenSubjects {
 	  }else{
       require(exactAgreement[_id].receiver == msg.sender, "Only the receiver can confirm the agreement");
       //cannot confirm an agreement that ends in the past
-      require(exactAgreement[_id].howLong + exactAgreement[_id].agreementTimeCreation >= block.timestamp, "This agreement's deadline has ended");
+      require(exactAgreement[_id].howLong + exactAgreement[_id].agreementTimeCreation >= block.timestamp, "The agreement's deadline has ended");
       //confirm the agreement
       exactAgreement[_id].approved = "Confirmed";
       //emit that the agreement was confirmed
