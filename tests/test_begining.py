@@ -529,9 +529,9 @@ def test_terminateContract_fails_require_wrong_address_initial_status_activated_
 
 def test_terminateContract_function_change_status_terminated_without_sendPayments(deploy):
     '''check if the function terminateContract changes status of the agreement to "Terminated"'''
-    deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    deploy.terminateContract(0, {'from': accounts[1]})
-    assert deploy.exactAgreement(0)[6] == 'Terminated'
+    deploy.ConfirmAgreement(6, {'from': accounts[9]})
+    deploy.terminateContract(6, {'from': accounts[1]})
+    assert deploy.exactAgreement(6)[6] == 'Terminated'
 
 def test_transfer_deposit_back_to_signee_2(deploy):
     '''check if the deposit is transfered back to the signee'''
