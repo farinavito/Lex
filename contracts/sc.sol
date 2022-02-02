@@ -313,7 +313,7 @@ contract AgreementBetweenSubjects {
     if (keccak256(bytes(exactAgreement[_id].approved)) == keccak256(bytes("Confirmed"))){
 		  emit NotifyUser("This agreement is already confirmed");
 	  }else{
-      require(exactAgreement[_id].receiver == msg.sender, "Only the receiver confirm the agreement");
+      require(exactAgreement[_id].receiver == msg.sender, "Only the receiver can confirm the agreement");
       //cannot confirm an agreement that ends in the past
       require(exactAgreement[_id].howLong + exactAgreement[_id].agreementTimeCreation >= block.timestamp, "This agreement's deadline has ended");
       //confirm the agreement
