@@ -907,14 +907,14 @@ def test_terminateContract_emit_Terminated_initial_status_terminated(deploy):
 
 
 
-
-def test_wasContractBreached_require_receiver_equals_msg_sender(deploy):
+@pytest.mark.parametrize("wrong_accounts",  [0, 1, 2, 3, 4])
+def test_wasContractBreached_require_receiver_equals_msg_sender(deploy, wrong_accounts):
     '''check if the wasContractBreached fails, because exactAgreement[_id].receiver == msg.sender is the require statement'''
-    deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
+    deploy.ConfirmAgreement(6, {'from': accounts[9]})
+    deploy.sendPayment(6, {'from': accounts[1], 'value': 10**18})
     with brownie.reverts("The receiver in the agreement's id isn't the same as the address you're logged in"):
         #wrong signee's address
-        deploy.wasContractBreached(0, {'from': accounts[2]})
+        deploy.wasContractBreached(6, {'from': accounts[wrong_accounts]})
 
 def test_wasContractBreached_fail_if_statement_in_timeNotBreached(deploy):
     '''check if the timeNotBreached fails because transaction was sent after the agreement's deadline - it fails because of the check in the ConfirmAgreement function'''
