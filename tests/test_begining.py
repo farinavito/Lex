@@ -613,14 +613,15 @@ def test_sendPayments_require_statement_fails_agreement_not_ended_pair(deploy, s
     chain.sleep(seconds_sleep)
     deploy.sendPayment(6, {'from': accounts[1], 'value': 10**18})
     assert deploy.exactAgreement(6)[6] == 'Activated'      
-    
-
-def test_sendPayments_fails_require_smaller_deposit_initial_status_created(deploy):
+   
+@pytest.mark.parametrize("value_sent",  [0, 1, 10**7, 10**17])
+def test_sendPayments_fails_require_smaller_deposit_initial_status_created(deploy, value_sent):
     '''check if the sendPayments fails, because exactAgreement[_id].agreedDeposit <= msg.value in the require statement'''
     try:
-        deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
+        deploy.ConfirmAgreement(6, {'from': accounts[9]})
         #'value' is smaller than it should be
-        deploy.sendPayment(0, {'from': accounts[1], 'value': 1})
+        deploy.sendPayment(6, {'from': accounts[1], 'value': value_sent})
+        assert deploy.exactAgreement(6)[6] == 'Activated'
     except Exception as e:
         assert e.message[50:] == "The deposit is not the same as the agreed in the terms"
 
