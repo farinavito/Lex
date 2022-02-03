@@ -951,15 +951,16 @@ def test_wasContractBreached_received_on_time_false(deploy, seconds_sleep):
     except Exception as e:        
         assert e.message[50:] == "You have to wait at least 7 days after breached deadline to withdraw the deposit"
 
-def test_wasContractBreached_timeNotBreached_false_status_Terminated(deploy):
+@pytest.mark.parametrize("seconds_sleep",  [604800, 604801, 688888])
+def test_wasContractBreached_timeNotBreached_false_status_Terminated(deploy, seconds_sleep):
     '''check if the wasContractBreached function when timeNotBreached is false, changes status to Terminated'''
-    deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
-    rpc.sleep(60*60*24*5)
-    deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
-    rpc.sleep(60*60*24*7)
-    deploy.wasContractBreached(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    assert deploy.exactAgreement(0)[6] == "Terminated"
+    deploy.ConfirmAgreement(6, {'from': accounts[9]})
+    deploy.sendPayment(6, {'from': accounts[1], 'value': 10**18})
+    chain = Chain()
+    chain.sleep(seconds_sleep)
+    deploy.sendPayment(6, {'from': accounts[1], 'value': 10**18})
+    deploy.wasContractBreached(6, {'from': accounts[9]})
+    assert deploy.exactAgreement(6)[6] == "Terminated"
 
 def test_wasContractBreached_timeNotBreached_false_send_deposit(deploy):
     '''check if the wasContractBreached function when timeNotBreached is false, sends a deposit to the receiver'''
