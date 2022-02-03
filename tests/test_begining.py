@@ -790,8 +790,12 @@ def test_timeNotBreached_value_smaller_amount_emit_Terminated(deploy, value_sent
 
 #if the transaction wasn't sent on time
 
+def test_timeNotBreached_received_on_time_false_1st_part_if_statement():
+    '''check if the timeNotBreached returns false, when transactionCreated > positionPeriod'''
+    pass
+
 @pytest.mark.parametrize("seconds_sleep",  [60*60*24*7, 60*60*24*8, 60*60*24*10])
-def test_timeNotBreached_received_on_time_false(deploy, seconds_sleep):
+def test_timeNotBreached_received_on_time_false_2nd_part_if_statement(deploy, seconds_sleep):
     '''check if the timeNotBreached returns false, when transaction received wasn't on time'''
     deploy.ConfirmAgreement(6, {'from': accounts[9]})
     deploy.sendPayment(6, {'from': accounts[1], 'value': 10**18})
@@ -799,15 +803,20 @@ def test_timeNotBreached_received_on_time_false(deploy, seconds_sleep):
     chain.sleep(seconds_sleep)
     deploy.sendPayment(6, {'from': accounts[1], 'value': 10**18})
     assert deploy.exactAgreement(6)[6] == 'Terminated'
+  
+@pytest.mark.parametrize("seconds_sleep",  [2240000, 2629743, 2629744, 26297440])
+def test_timeNotBreached_breached_on_time_false_3rd_part_if_statement(deploy, seconds_sleep):
+    '''check if the timeNotBreached returns false, when the deadline of the agreement has ended'''
+    chain = Chain()
+    deploy.ConfirmAgreement(6, {'from': accounts[9]})
+    deploy.sendPayment(6, {'from': accounts[1], 'value': 10**18})
     
-
-def test_timeNotBreached_breached_on_time_false_status(deploy):
-    '''check if the status is changed when timeNotBreached is breached in the timeNotBreached'''
-    deploy.ConfirmAgreement(5, {'from': accounts[9]})
-    deploy.sendPayment(5, {'from': accounts[1], 'value': 20})
-    #the contract has been activated, now send the smaller quantity of money again
-    deploy.sendPayment(5, {'from': accounts[1], 'value': 20})
-    assert deploy.exactAgreement(5)[6] == "Terminated"
+    for _ in range(3):
+        deploy.sendPayment(6, {'from': accounts[1], 'value': 10**18})
+        chain.sleep(60400)
+    chain.sleep(seconds_sleep)
+    deploy.sendPayment(6, {'from': accounts[1], 'value': 10**18})
+    assert deploy.exactAgreement(6)[6] == "Terminated"
 
 def test_timeNotBreached_breached_on_time_false_send_deposit(deploy):
     '''check if the deposit is sent to the receiver when timeNotBreached is breached in the timeNotBreached'''
