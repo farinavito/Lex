@@ -645,8 +645,8 @@ def test_sendPayments_change_agreementDeposit_initial_status_created(deploy):
 
 def test_sendPayments_emit_NotifyUser_initial_status_created(deploy):
     '''checking if the event has been emitted as "We have activate the agreement" when msg.value is larger or equal to agreedDeposit'''
-    deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    function_enabled = deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
+    deploy.ConfirmAgreement(6, {'from': accounts[9]})
+    function_enabled = deploy.sendPayment(6, {'from': accounts[1], 'value': 10**18})
     message = function_enabled.events[0][0]['message']
     assert message == 'We have activate the agreement'
 
