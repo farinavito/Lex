@@ -711,6 +711,15 @@ def test_timeNotBreached_value_large_amount_send_value(deploy, value_sent):
     deploy.sendPayment(6, {'from': accounts[1], 'value': value_sent}) 
     assert accounts[9].balance() == balance_receiver + value_sent
 
+@pytest.mark.parametrize("value_sent",  [10**18, 10**19])
+def test_timeNotBreached_value_large_amount_send_value_check_signee(deploy, value_sent):
+    '''check if the balance of the signee is changed when amount <= msg.value in the timeNotBreached'''
+    deploy.ConfirmAgreement(6, {'from': accounts[9]})
+    deploy.sendPayment(6, {'from': accounts[1], 'value': value_sent})
+    balance_signee = accounts[1].balance() 
+    deploy.sendPayment(6, {'from': accounts[1], 'value': value_sent}) 
+    assert accounts[1].balance() == balance_signee - value_sent
+
 '''
 tried to test failed sent , but couldn't fugure it out
 @pytest.mark.vvv
