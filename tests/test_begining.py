@@ -856,12 +856,14 @@ def test_timeNotBreached_breached_on_time_false_return_transaction(deploy, secon
     deploy.sendPayment(6, {'from': accounts[1], 'value': 10**18}) 
     assert accounts[1].balance() == balance_signee
 
-def test_timeNotBreached_breached_on_time_false_emit_Terminated(deploy):
+@pytest.mark.parametrize("seconds_sleep",  [604800, 2629744, 26297440])
+def test_timeNotBreached_breached_on_time_false_emit_Terminated(deploy, seconds_sleep):
     '''check if the event Terminated is emitted when timeNotBreached is breached in the timeNotBreached'''
-    deploy.ConfirmAgreement(5, {'from': accounts[9]})
-    deploy.sendPayment(5, {'from': accounts[1], 'value': 20})
-    #the contract has been activated, now send the smaller quantity of money again
-    function_initialize = deploy.sendPayment(5, {'from': accounts[1], 'value': 20})
+    deploy.ConfirmAgreement(6, {'from': accounts[9]})
+    deploy.sendPayment(6, {'from': accounts[1], 'value': 10**18})
+    chain = Chain()
+    chain.sleep(seconds_sleep)
+    function_initialize = deploy.sendPayment(6, {'from': accounts[1], 'value': 10**18})
     assert function_initialize.events[0][0]['message'] == "This agreement was terminated due to late payment"
 
 #Checking when the agreement's status is "Terminated"
