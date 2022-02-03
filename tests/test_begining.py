@@ -790,13 +790,16 @@ def test_timeNotBreached_value_smaller_amount_emit_Terminated(deploy, value_sent
 
 #if the transaction wasn't sent on time
 
-def test_timeNotBreached_received_on_time_false(deploy):
+@pytest.mark.parametrize("seconds_sleep",  [60*60*24*7, 60*60*24*8, 60*60*24*10])
+def test_timeNotBreached_received_on_time_false(deploy, seconds_sleep):
     '''check if the timeNotBreached returns false, when transaction received wasn't on time'''
-    deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
-    rpc.sleep(60*60*24*6)
-    deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
-    assert deploy.exactAgreement(0)[6] == 'Terminated'
+    deploy.ConfirmAgreement(6, {'from': accounts[9]})
+    deploy.sendPayment(6, {'from': accounts[1], 'value': 10**18})
+    chain = Chain()
+    chain.sleep(seconds_sleep)
+    deploy.sendPayment(6, {'from': accounts[1], 'value': 10**18})
+    assert deploy.exactAgreement(6)[6] == 'Terminated'
+    
 
 def test_timeNotBreached_breached_on_time_false_status(deploy):
     '''check if the status is changed when timeNotBreached is breached in the timeNotBreached'''
