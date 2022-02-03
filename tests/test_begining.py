@@ -605,6 +605,16 @@ def test_sendPayments_require_statement_fails_agreement_not_ended(deploy, second
     except Exception as e:
         assert e.message[50:] == "This agreement's deadline has ended"
 
+@pytest.mark.parametrize("seconds_sleep",  [1, 26300, 264000])
+def test_sendPayments_require_statement_fails_agreement_not_ended_pair(deploy, seconds_sleep):
+    '''check if the require statement works fine when the agreement's deadline has not ended'''
+    deploy.ConfirmAgreement(6, {'from': accounts[9]})
+    chain = Chain()
+    chain.sleep(seconds_sleep)
+    deploy.sendPayment(6, {'from': accounts[1], 'value': 10**18})
+    assert deploy.exactAgreement(6)[6] == 'Activated'      
+    
+
 def test_sendPayments_fails_require_smaller_deposit_initial_status_created(deploy):
     '''check if the sendPayments fails, because exactAgreement[_id].agreedDeposit <= msg.value in the require statement'''
     try:
