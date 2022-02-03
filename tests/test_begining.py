@@ -1000,7 +1000,7 @@ def test_wasContractBreached_timeNotBreached_false_emit_Terminated(deploy, secon
 
 def test_wasContractBreached_agreement_not_activated(deploy):
     '''check if the wasContractBreached function emits NotifyUser when timeNotBreached is false'''
-    deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    function_initialize = deploy.wasContractBreached(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
+    deploy.ConfirmAgreement(6, {'from': accounts[9]})
+    function_initialize = deploy.wasContractBreached(6, {'from': accounts[9]})
     assert function_initialize.events[0][0]['message'] == "This agreement hasn't been activated"
 
