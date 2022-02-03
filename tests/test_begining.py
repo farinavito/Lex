@@ -701,14 +701,15 @@ def test_timeNotBreached_fail_if_statement_pair(deploy, seconds_sleep):
     deploy.ConfirmAgreement(6, {'from': accounts[9]})
     deploy.sendPayment(6, {'from': accounts[1], 'value': 10**18})
     assert deploy.exactAgreement(6)[6] == 'Activated'
-    
-def test_timeNotBreached_value_large_amount_send_value(deploy):
+
+@pytest.mark.parametrize("value_sent",  [10**18, 10**19])
+def test_timeNotBreached_value_large_amount_send_value(deploy, value_sent):
     '''check if the msg.value is sent when amount <= msg.value in the timeNotBreached'''
-    deploy.ConfirmAgreement(3, {'from': accounts[9]})
-    deploy.sendPayment(3, {'from': accounts[6], 'value': 20})
+    deploy.ConfirmAgreement(6, {'from': accounts[9]})
+    deploy.sendPayment(6, {'from': accounts[1], 'value': value_sent})
     balance_receiver = accounts[9].balance() 
-    deploy.sendPayment(3, {'from': accounts[6], 'value': 30}) 
-    assert accounts[9].balance() == balance_receiver + 30
+    deploy.sendPayment(6, {'from': accounts[1], 'value': value_sent}) 
+    assert accounts[9].balance() == balance_receiver + value_sent
 '''
 tried to test failed sent , but couldn't fugure it out
 @pytest.mark.vvv
