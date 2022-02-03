@@ -938,14 +938,16 @@ def test_wasContractBreached_timeNotBreached_true_emit_NotifyUser(deploy):
 
 #if timeNotBreached is False
 
-def test_wasContractBreached_received_on_time_false(deploy):
+@pytest.mark.parametrize("seconds_sleep",  [0, 1, 60*60*24*6])
+def test_wasContractBreached_received_on_time_false(deploy, seconds_sleep):
     '''check if the wasContractBreached returns false, when transaction received wasn't on time, but doesn't wait 7 days for withdraw'''
     try:
-        deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-        deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
-        rpc.sleep(60*60*24*6)
-        deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
-        deploy.wasContractBreached(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
+        deploy.ConfirmAgreement(6, {'from': accounts[9]})
+        deploy.sendPayment(6, {'from': accounts[1], 'value': 10**18})
+        chain = Chain()
+        chain.sleep(seconds_sleep)
+        deploy.sendPayment(6, {'from': accounts[1], 'value': 10**18})
+        deploy.wasContractBreached(6, {'from': accounts[9]})
     except Exception as e:        
         assert e.message[50:] == "You have to wait at least 7 days after breached deadline to withdraw the deposit"
 
