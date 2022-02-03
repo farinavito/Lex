@@ -7,7 +7,7 @@ from brownie.network.state import Chain
 @pytest.fixture()
 def deploy(AgreementBetweenSubjects):
     return AgreementBetweenSubjects.deploy({'from': accounts[0]})
-  
+''' 
 @pytest.fixture(autouse=True)
 def new_agreement_1(deploy):
     return deploy.createAgreement('0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2', 2, 5, 500, {'from': accounts[1]})
@@ -31,7 +31,7 @@ def new_agreement_5(deploy, module_isolation):
 @pytest.fixture(autouse=True)
 def new_agreement_6(deploy):
     return deploy.createAgreement(accounts[9], 2, 0.0001, 10, {'from': accounts[1]})
-
+'''
 @pytest.fixture(autouse=True)
 def new_agreement_7(deploy):
     return deploy.createAgreement(accounts[9], 10**18, 604800, 2629743, {'from': accounts[1]})
@@ -365,8 +365,8 @@ def test_MyReceiverAgreements_fails_require(deploy):
 
 def test_ConfirmAgreement_agreement_already_confirmed(deploy):
     '''check if the ConfirmAgreement checks if the agreement is already confirmed'''
-    deploy.ConfirmAgreement(6, {'from': accounts[9]})
-    function_enabled = deploy.ConfirmAgreement(6, {'from': accounts[9]})
+    deploy.ConfirmAgreement(0, {'from': accounts[9]})
+    function_enabled = deploy.ConfirmAgreement(0, {'from': accounts[9]})
     message = function_enabled.events[0][0]['message']
     assert message == 'This agreement is already confirmed'
 
@@ -376,23 +376,23 @@ def test_ConfirmAgreement_fail_require_2(deploy, seconds_sleep):
     try:
         chain = Chain()
         chain.sleep(seconds_sleep)
-        deploy.ConfirmAgreement(6, {'from': accounts[9]})        
+        deploy.ConfirmAgreement(0, {'from': accounts[9]})        
     except Exception as e:
         assert e.message[50:] == "The agreement's deadline has ended"
 
-@pytest.mark.parametrize("seconds_sleep", [0, 260, 2640, 2629742, 2629743, 2630000, 2640000])
+@pytest.mark.parametrize("seconds_sleep", [0, 260, 2640, 2629742])
 def test_ConfirmAgreement_fail_require_2_pair(deploy, seconds_sleep):
-    '''check if the ConfirmAgreement fails if the receiver wants to confirm an agreement that has ended'''
+    '''check if the ConfirmAgreement works fine'''
     chain = Chain()
     chain.sleep(seconds_sleep)
-    deploy.ConfirmAgreement(6, {'from': accounts[9]})
-    assert deploy.exactAgreement(6)[7] == 'Confirmed'    
-   
+    deploy.ConfirmAgreement(0, {'from': accounts[9]})
+    assert deploy.exactAgreement(0)[7] == 'Confirmed'    
+ 
 @pytest.mark.parametrize("accounts_number", [1, 2, 3, 4, 5, 6, 7])
 def test_ConfirmAgreement_fail_require_1(deploy, accounts_number):
     '''check if the ConfirmAgreement fails if the receiver is wrong'''
     try:
-        deploy.ConfirmAgreement(6, {'from': accounts[accounts_number]})        
+        deploy.ConfirmAgreement(0, {'from': accounts[accounts_number]})        
     except Exception as e:
         assert e.message[50:] == "Only the receiver can confirm the agreement"
 
@@ -400,14 +400,14 @@ def test_ConfirmAgreement_fail_require_1(deploy, accounts_number):
 def test_ConfirmAgreement_fail_require_1_pair(deploy, accounts_number):
     '''check if the ConfirmAgreement fails if the receiver is wrong'''
     try:
-        deploy.ConfirmAgreement(6, {'from': accounts[accounts_number]})        
+        deploy.ConfirmAgreement(0, {'from': accounts[accounts_number]})        
     except Exception as e:
         assert e.message[50:] != "Only the receiver can confirm the agreement"
 
 def test_ConfirmAgreement_agreement_status_confirmed(deploy):
     '''check if the ConfirmAgreement changes status to "Confirmed"'''
-    deploy.ConfirmAgreement(6, {'from': accounts[9]})
-    assert deploy.exactAgreement(6)[7] == 'Confirmed'
+    deploy.ConfirmAgreement(0, {'from': accounts[9]})
+    assert deploy.exactAgreement(0)[7] == 'Confirmed'
 
 
 
