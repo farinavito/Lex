@@ -880,11 +880,11 @@ def test_timeNotBreached_breached_on_time_false_emit_Terminated(deploy, seconds_
 
 def test_terminateContract_emit_Terminated_initial_status_terminated(deploy):
     '''check if the sendPayments emits correctly the message when the status is "Terminated"'''
-    deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
-    deploy.terminateContract(0, {'from': accounts[1]})
+    deploy.ConfirmAgreement(6, {'from': accounts[9]})
+    deploy.sendPayment(6, {'from': accounts[1], 'value': 10**18})
+    deploy.terminateContract(6, {'from': accounts[1]})
     with brownie.reverts("This agreement was already terminated"):
-        deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
+        deploy.sendPayment(6, {'from': accounts[1], 'value': 10**18})
     
 
 
