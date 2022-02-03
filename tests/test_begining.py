@@ -732,7 +732,7 @@ def test_timeNotBreached_value_large_amount_emit_NotifyUser(deploy):
     assert function_initialize.events[0][0]['message'] == "Transaction was sent to the receiver"
 
     #if the amount > msg.value
-@pytest.mark.www
+
 @pytest.mark.parametrize("value_sent",  [0, 1, 10**17])
 def test_timeNotBreached_value_smaller_amount_status(deploy, value_sent):
     '''check if the status is changed when amount > msg.value in the timeNotBreached'''
