@@ -751,12 +751,13 @@ def test_timeNotBreached_value_smaller_amount_send_deposit(deploy, value_sent):
     deploy.sendPayment(6, {'from': accounts[1], 'value': value_sent}) 
     assert accounts[9].balance() == balance_receiver + 10**18
 
-def test_timeNotBreached_value_smaller_amount_deposit_equals_zero(deploy):
+@pytest.mark.parametrize("value_sent",  [0, 1, 10**17])
+def test_timeNotBreached_value_smaller_amount_deposit_equals_zero(deploy, value_sent):
     '''check if the deposit is back on zero when amount > msg.value in the timeNotBreached'''
-    deploy.ConfirmAgreement(3, {'from': accounts[9]})
-    deploy.sendPayment(3, {'from': accounts[6], 'value': 20})
-    deploy.sendPayment(3, {'from': accounts[6], 'value': 1}) 
-    assert deploy.exactAgreement(0)[5] == "0"
+    deploy.ConfirmAgreement(6, {'from': accounts[9]})
+    deploy.sendPayment(6, {'from': accounts[1], 'value': 10**18})
+    deploy.sendPayment(6, {'from': accounts[1], 'value': value_sent}) 
+    assert deploy.exactAgreement(6)[5] == "0"
 
 def test_timeNotBreached_value_smaller_amount_return_transaction(deploy):
     '''check if the transaction is sent back to the signee when amount > msg.value in the timeNotBreached'''
