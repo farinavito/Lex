@@ -789,7 +789,7 @@ def test_timeNotBreached_value_smaller_amount_emit_Terminated(deploy, value_sent
     
 
 #if the transaction wasn't sent on time
-@pytest.mark.www
+
 @pytest.mark.parametrize("seconds_sleep",  [604800, 604801, 688888])
 def test_timeNotBreached_received_on_time_false_1st_part_if_statement(deploy, seconds_sleep):
     '''check if the timeNotBreached returns false, when transactionCreated > positionPeriod'''
@@ -826,11 +826,13 @@ def test_timeNotBreached_breached_on_time_false_3rd_part_if_statement(deploy, se
 
 def test_timeNotBreached_breached_on_time_false_send_deposit(deploy):
     '''check if the deposit is sent to the receiver when timeNotBreached is breached in the timeNotBreached'''
-    deploy.ConfirmAgreement(5, {'from': accounts[9]})
-    deploy.sendPayment(5, {'from': accounts[1], 'value': 20})
+    deploy.ConfirmAgreement(6, {'from': accounts[9]})
+    deploy.sendPayment(6, {'from': accounts[1], 'value': 10**18})
     balance_receiver = accounts[9].balance() 
-    deploy.sendPayment(5, {'from': accounts[1], 'value': 20}) 
-    assert accounts[9].balance() == balance_receiver + 20
+    chain = Chain()
+    chain.sleep(604800)
+    deploy.sendPayment(6, {'from': accounts[1], 'value': 4*10**18}) 
+    assert accounts[9].balance() == balance_receiver + 10**18
 
 def test_timeNotBreached_breached_on_time_false_deposit_equals_zero(deploy):
     '''check if the deposit is equal zero when timeNotBreached is breached in the timeNotBreached'''
