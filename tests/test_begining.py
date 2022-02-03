@@ -621,7 +621,6 @@ def test_sendPayments_fails_require_smaller_deposit_initial_status_created(deplo
         deploy.ConfirmAgreement(6, {'from': accounts[9]})
         #'value' is smaller than it should be
         deploy.sendPayment(6, {'from': accounts[1], 'value': value_sent})
-        assert deploy.exactAgreement(6)[6] == 'Activated'
     except Exception as e:
         assert e.message[50:] == "The deposit is not the same as the agreed in the terms"
 
