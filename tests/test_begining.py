@@ -710,6 +710,7 @@ def test_timeNotBreached_value_large_amount_send_value(deploy, value_sent):
     balance_receiver = accounts[9].balance() 
     deploy.sendPayment(6, {'from': accounts[1], 'value': value_sent}) 
     assert accounts[9].balance() == balance_receiver + value_sent
+
 '''
 tried to test failed sent , but couldn't fugure it out
 @pytest.mark.vvv
@@ -722,13 +723,12 @@ def test_timeNotBreached_value_large_amount_fail_sending(deploy):
     except Exception as e:        
         assert e.message[50:] == "Failed to send Ether"'''
     
-
 def test_timeNotBreached_value_large_amount_emit_NotifyUser(deploy):
     '''check if the event NotifyUser is emitted when amount <= msg.value in the timeNotBreached'''
-    deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
+    deploy.ConfirmAgreement(6, {'from': accounts[9]})
+    deploy.sendPayment(6, {'from': accounts[1], 'value': 10**18})
     #the contract has been activated, now send the money again
-    function_initialize = deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
+    function_initialize = deploy.sendPayment(6, {'from': accounts[1], 'value': 10**18})
     assert function_initialize.events[0][0]['message'] == "Transaction was sent to the receiver"
 
     #if the amount > msg.value
