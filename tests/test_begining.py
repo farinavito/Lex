@@ -626,17 +626,10 @@ def test_sendPayments_fails_require_smaller_deposit_initial_status_created(deplo
 
 @pytest.mark.parametrize("value_sent",  [10**18, 10**19])
 def test_sendPayments_fails_require_smaller_deposit_initial_status_created_pair(deploy, value_sent):
-    '''check if the sendPayments works fine'''
+    '''checking if the status is changed to "Activated" when msg.value is larger or equal to agreedDeposit'''
     deploy.ConfirmAgreement(6, {'from': accounts[9]})
     deploy.sendPayment(6, {'from': accounts[1], 'value': value_sent})
     assert deploy.exactAgreement(6)[6] == 'Activated'
-    
-
-def test_sendPayments_change_status_initial_status_created(deploy):
-    '''checking if the status is changed to "Activated" when msg.value is larger or equal to agreedDeposit'''
-    deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
-    assert deploy.exactAgreement(0)[6] == 'Activated'
 
 def test_sendPayments_change_initializePeriod_initial_status_created(deploy):
     '''checking if the InitializedPeriod is initialize (sum of agreementTimeCreation and everyTimeUnit) when msg.value is larger or equal to agreedDeposit'''
