@@ -633,9 +633,9 @@ def test_sendPayments_fails_require_smaller_deposit_initial_status_created_pair(
 
 def test_sendPayments_change_initializePeriod_initial_status_created(deploy):
     '''checking if the InitializedPeriod is initialize (sum of agreementTimeCreation and everyTimeUnit) when msg.value is larger or equal to agreedDeposit'''
-    deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
-    assert deploy.exactAgreement(0)[10] == deploy.exactAgreement(0)[8] + deploy.exactAgreement(0)[9]
+    deploy.ConfirmAgreement(6, {'from': accounts[9]})
+    deploy.sendPayment(6, {'from': accounts[1], 'value': 10**18})
+    assert deploy.exactAgreement(6)[10] == deploy.exactAgreement(6)[8] + deploy.exactAgreement(6)[9]
 
 def test_sendPayments_change_agreementDeposit_initial_status_created(deploy):
     '''checking if the deposit has been initialized to msg.value when msg.value is larger or equal to agreedDeposit'''
