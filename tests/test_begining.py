@@ -987,14 +987,15 @@ def test_wasContractBreached_timeNotBreached_false_status_deposit_equals_zero_1(
     deploy.wasContractBreached(6, {'from': accounts[9]})
     assert deploy.exactAgreement(6)[5] == '0'
 
-def test_wasContractBreached_timeNotBreached_false_emit_Terminated(deploy):
+@pytest.mark.parametrize("seconds_sleep",  [604800, 604801, 688888])
+def test_wasContractBreached_timeNotBreached_false_emit_Terminated(deploy, seconds_sleep):
     '''check if the wasContractBreached function when timeNotBreached is false, emits NotifyUser'''
-    deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
-    rpc.sleep(60*60*24*5)
-    deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
-    rpc.sleep(60*60*24*7)
-    function_initialize = deploy.wasContractBreached(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
+    deploy.ConfirmAgreement(6, {'from': accounts[9]})
+    deploy.sendPayment(6, {'from': accounts[1], 'value': 10**18})
+    chain = Chain()
+    chain.sleep(seconds_sleep)
+    deploy.sendPayment(6, {'from': accounts[1], 'value': 4*10**18})
+    function_initialize = deploy.wasContractBreached(6, {'from': accounts[9]})
     assert function_initialize.events[0][0]['message'] == "This agreement is already terminated"
 
 def test_wasContractBreached_agreement_not_activated(deploy):
