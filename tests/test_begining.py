@@ -693,6 +693,15 @@ def test_timeNotBreached_fail_if_statement(deploy, seconds_sleep):
     except Exception as e:        
         assert e.message[50:] == "The agreement's deadline has ended"
 
+@pytest.mark.parametrize("seconds_sleep",  [0, 26300, 26400])
+def test_timeNotBreached_fail_if_statement_pair(deploy, seconds_sleep):
+    '''check if the timeNotBreached works fine when ConfirmAgreement check is passed'''
+    chain = Chain()
+    chain.sleep(seconds_sleep)
+    deploy.ConfirmAgreement(6, {'from': accounts[9]})
+    deploy.sendPayment(6, {'from': accounts[1], 'value': 10**18})
+    assert deploy.exactAgreement(6)[6] == 'Activated'
+    
 def test_timeNotBreached_value_large_amount_send_value(deploy):
     '''check if the msg.value is sent when amount <= msg.value in the timeNotBreached'''
     deploy.ConfirmAgreement(3, {'from': accounts[9]})
