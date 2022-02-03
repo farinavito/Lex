@@ -845,12 +845,15 @@ def test_timeNotBreached_breached_on_time_false_deposit_equals_zero(deploy, seco
     deploy.sendPayment(6, {'from': accounts[1], 'value': 10**18}) 
     assert deploy.exactAgreement(6)[5] == "0"
 
-def test_timeNotBreached_breached_on_time_false_return_transaction(deploy):
+@pytest.mark.parametrize("seconds_sleep",  [604800, 2629744, 26297440])
+def test_timeNotBreached_breached_on_time_false_return_transaction(deploy, seconds_sleep):
     '''check if the transaction is sent back to the signee when timeNotBreached is breached in the timeNotBreached'''
-    deploy.ConfirmAgreement(5, {'from': accounts[9]})
-    deploy.sendPayment(5, {'from': accounts[1], 'value': 20})  
+    deploy.ConfirmAgreement(6, {'from': accounts[9]})
+    deploy.sendPayment(6, {'from': accounts[1], 'value': 10**18})  
     balance_signee = accounts[1].balance() 
-    deploy.sendPayment(5, {'from': accounts[1], 'value': 5}) 
+    chain = Chain()
+    chain.sleep(seconds_sleep)
+    deploy.sendPayment(6, {'from': accounts[1], 'value': 10**18}) 
     assert accounts[1].balance() == balance_signee
 
 def test_timeNotBreached_breached_on_time_false_emit_Terminated(deploy):
