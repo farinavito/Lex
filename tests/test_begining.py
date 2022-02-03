@@ -931,9 +931,9 @@ def test_wasContractBreached_fail_if_statement_in_timeNotBreached(deploy):
 
 def test_wasContractBreached_timeNotBreached_true_emit_NotifyUser(deploy):
     '''check if the wasContractBreached function when timeNotBreached is true, emits NotifyUser'''
-    deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
-    function_initialize = deploy.wasContractBreached(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
+    deploy.ConfirmAgreement(6, {'from': accounts[9]})
+    deploy.sendPayment(6, {'from': accounts[1], 'value': 10**18})
+    function_initialize = deploy.wasContractBreached(6, {'from': accounts[9]})
     assert function_initialize.events[0][0]['message'] == "The agreement wasn't breached"
 
 #if timeNotBreached is False
