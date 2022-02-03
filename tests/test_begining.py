@@ -657,12 +657,12 @@ def test_sendPayments_emit_NotifyUser_initial_status_created(deploy):
 
 def test_timeNotBreached(deploy):
     '''check if the timeNotBreached function correctly increments positionPeriod. This is for checking inside sendPayments function'''
-    deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
-    new_agreement_position = deploy.exactAgreement(0)[10]
+    deploy.ConfirmAgreement(6, {'from': accounts[9]})
+    deploy.sendPayment(6, {'from': accounts[1], 'value': 10**18})
+    new_agreement_position = deploy.exactAgreement(6)[10]
     #the contract has been activated, now send the the money again
-    deploy.sendPayment(0, {'from': accounts[1], 'value': 20})    
-    assert deploy.exactAgreement(0)[10] == new_agreement_position + deploy.exactAgreement(0)[9]
+    deploy.sendPayment(6, {'from': accounts[1], 'value': 10**18})    
+    assert deploy.exactAgreement(6)[10] == new_agreement_position + deploy.exactAgreement(6)[9]
 
 def test_transactionCreated_updated(deploy):
     '''check if the time of the call to function sendPayment is stored'''
