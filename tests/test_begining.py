@@ -666,10 +666,10 @@ def test_timeNotBreached(deploy):
 
 def test_transactionCreated_updated(deploy):
     '''check if the time of the call to function sendPayment is stored'''
-    deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
-    deploy.sendPayment(0, {'from': accounts[1], 'value': 20})  
-    assert deploy.exactAgreement(0)[4] != '0'
+    deploy.ConfirmAgreement(6, {'from': accounts[9]})
+    deploy.sendPayment(6, {'from': accounts[1], 'value': 10**18})
+    deploy.sendPayment(6, {'from': accounts[1], 'value': 10**18})  
+    assert deploy.exactAgreement(6)[4] != '0'
 
 def test_transactionCreated_updated_once_again(deploy):
     '''check if the time of the call to function sendPayment changes after another call to this function'''
