@@ -682,13 +682,16 @@ def test_transactionCreated_updated_once_again(deploy):
 
     #if the amount <= msg.value
 
-def test_timeNotBreached_fail_if_statement(deploy):
+@pytest.mark.parametrize("seconds_sleep",  [2629743, 2630000, 2640000])
+def test_timeNotBreached_fail_if_statement(deploy, seconds_sleep):
     '''check if the timeNotBreached fails because transaction was sent after the agreement's deadline - it fails because of the check in the ConfirmAgreement function'''
     try:
-        deploy.ConfirmAgreement(4, {'from': accounts[9]})
-        deploy.sendPayment(4, {'from': accounts[6], 'value': 20})
+        chain = Chain()
+        chain.sleep(seconds_sleep)
+        deploy.ConfirmAgreement(6, {'from': accounts[9]})
+        deploy.sendPayment(6, {'from': accounts[1], 'value': 10**18})
     except Exception as e:        
-        assert e.message[50:] == "This agreement's deadline has ended"
+        assert e.message[50:] == "The agreement's deadline has ended"
 
 def test_timeNotBreached_value_large_amount_send_value(deploy):
     '''check if the msg.value is sent when amount <= msg.value in the timeNotBreached'''
