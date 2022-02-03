@@ -732,14 +732,15 @@ def test_timeNotBreached_value_large_amount_emit_NotifyUser(deploy):
     assert function_initialize.events[0][0]['message'] == "Transaction was sent to the receiver"
 
     #if the amount > msg.value
-
-def test_timeNotBreached_value_smaller_amount_status(deploy):
+@pytest.mark.www
+@pytest.mark.parametrize("value_sent",  [0, 1, 10**17])
+def test_timeNotBreached_value_smaller_amount_status(deploy, value_sent):
     '''check if the status is changed when amount > msg.value in the timeNotBreached'''
-    deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
+    deploy.ConfirmAgreement(6, {'from': accounts[9]})
+    deploy.sendPayment(6, {'from': accounts[1], 'value': 10**18})
     #the contract has been activated, now send the smaller quantity of money again
-    deploy.sendPayment(0, {'from': accounts[1], 'value': 1})
-    assert deploy.exactAgreement(0)[6] == "Terminated"
+    deploy.sendPayment(6, {'from': accounts[1], 'value': value_sent})
+    assert deploy.exactAgreement(6)[6] == "Terminated"
 
 def test_timeNotBreached_value_smaller_amount_send_deposit(deploy):
     '''check if the deposit is sent to the receiver when amount > msg.value in the timeNotBreached'''
