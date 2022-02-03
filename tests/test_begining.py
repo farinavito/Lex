@@ -986,16 +986,6 @@ def test_wasContractBreached_timeNotBreached_false_status_deposit_equals_zero_1(
     deploy.sendPayment(6, {'from': accounts[1], 'value': 4*10**18})
     deploy.wasContractBreached(6, {'from': accounts[9]})
     assert deploy.exactAgreement(6)[5] == '0'
-  
-def test_wasContractBreached_timeNotBreached_false_status_deposit_equals_zero(deploy):
-    '''check if the wasContractBreached function when timeNotBreached is false, changes deposit to 0'''
-    deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
-    rpc.sleep(60*60*24*5)
-    deploy.sendPayment(0, {'from': accounts[1], 'value': 20})
-    rpc.sleep(60*60*24*7)
-    deploy.wasContractBreached(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    assert deploy.exactAgreement(0)[5] == "0"
 
 def test_wasContractBreached_timeNotBreached_false_emit_Terminated(deploy):
     '''check if the wasContractBreached function when timeNotBreached is false, emits NotifyUser'''
