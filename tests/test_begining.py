@@ -936,6 +936,8 @@ def test_wasContractBreached_timeNotBreached_true_emit_NotifyUser(deploy):
     function_initialize = deploy.wasContractBreached(6, {'from': accounts[9]})
     assert function_initialize.events[0][0]['message'] == "The agreement wasn't breached"
 
+#check 3 parts of the if statement in timeWasntBreached
+
 #if timeNotBreached is False
 
 @pytest.mark.parametrize("seconds_sleep",  [0, 1, 60*60*24*6])
@@ -962,16 +964,17 @@ def test_wasContractBreached_timeNotBreached_false_status_Terminated(deploy, sec
     deploy.wasContractBreached(6, {'from': accounts[9]})
     assert deploy.exactAgreement(6)[6] == "Terminated"
 
-def test_wasContractBreached_timeNotBreached_false_send_deposit(deploy):
+@pytest.mark.parametrize("seconds_sleep",  [604800, 604801, 688888])
+def test_wasContractBreached_timeNotBreached_false_send_deposit(deploy, seconds_sleep):
     '''check if the wasContractBreached function when timeNotBreached is false, sends a deposit to the receiver'''
-    deploy.ConfirmAgreement(3, {'from': accounts[9]})
-    deploy.sendPayment(3, {'from': accounts[6], 'value': 20})
+    deploy.ConfirmAgreement(6, {'from': accounts[9]})
+    deploy.sendPayment(6, {'from': accounts[1], 'value': 10**18})
     balance_receiver = accounts[9].balance()
-    rpc.sleep(60*60*24*5)
-    deploy.sendPayment(3, {'from': accounts[6], 'value': 20})
-    rpc.sleep(60*60*24*7)
-    deploy.wasContractBreached(3, {'from': accounts[9]})
-    assert accounts[9].balance() == balance_receiver + 20
+    chain = Chain()
+    chain.sleep(seconds_sleep)
+    deploy.sendPayment(6, {'from': accounts[1], 'value': 4*10**18})
+    deploy.wasContractBreached(6, {'from': accounts[9]})
+    assert accounts[9].balance() == balance_receiver + 10**18
 
 def test_wasContractBreached_timeNotBreached_false_status_deposit_equals_zero_1(deploy):
     '''check if the wasContractBreached function when timeNotBreached is false, changes deposit to 0'''
