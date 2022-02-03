@@ -49,15 +49,15 @@ def test_exactAgreement_id(deploy):
 
 def test_exactAgreement_signee(deploy):
     '''check if the first address of the agreement's signee is the same as the accounts[1]'''
-    assert deploy.exactAgreement(0)[1] == '0x33A4622B82D4c04a53e170c638B944ce27cffce3'
+    assert deploy.exactAgreement(0)[1] == accounts[1]
 
 def test_exactAgreement_receiver(deploy):
     '''check if the first address of the agreement's receiver is the same as the accounts[0]'''
-    assert deploy.exactAgreement(0)[2] == '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'
+    assert deploy.exactAgreement(0)[2] == accounts[9]
 
 def test_exactAgreement_amount(deploy):
     '''check if the amount of the agreement is 2'''
-    assert deploy.exactAgreement(0)[3] == '2'   
+    assert deploy.exactAgreement(0)[3] == '10**18'   
 
 def test_exactAgreement_initialize_transactionCreated(deploy):
     '''check if the transactionCreated is 0'''
