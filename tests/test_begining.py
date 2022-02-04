@@ -35,6 +35,10 @@ def new_agreement_6(deploy):
 @pytest.fixture(autouse=True)
 def new_agreement_7(deploy):
     return deploy.createAgreement(accounts[9], 10**18, 604800, 2629743, {'from': accounts[1]})
+
+@pytest.fixture(autouse=True)
+def new_agreement_8(deploy):
+    return deploy.createAgreement(accounts[6], 10**18, 2629743, 31556926, {'from': accounts[5]})
     
 
 
