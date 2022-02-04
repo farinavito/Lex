@@ -1,4 +1,5 @@
 from itertools import chain
+from sre_constants import SRE_FLAG_IGNORECASE
 import pytest
 import brownie
 from brownie import accounts
@@ -33,21 +34,25 @@ def new_agreement_5(deploy, module_isolation):
 def new_agreement_6(deploy):
     return deploy.createAgreement(accounts[9], 2, 0.0001, 10, {'from': accounts[1]})
 '''
+signee = accounts[1]
+receiver = accounts[9]
 amount_sent = 10**5
 every_period = 604800
 agreement_duration = 2629743
 
 @pytest.fixture(autouse=True)
 def new_agreement_7(deploy):
-    return deploy.createAgreement(accounts[9], amount_sent, every_period, agreement_duration, {'from': accounts[1]})
+    return deploy.createAgreement(receiver, amount_sent, every_period, agreement_duration, {'from': signee})
 
+signee_2 = accounts[1]
+receiver_2 = accounts[9]
 amount_sent_2 = 10**18
 every_period_2 = 2629743
 agreement_duration_2 = 31556926
 
 @pytest.fixture(autouse=True)
 def new_agreement_8(deploy):
-    return deploy.createAgreement(accounts[9], amount_sent_2, agreement_duration_2, agreement_duration_2, {'from': accounts[1]})
+    return deploy.createAgreement(receiver_2, amount_sent_2, agreement_duration_2, agreement_duration_2, {'from': signee_2})
     
 
 
@@ -945,11 +950,11 @@ def test_wasContractBreached_timeNotBreached_true_emit_NotifyUser(deploy):
 def test_wasContractBreached_received_on_time_false(deploy, seconds_sleep):
     '''check if the wasContractBreached returns false, when transaction received wasn't on time, but doesn't wait 7 days for withdraw'''
     try:
-        deploy.ConfirmAgreement(1, {'from': accounts[9]})
-        deploy.sendPayment(1, {'from': accounts[1], 'value': amount_sent})
+        deploy.ConfirmAgreement(1, {'from': receiver_2})
+        deploy.sendPayment(1, {'from': signee_2, 'value': amount_sent})
         chain = Chain()
         chain.sleep(seconds_sleep)
-        deploy.wasContractBreached(1, {'from': accounts[9]})
+        deploy.wasContractBreached(1, {'from': receiver_2})
     #deploy.sendPayment(1, {'from': accounts[1], 'value': amount_sent})
     #deploy.wasContractBreached(1, {'from': accounts[9]})
 
