@@ -110,6 +110,7 @@ def test_new_agreement_fails_require(deploy):
         assert e.message[50:] == 'The period of the payment is greater than the duration of the contract'
     
 
+
 '''TESTING CREATEAGREEMENT FUNCTION AGREEMENT 2'''
 
 
@@ -119,7 +120,7 @@ def test_increment_number_of_agreements_correctly(deploy):
 
 def test_exactAgreement_check_large_amount(deploy):
     '''the max number of digits in "amount"'''
-    assert deploy.exactAgreement(1)[3] == '100000000000000000000000000000000000000000000000000000000000000000000000000000' 
+    assert deploy.exactAgreement(1)[3] == 10**18 
 
 def test_exactAgreement_transactionCreated(deploy):
     '''check that transactionCreated is 0'''
@@ -128,12 +129,12 @@ def test_exactAgreement_transactionCreated(deploy):
 def test_exactAgreement_check_large_everyTimeUnit(deploy):
     '''the max number of digits in "_everyTimeUnit"'''
     seconds_in_day = 60 * 60 * 24
-    assert deploy.exactAgreement(1)[9] == seconds_in_day * 499
+    assert deploy.exactAgreement(1)[9] >= seconds_in_day * 30
 
 def test_exactAgreement_check_large_howLong(deploy):
     '''the max number of digits in _howLong'''
     seconds_in_day = 60 * 60 * 24
-    assert deploy.exactAgreement(1)[11] == seconds_in_day * 1000000000000000000000000000000000000000000000000000000000000000000000000
+    assert deploy.exactAgreement(1)[11] >= seconds_in_day * 365
 
 
 
