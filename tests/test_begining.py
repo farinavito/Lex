@@ -1,3 +1,4 @@
+from itertools import chain
 import pytest
 import brownie
 from brownie import accounts
@@ -32,9 +33,13 @@ def new_agreement_5(deploy, module_isolation):
 def new_agreement_6(deploy):
     return deploy.createAgreement(accounts[9], 2, 0.0001, 10, {'from': accounts[1]})
 '''
+amount_sent = 10**5
+every_period = 604800
+agreement_duration = 2629743
+
 @pytest.fixture(autouse=True)
 def new_agreement_7(deploy):
-    return deploy.createAgreement(accounts[9], 10**18, 604800, 2629743, {'from': accounts[1]})
+    return deploy.createAgreement(accounts[9], amount_sent, every_period, agreement_duration, {'from': accounts[1]})
 
 @pytest.fixture(autouse=True)
 def new_agreement_8(deploy):
@@ -369,7 +374,7 @@ def test_ConfirmAgreement_fail_require_2(deploy, seconds_sleep):
     except Exception as e:
         assert e.message[50:] == "The agreement's deadline has ended"
 
-@pytest.mark.parametrize("seconds_sleep", [0, 260, 2640, 2629742])
+@pytest.mark.parametrize("seconds_sleep", [0, 260, 2640, 2629700])
 def test_ConfirmAgreement_fail_require_2_pair(deploy, seconds_sleep):
     '''check if the ConfirmAgreement works fine'''
     chain = Chain()
@@ -912,7 +917,7 @@ def test_wasContractBreached_fail_if_statement_in_timeNotBreached(deploy):
     try:
         deploy.ConfirmAgreement(0, {'from': accounts[9]})
         chain = Chain()
-        chain.sleep(2629743)
+        chain.sleep(2629800)
         deploy.sendPayment(0, {'from': accounts[1], 'value': 10**18})
         deploy.wasContractBreached(0, {'from': accounts[9]})
     except Exception as e:        
@@ -930,17 +935,24 @@ def test_wasContractBreached_timeNotBreached_true_emit_NotifyUser(deploy):
 #check 3 parts of the if statement in timeWasntBreached
 
 #if timeNotBreached is False
- 
-@pytest.mark.parametrize("seconds_sleep",  [0, 1, 60*60*24*6])
+@pytest.mark.bbb
+#seconds_sleep must be more then 2629743, but less then 2629743 + 7 days
+@pytest.mark.parametrize("seconds_sleep",  [2629761, 3000000, 3234542, 3234543, 9999999])
 def test_wasContractBreached_received_on_time_false(deploy, seconds_sleep):
     '''check if the wasContractBreached returns false, when transaction received wasn't on time, but doesn't wait 7 days for withdraw'''
     try:
-        deploy.ConfirmAgreement(0, {'from': accounts[9]})
-        deploy.sendPayment(0, {'from': accounts[1], 'value': 10**18})
+        deploy.ConfirmAgreement(1, {'from': accounts[9]})
+        deploy.sendPayment(1, {'from': accounts[1], 'value': 10**18})
         chain = Chain()
         chain.sleep(seconds_sleep)
-        deploy.sendPayment(0, {'from': accounts[1], 'value': 10**18})
-        deploy.wasContractBreached(0, {'from': accounts[9]})
+        deploy.wasContractBreached(1, {'from': accounts[9]})
+    #deploy.sendPayment(1, {'from': accounts[1], 'value': 10**18})
+    #deploy.wasContractBreached(1, {'from': accounts[9]})
+
+    #function_initialize = deploy.wasContractBreached(1, {'from': accounts[9]})
+    #assert function_initialize.events[0][0]['message'] == "The agreement wasn't breached"
+
+    #assert deploy.exactAgreement(1)[6] == "Terminated"
     except Exception as e:        
         assert e.message[50:] == "You have to wait at least 7 days after breached deadline to withdraw the deposit"
 
