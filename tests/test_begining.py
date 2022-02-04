@@ -57,7 +57,7 @@ def test_exactAgreement_receiver(deploy):
 
 def test_exactAgreement_amount(deploy):
     '''check if the amount of the agreement is 2'''
-    assert deploy.exactAgreement(0)[3] == '10**18'   
+    assert deploy.exactAgreement(0)[3] == 10**18  
 
 def test_exactAgreement_initialize_transactionCreated(deploy):
     '''check if the transactionCreated is 0'''
@@ -78,20 +78,20 @@ def test_exactAgreement_approved(deploy):
 def test_exactAgreement_time_creation(deploy):
     '''check if the initial time creation is block.timestamp'''
     assert deploy.exactAgreement(0)[8] == deploy.exactAgreement(0)[8]
-   
+  
 def test_exactAgreement_every_time_unit(deploy):
-    '''check if the initial every time unit is 5'''
+    '''check if the initial every time unit is 604800'''
     seconds_in_day = 60 * 60 * 24
-    assert deploy.exactAgreement(0)[9] == seconds_in_day * 5
+    assert deploy.exactAgreement(0)[9] == seconds_in_day * 7
 
 def test_exactAgreement_position_period(deploy):
     '''check if the initial position period is 0'''
     assert deploy.exactAgreement(0)[10] == '0'
 
 def test_exactAgreement_how_long(deploy):
-    '''check if the initial how long is 500'''
+    '''check if the initial how long is 2629743'''
     seconds_in_day = 60 * 60 * 24
-    assert deploy.exactAgreement(0)[11] == seconds_in_day * 500
+    assert deploy.exactAgreement(0)[11] >= seconds_in_day * 30
 
 def test_exactAgreement_id_agreement_2(deploy):
     '''check if the id of the agreement 2 is one'''
