@@ -657,14 +657,16 @@ def test_transactionCreated_updated(deploy):
     '''check if the time of the call to function sendPayment is stored'''
     deploy.ConfirmAgreement(0, {'from': accounts[9]})
     deploy.sendPayment(0, {'from': accounts[1], 'value': 10**18})
-    deploy.sendPayment(0, {'from': accounts[1], 'value': 10**18})  
+    deploy.sendPayment(0, {'from': accounts[1], 'value': 10**18})
     assert deploy.exactAgreement(0)[4] != '0'
 
 def test_transactionCreated_updated_once_again(deploy):
     '''check if the time of the call to function sendPayment changes after another call to this function'''
     deploy.ConfirmAgreement(0, {'from': accounts[9]})
     deploy.sendPayment(0, {'from': accounts[1], 'value': 10**18})
-    deploy.sendPayment(0, {'from': accounts[1], 'value': 10**18})  
+    deploy.sendPayment(0, {'from': accounts[1], 'value': 10**18})
+    chain = Chain()  
+    chain.sleep(3)
     first_call = deploy.exactAgreement(0)[4]
     deploy.sendPayment(0, {'from': accounts[1], 'value': 10**18})
     assert deploy.exactAgreement(0)[4] != first_call
