@@ -180,7 +180,6 @@ def test_event_AgreementInfo_agreementTimeCreation(new_agreement_7, deploy):
 
 def test_event_AgreementInfo_agreementTimePeriods(new_agreement_7, deploy):
     '''check if the event AgreementInfo emits correctly agreementTimePeriods in seconds'''
-    #seconds_in_day = 60 * 60 * 24
     assert new_agreement_7.events[0]["agreementTimePeriods"] == deploy.exactAgreement(0)[9]
 
 def test_event_AgreementInfo_agreementPositionPeriod(new_agreement_7, deploy):
@@ -189,7 +188,6 @@ def test_event_AgreementInfo_agreementPositionPeriod(new_agreement_7, deploy):
 
 def test_event_AgreementInfo_agreementTimeDuration(new_agreement_7, deploy):
     '''check if the event AgreementInfo emits correctly agreementTimeDuration in seconds'''
-    #seconds_in_day = 60 * 60 * 24
     assert new_agreement_7.events[0]["agreementTimeDuration"] == deploy.exactAgreement(0)[11]
 
 def test_event_AgreementInfo_equals_Agreement(deploy, new_agreement_7):
