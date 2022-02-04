@@ -202,6 +202,14 @@ def test_event_AgreementInfo_equals_Agreement(deploy, new_agreement_7):
 
 
 
+def test_MySenderAgreements_fails_require(deploy):
+    '''check if the MySenderAgreements fails, because msg.sender == _myAddress in the require statement'''
+    try:
+        #wrong sender's address
+        deploy.MySenderAgreements(accounts[1], {'from': accounts[3]})
+    except Exception as e:
+        assert e.message[50:] == "The address provided doesn't correspond with the one you're logged in"
+
 def test_MySenderAgreements_emits_correctly_agreementId_agreements_1(deploy):
     '''check if the MySenderAgreements function emits correctly the agreementId from agreement 1'''
     assert deploy.MySenderAgreements(accounts[1], {'from': accounts[1]}).events[0]['agreementId'] == deploy.exactAgreement(0)[0]   
@@ -262,17 +270,6 @@ def test_mySenderAgreements_emits_correct_id_accounts_2(deploy):
     '''check if the mapping mySenderAgreements is returning correctly the ids'''
     assert deploy.mySenderAgreements(accounts[1], 1) == '1'
 
-def test_mySenderAgreements_emits_correct_id_accounts_3(deploy):
-    '''check if the mapping mySenderAgreements emits correct agreementId for the first element in the mapping of address accounts[3]'''
-    assert deploy.mySenderAgreements(accounts[3], 0) == '2'
-
-def test_MySenderAgreements_fails_require(deploy):
-    '''check if the MySenderAgreements fails, because msg.sender == _myAddress in the require statement'''
-    try:
-        #wrong sender's address
-        deploy.MySenderAgreements(accounts[1], {'from': accounts[3]})
-    except Exception as e:
-        assert e.message[50:] == "The address provided doesn't correspond with the one you're logged in"
 
 
 
