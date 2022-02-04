@@ -345,10 +345,6 @@ def test_myReceiverAgreements_emits_correct_id_agreement_2(deploy):
     '''check if the mapping myReceiverAgreements is returning correctly the ids'''
     assert deploy.myReceiverAgreements(accounts[9], 1) == '1'
 
-def test_myReceiverAgreements_emits_correct_id_agreement_3(deploy):
-    '''check if the mapping myReceiverAgreements emits correct agreementId for the first element in the mapping of address 0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'''
-    assert deploy.myReceiverAgreements(accounts[9], {'from': accounts[9]}, 1) == '2'
-
 
 
 
