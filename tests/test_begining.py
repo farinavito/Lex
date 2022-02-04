@@ -38,7 +38,7 @@ def new_agreement_7(deploy):
 
 @pytest.fixture(autouse=True)
 def new_agreement_8(deploy):
-    return deploy.createAgreement(accounts[6], 10**18, 2629743, 31556926, {'from': accounts[1]})
+    return deploy.createAgreement(accounts[9], 10**18, 2629743, 31556926, {'from': accounts[1]})
     
 
 
@@ -277,72 +277,6 @@ def test_mySenderAgreements_emits_correct_id_accounts_2(deploy):
 
 
 
-def test_MyReceiverAgreements_emits_correctly_agreementId_agreements_1(deploy):
-    '''check if the MyReceiverAgreements function emits correctly the agreementId from agreement 1'''
-    assert deploy.MyReceiverAgreements('0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2', {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'}).events[0]['agreementId'] == '0'
-
-def test_MyReceiverAgreements_emits_correctly_agreementSignee_agreements_1(deploy):
-    '''check if the MyReceiverAgreements function emits correctly the agreementSignee from agreement 1'''
-    assert deploy.MyReceiverAgreements('0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2', {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'}).events[0]['agreementSignee'] == accounts[1]
-
-def test_MyReceiverAgreements_emits_correctly_agreementReceiver_agreements_1(deploy):
-    '''check if the MyReceiverAgreements function emits correctly the agreementReceiver from agreement 1'''
-    assert deploy.MyReceiverAgreements('0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2', {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'}).events[0]['agreementReceiver'] == '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'
-
-def test_MyReceiverAgreements_emits_correctly_agreementAmount_agreements_1(deploy):
-    '''check if the MyReceiverAgreements function emits correctly the agreementAmount from agreement 1'''
-    assert deploy.MyReceiverAgreements('0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2', {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'}).events[0]['agreementAmount'] == '2'
-
-def test_MyReceiverAgreements_emits_correctly_agreementTransactionCreated_agreements_1(deploy):
-    '''check if the MyReceiverAgreements function emits correctly the agreementTransactionCreated from agreement 1'''
-    assert deploy.MyReceiverAgreements('0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2', {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'}).events[0]['agreementTransactionCreated'] == '0'
-
-def test_MyReceiverAgreements_emits_correctly_agreementDeposit_agreements_1(deploy):
-    '''check if the MyReceiverAgreements function emits correctly the agreementDeposit from agreement 1'''
-    assert deploy.MyReceiverAgreements('0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2', {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'}).events[0]['agreementDeposit'] == '0'
-
-def test_MyReceiverAgreements_emits_correctly_agreementStatus_agreements_1(deploy):
-    '''check if the MyReceiverAgreements function emits correctly the agreementStatus from agreement 1'''
-    assert deploy.MyReceiverAgreements('0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2', {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'}).events[0]['agreementStatus'] == 'Created'
-
-def test_MyReceiverAgreements_emits_correctly_agreementApproved_agreements_1(deploy):
-    '''check if the MyReceiverAgreements function emits correctly the agreementApproved from agreement 1'''
-    assert deploy.MyReceiverAgreements('0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2', {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'}).events[0]['agreementApproved'] == 'Not Confirmed'
-
-def test_MyReceiverAgreements_emits_correctly_agreementTimeCreation_agreements_1(deploy):
-    '''check if the MyReceiverAgreements function emits correctly the agreementTimeCreation from agreement 1'''
-    assert deploy.MyReceiverAgreements('0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2', {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'}).events[0]['agreementTimeCreation'] == deploy.exactAgreement(0)[8]
-
-def test_MyReceiverAgreements_emits_correctly_agreementTimePeriods_agreements_1(deploy):
-    '''check if the MyReceiverAgreements function emits correctly the agreementTimePeriods from agreement 1'''
-    seconds_in_day = 60 * 60 * 24
-    assert deploy.MyReceiverAgreements('0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2', {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'}).events[0]['agreementTimePeriods'] == seconds_in_day * 5
-
-def test_MyReceiverAgreements_emits_correctly_agreementPositionPeriod_agreements_1(deploy):
-    '''check if the MyReceiverAgreements function emits correctly the agreementPositionPeriod from agreement 1'''
-    assert deploy.MyReceiverAgreements('0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2', {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'}).events[0]['agreementPositionPeriod'] == '0'
-
-def test_MyReceiverAgreements_emits_correctly_agreementTimeDuration_agreements_1(deploy):
-    '''check if the MyReceiverAgreements function emits correctly the agreementTimeDuration from agreement 1'''
-    seconds_in_day = 60 * 60 * 24
-    assert deploy.MyReceiverAgreements('0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2', {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'}).events[0]['agreementTimeDuration'] == seconds_in_day * 500
-
-def test_MyReceiverAgreements_emits_correctly_agreementId_agreements_2(deploy):
-    '''check if the MyReceiverAgreements function emits correctly the agreementId from agreement 1'''
-    assert deploy.MyReceiverAgreements('0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2', {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'}).events[1]['agreementId'] == '2'
-
-def test_myReceiverAgreements_emits_correct_id_agreement_1(deploy):
-    '''check if the mapping myReceiverAgreements emits correct agreementId for the first element in the mapping of address 0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'''
-    assert deploy.myReceiverAgreements('0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2', 0) == '0'
-
-def test_myReceiverAgreements_emits_correct_id_agreement_2(deploy):
-    '''check if the mapping myReceiverAgreements is returning correctly the ids'''
-    assert deploy.myReceiverAgreements('0xdD870fA1b7C4700F2BD7f44238821C26f7392148', 0) == '1'
-
-def test_myReceiverAgreements_emits_correct_id_agreement_3(deploy):
-    '''check if the mapping myReceiverAgreements emits correct agreementId for the first element in the mapping of address 0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'''
-    assert deploy.myReceiverAgreements('0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2', 1) == '2'
-
 def test_MyReceiverAgreements_fails_require(deploy):
     '''check if the MyReceiverAgreements fails, because msg.sender == _myAddress in the require statement'''
     try:
@@ -350,6 +284,71 @@ def test_MyReceiverAgreements_fails_require(deploy):
         deploy.MyReceiverAgreements(accounts[1], {'from': accounts[3]})
     except Exception as e:
         assert e.message[50:] == "The address provided doesn't correspond with the one you're logged in"
+
+def test_MyReceiverAgreements_emits_correctly_agreementId_agreements_1(deploy):
+    '''check if the MyReceiverAgreements function emits correctly the agreementId from agreement 1'''
+    assert deploy.MyReceiverAgreements(accounts[9], {'from': accounts[9]}).events[0]['agreementId'] == deploy.exactAgreement(0)[0]
+
+def test_MyReceiverAgreements_emits_correctly_agreementSignee_agreements_1(deploy):
+    '''check if the MyReceiverAgreements function emits correctly the agreementSignee from agreement 1'''
+    assert deploy.MyReceiverAgreements(accounts[9], {'from': accounts[9]}).events[0]['agreementSignee'] == deploy.exactAgreement(0)[1]
+
+def test_MyReceiverAgreements_emits_correctly_agreementReceiver_agreements_1(deploy):
+    '''check if the MyReceiverAgreements function emits correctly the agreementReceiver from agreement 1'''
+    assert deploy.MyReceiverAgreements(accounts[9], {'from': accounts[9]}).events[0]['agreementReceiver'] == deploy.exactAgreement(0)[2]
+
+def test_MyReceiverAgreements_emits_correctly_agreementAmount_agreements_1(deploy):
+    '''check if the MyReceiverAgreements function emits correctly the agreementAmount from agreement 1'''
+    assert deploy.MyReceiverAgreements(accounts[9], {'from': accounts[9]}).events[0]['agreementAmount'] == deploy.exactAgreement(0)[3]
+
+def test_MyReceiverAgreements_emits_correctly_agreementTransactionCreated_agreements_1(deploy):
+    '''check if the MyReceiverAgreements function emits correctly the agreementTransactionCreated from agreement 1'''
+    assert deploy.MyReceiverAgreements(accounts[9], {'from': accounts[9]}).events[0]['agreementTransactionCreated'] == deploy.exactAgreement(0)[4]
+
+def test_MyReceiverAgreements_emits_correctly_agreementDeposit_agreements_1(deploy):
+    '''check if the MyReceiverAgreements function emits correctly the agreementDeposit from agreement 1'''
+    assert deploy.MyReceiverAgreements(accounts[9], {'from': accounts[9]}).events[0]['agreementDeposit'] == deploy.exactAgreement(0)[5]
+
+def test_MyReceiverAgreements_emits_correctly_agreementStatus_agreements_1(deploy):
+    '''check if the MyReceiverAgreements function emits correctly the agreementStatus from agreement 1'''
+    assert deploy.MyReceiverAgreements(accounts[9], {'from': accounts[9]}).events[0]['agreementStatus'] == deploy.exactAgreement(0)[6]
+
+def test_MyReceiverAgreements_emits_correctly_agreementApproved_agreements_1(deploy):
+    '''check if the MyReceiverAgreements function emits correctly the agreementApproved from agreement 1'''
+    assert deploy.MyReceiverAgreements(accounts[9], {'from': accounts[9]}).events[0]['agreementApproved'] == deploy.exactAgreement(0)[7]
+
+def test_MyReceiverAgreements_emits_correctly_agreementTimeCreation_agreements_1(deploy):
+    '''check if the MyReceiverAgreements function emits correctly the agreementTimeCreation from agreement 1'''
+    assert deploy.MyReceiverAgreements(accounts[9], {'from': accounts[9]}).events[0]['agreementTimeCreation'] == deploy.exactAgreement(0)[8]
+
+def test_MyReceiverAgreements_emits_correctly_agreementTimePeriods_agreements_1(deploy):
+    '''check if the MyReceiverAgreements function emits correctly the agreementTimePeriods from agreement 1'''
+    assert deploy.MyReceiverAgreements(accounts[9], {'from': accounts[9]}).events[0]['agreementTimePeriods'] == deploy.exactAgreement(0)[9]
+
+def test_MyReceiverAgreements_emits_correctly_agreementPositionPeriod_agreements_1(deploy):
+    '''check if the MyReceiverAgreements function emits correctly the agreementPositionPeriod from agreement 1'''
+    assert deploy.MyReceiverAgreements(accounts[9], {'from': accounts[9]}).events[0]['agreementPositionPeriod'] == deploy.exactAgreement(0)[10]
+
+def test_MyReceiverAgreements_emits_correctly_agreementTimeDuration_agreements_1(deploy):
+    '''check if the MyReceiverAgreements function emits correctly the agreementTimeDuration from agreement 1'''
+    assert deploy.MyReceiverAgreements(accounts[9], {'from': accounts[9]}).events[0]['agreementTimeDuration'] == deploy.exactAgreement(0)[11]
+
+def test_MyReceiverAgreements_emits_correctly_agreementId_agreements_2(deploy):
+    '''check if the MyReceiverAgreements function emits correctly the agreementId from agreement 1'''
+    assert deploy.MyReceiverAgreements(accounts[9], {'from': accounts[9]}).events[1]['agreementId'] == '1'
+
+def test_myReceiverAgreements_emits_correct_id_agreement_1(deploy):
+    '''check if the mapping myReceiverAgreements emits correct agreementId for the first element in the mapping of address 0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'''
+    assert deploy.myReceiverAgreements(accounts[9], 0) == '0'
+
+def test_myReceiverAgreements_emits_correct_id_agreement_2(deploy):
+    '''check if the mapping myReceiverAgreements is returning correctly the ids'''
+    assert deploy.myReceiverAgreements(accounts[9], 1) == '1'
+
+def test_myReceiverAgreements_emits_correct_id_agreement_3(deploy):
+    '''check if the mapping myReceiverAgreements emits correct agreementId for the first element in the mapping of address 0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'''
+    assert deploy.myReceiverAgreements(accounts[9], {'from': accounts[9]}, 1) == '2'
+
 
 
 
