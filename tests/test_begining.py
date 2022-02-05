@@ -902,7 +902,7 @@ def test_timeNotBreached_breached_on_time_false_status(deploy, seconds_sleep):
 
 @pytest.mark.parametrize("seconds_sleep",  [0, 260000, 262900])
 def test_timeNotBreached_breached_on_time_false_status_pair(deploy, seconds_sleep):
-    '''check if the status is not changed to Terminated when timeNotBreached is breached in the timeNotBreached'''
+    '''check if the status is not changed to Terminated when timeNotBreached is not breached in the timeNotBreached'''
     deploy.ConfirmAgreement(0, {'from': accounts[receiver]})
     deploy.sendPayment(0, {'from': accounts[signee], 'value': amount_sent})
     chain = Chain()
@@ -920,6 +920,17 @@ def test_timeNotBreached_breached_on_time_false_send_deposit(deploy, seconds_sle
     chain.sleep(seconds_sleep)
     deploy.sendPayment(0, {'from': accounts[signee], 'value': 4*amount_sent}) 
     assert accounts[receiver].balance() == balance_receiver + amount_sent
+
+@pytest.mark.parametrize("seconds_sleep",  [0, 260000, 262900])
+def test_timeNotBreached_breached_on_time_false_send_deposit_pair(deploy, seconds_sleep):
+    '''check if the deposit isn't sent to the receiver (but the value is) when timeNotBreached is not breached in the timeNotBreached'''
+    deploy.ConfirmAgreement(0, {'from': accounts[receiver]})
+    deploy.sendPayment(0, {'from': accounts[signee], 'value': amount_sent})
+    balance_receiver = accounts[receiver].balance() 
+    chain = Chain()
+    chain.sleep(seconds_sleep)
+    deploy.sendPayment(0, {'from': accounts[signee], 'value': 4*amount_sent}) 
+    assert accounts[receiver].balance() == balance_receiver + 4*amount_sent
 
 @pytest.mark.parametrize("seconds_sleep",  [every_period, 2629744, 26297440])
 def test_timeNotBreached_breached_on_time_false_deposit_equals_zero(deploy, seconds_sleep):
