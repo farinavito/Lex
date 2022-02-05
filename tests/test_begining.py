@@ -476,7 +476,6 @@ def test_transfer_deposit_back_to_signee_pair(deploy, value_sent):
     try:
         deploy.ConfirmAgreement(0, {'from': accounts[receiver]})
         deploy.sendPayment(0, {'from': accounts[signee], 'value': value_sent})
-        balance_signee = accounts[signee].balance() 
         deploy.terminateContract(0, {'from': accounts[signee]})
     except Exception as e:
         assert e.message[50:] == "The deposit is not the same as the agreed in the terms"
