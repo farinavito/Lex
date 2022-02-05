@@ -963,6 +963,17 @@ def test_timeNotBreached_breached_on_time_false_return_transaction(deploy, secon
     deploy.sendPayment(0, {'from': accounts[signee], 'value': amount_sent}) 
     assert accounts[signee].balance() == balance_signee
 
+@pytest.mark.parametrize("seconds_sleep",  [0, 260000, 262900])
+def test_timeNotBreached_breached_on_time_false_return_transaction_pair(deploy, seconds_sleep):
+    '''check if the transaction is not sent back to the signee (it's sent to the receiver) when timeNotBreached is not breached in the timeNotBreached'''
+    deploy.ConfirmAgreement(0, {'from': accounts[receiver]})
+    deploy.sendPayment(0, {'from': accounts[signee], 'value': amount_sent})  
+    balance_signee = accounts[signee].balance() 
+    chain = Chain()
+    chain.sleep(seconds_sleep)
+    deploy.sendPayment(0, {'from': accounts[signee], 'value': amount_sent}) 
+    assert accounts[signee].balance() == balance_signee - amount_sent
+
 @pytest.mark.parametrize("seconds_sleep",  [every_period, 2629744, 26297440])
 def test_timeNotBreached_breached_on_time_false_emit_Terminated(deploy, seconds_sleep):
     '''check if the event Terminated is emitted when timeNotBreached is breached in the timeNotBreached'''
