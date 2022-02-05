@@ -1034,6 +1034,16 @@ def test_wasContractBreached_require_receiver_equals_msg_sender(deploy, wrong_ac
         #wrong signee's address
         deploy.wasContractBreached(0, {'from': accounts[wrong_accounts]})
 
+@pytest.mark.parametrize("right_accounts",  [9])
+def test_wasContractBreached_require_receiver_equals_msg_sender_pair(deploy, right_accounts):
+    '''check if the wasContractBreached doesn't fail'''
+    try:
+        deploy.ConfirmAgreement(0, {'from': accounts[receiver]})
+        deploy.sendPayment(0, {'from': accounts[signee], 'value': amount_sent})
+        deploy.wasContractBreached(0, {'from': accounts[right_accounts]})
+    except Exception as e:        
+        assert e.message[50:] == "This agreement's deadline has ended"
+
 def test_wasContractBreached_fail_if_statement_in_timeNotBreached(deploy):
     '''check if the timeNotBreached fails because transaction was sent after the agreement's deadline - it fails because of the check in the ConfirmAgreement function'''
     try:
