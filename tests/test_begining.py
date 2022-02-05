@@ -1145,6 +1145,17 @@ def test_wasContractBreached_timeNotBreached_false_status_deposit_equals_zero_1(
     deploy.wasContractBreached(0, {'from': accounts[receiver]})
     assert deploy.exactAgreement(0)[5] == '0'
 
+@pytest.mark.parametrize("seconds_sleep",  [0, 260000, 262900])
+def test_wasContractBreached_timeNotBreached_false_status_deposit_equals_zero_1_pair(deploy, seconds_sleep):
+    '''check if the wasContractBreached function when timeNotBreached is true, doesn't change deposit to 0'''
+    deploy.ConfirmAgreement(0, {'from': accounts[receiver]})
+    deploy.sendPayment(0, {'from': accounts[signee], 'value': amount_sent})
+    chain = Chain()
+    chain.sleep(seconds_sleep)
+    deploy.sendPayment(0, {'from': accounts[signee], 'value': 4*amount_sent})
+    deploy.wasContractBreached(0, {'from': accounts[receiver]})
+    assert deploy.exactAgreement(0)[5] != '0'
+
 @pytest.mark.parametrize("seconds_sleep",  [every_period, 604801, 688888])
 def test_wasContractBreached_timeNotBreached_false_emit_Terminated(deploy, seconds_sleep):
     '''check if the wasContractBreached function when timeNotBreached is false, emits NotifyUser'''
@@ -1155,6 +1166,17 @@ def test_wasContractBreached_timeNotBreached_false_emit_Terminated(deploy, secon
     deploy.sendPayment(0, {'from': accounts[signee], 'value': 4*amount_sent})
     function_initialize = deploy.wasContractBreached(0, {'from': accounts[receiver]})
     assert function_initialize.events[0][0]['message'] == "This agreement is already terminated"
+
+@pytest.mark.parametrize("seconds_sleep",  [0, 260000, 262900])
+def test_wasContractBreached_timeNotBreached_false_emit_Terminated_pair(deploy, seconds_sleep):
+    '''check if the wasContractBreached function when timeNotBreached is true, doesn't emit NotifyUser'''
+    deploy.ConfirmAgreement(0, {'from': accounts[receiver]})
+    deploy.sendPayment(0, {'from': accounts[signee], 'value': amount_sent})
+    chain = Chain()
+    chain.sleep(seconds_sleep)
+    deploy.sendPayment(0, {'from': accounts[signee], 'value': 4*amount_sent})
+    function_initialize = deploy.wasContractBreached(0, {'from': accounts[receiver]})
+    assert function_initialize.events[0][0]['message'] != "This agreement is already terminated"
 
 def test_wasContractBreached_agreement_not_activated(deploy):
     '''check if the wasContractBreached function emits NotifyUser when timeNotBreached is false'''
