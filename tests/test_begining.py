@@ -826,6 +826,15 @@ def test_timeNotBreached_value_smaller_amount_return_transaction(deploy, value_s
     deploy.sendPayment(0, {'from': accounts[signee], 'value': value_sent}) 
     assert accounts[signee].balance() == balance_signee
 
+@pytest.mark.parametrize("value_sent",  [amount_sent, amount_sent + 10**2, amount_sent + 3])
+def test_timeNotBreached_value_smaller_amount_return_transaction_pair(deploy, value_sent):
+    '''check if the transaction is reduced from the signee when amount < msg.value in the timeNotBreached'''
+    deploy.ConfirmAgreement(0, {'from': accounts[receiver]})
+    deploy.sendPayment(0, {'from': accounts[signee], 'value': amount_sent})  
+    balance_signee = accounts[signee].balance() 
+    deploy.sendPayment(0, {'from': accounts[signee], 'value': value_sent}) 
+    assert accounts[signee].balance() == balance_signee - value_sent
+
 @pytest.mark.parametrize("value_sent",  [0, 1, amount_sent - 10**2])    
 def test_timeNotBreached_value_smaller_amount_emit_Terminated(deploy, value_sent):
     '''check if the evant Terminated is emitted when amount > msg.value in the timeNotBreached'''
