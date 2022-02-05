@@ -984,6 +984,16 @@ def test_timeNotBreached_breached_on_time_false_emit_Terminated(deploy, seconds_
     function_initialize = deploy.sendPayment(0, {'from': accounts[signee], 'value': amount_sent})
     assert function_initialize.events[0][0]['message'] == "This agreement was terminated due to late payment"
 
+@pytest.mark.parametrize("seconds_sleep",  [0, 260000, 262900])
+def test_timeNotBreached_breached_on_time_false_emit_Terminated_pair(deploy, seconds_sleep):
+    '''check if the event Terminated is not emitted when timeNotBreached is not breached in the timeNotBreached'''
+    deploy.ConfirmAgreement(0, {'from': accounts[receiver]})
+    deploy.sendPayment(0, {'from': accounts[signee], 'value': amount_sent})
+    chain = Chain()
+    chain.sleep(seconds_sleep)
+    function_initialize = deploy.sendPayment(0, {'from': accounts[signee], 'value': amount_sent})
+    assert function_initialize.events[0][0]['message'] != "This agreement was terminated due to late payment"
+
 #Checking when the agreement's status is "Terminated"
 
 def test_terminateContract_emit_Terminated_initial_status_terminated(deploy):
