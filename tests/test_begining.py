@@ -837,12 +837,20 @@ def test_timeNotBreached_value_smaller_amount_return_transaction_pair(deploy, va
 
 @pytest.mark.parametrize("value_sent",  [0, 1, amount_sent - 10**2])    
 def test_timeNotBreached_value_smaller_amount_emit_Terminated(deploy, value_sent):
-    '''check if the evant Terminated is emitted when amount > msg.value in the timeNotBreached'''
+    '''check if the event Terminated is emitted when amount > msg.value in the timeNotBreached'''
     deploy.ConfirmAgreement(0, {'from': accounts[receiver]})
     deploy.sendPayment(0, {'from': accounts[signee], 'value': amount_sent})
     #the contract has been activated, now send the smaller quantity of money again
     function_initialize = deploy.sendPayment(0, {'from': accounts[signee], 'value': value_sent})
     assert function_initialize.events[0][0]['message'] == "This agreement was terminated due to different payment than in the terms"
+
+@pytest.mark.parametrize("value_sent",  [amount_sent, amount_sent + 10**2, amount_sent + 3]) 
+def test_timeNotBreached_value_smaller_amount_emit_Terminated_pair(deploy, value_sent):
+    '''check if the event NotifyUser is emitted when amount < msg.value in the timeNotBreached'''
+    deploy.ConfirmAgreement(0, {'from': accounts[receiver]})
+    deploy.sendPayment(0, {'from': accounts[signee], 'value': amount_sent})
+    function_initialize = deploy.sendPayment(0, {'from': accounts[signee], 'value': value_sent})
+    assert function_initialize.events[0][0]['message'] == "Transaction was sent to the receiver"
 
     
 
