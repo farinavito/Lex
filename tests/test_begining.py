@@ -777,7 +777,7 @@ def test_timeNotBreached_value_smaller_amount_status(deploy, value_sent):
 
 @pytest.mark.parametrize("value_sent",  [amount_sent, amount_sent + 10**2, amount_sent + 3])
 def test_timeNotBreached_value_smaller_amount_status_pair(deploy, value_sent):
-    '''check if the status is changed when amount > msg.value in the timeNotBreached'''
+    '''check if the status stays the same when amount < msg.value in the timeNotBreached'''
     deploy.ConfirmAgreement(0, {'from': accounts[receiver]})
     deploy.sendPayment(0, {'from': accounts[signee], 'value': amount_sent})
     deploy.sendPayment(0, {'from': accounts[signee], 'value': value_sent})
@@ -791,6 +791,15 @@ def test_timeNotBreached_value_smaller_amount_send_deposit(deploy, value_sent):
     balance_receiver = accounts[receiver].balance() 
     deploy.sendPayment(0, {'from': accounts[signee], 'value': value_sent}) 
     assert accounts[receiver].balance() == balance_receiver + amount_sent
+
+@pytest.mark.parametrize("value_sent",  [amount_sent, amount_sent + 10**2, amount_sent + 3])
+def test_timeNotBreached_value_smaller_amount_send_deposit_pair(deploy, value_sent):
+    '''check if the deposit isn't sent (but the sending value) to the receiver when amount < msg.value in the timeNotBreached'''
+    deploy.ConfirmAgreement(0, {'from': accounts[receiver]})
+    deploy.sendPayment(0, {'from': accounts[signee], 'value': amount_sent})
+    balance_receiver = accounts[receiver].balance() 
+    deploy.sendPayment(0, {'from': accounts[signee], 'value': value_sent}) 
+    assert accounts[receiver].balance() == balance_receiver + value_sent
 
 @pytest.mark.parametrize("value_sent",  [0, 1, amount_sent - 10**2])
 def test_timeNotBreached_value_smaller_amount_deposit_equals_zero(deploy, value_sent):
