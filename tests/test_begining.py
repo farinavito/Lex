@@ -124,7 +124,7 @@ def test_new_agreement_fails_require(deploy):
 @pytest.mark.parametrize("possibilities", [[0, 10, 15], [10, 0, 15], [10, 10, 0], [0, 0, 15], [10, 0, 0], [0, 10, 0], [0, 0, 0]])
 def test_new_agreement_fails_require_larger_than_zero(deploy, possibilities):
     '''check if the creation of the new agreement fails, because the input data should be larger than 0'''
-    for round in range(7):
+    for _ in range(7):
         try:
             deploy.createAgreement('0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2', possibilities[0], possibilities[1], possibilities[2], {'from': accounts[signee]})
         except Exception as e:
