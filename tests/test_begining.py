@@ -40,6 +40,8 @@ receiver = 9
 amount_sent = 10**5
 every_period = 604800
 agreement_duration = 2629743
+agreements_number = 0
+#change the function name
 
 @pytest.fixture(autouse=True)
 def new_agreement_7(deploy):
@@ -50,6 +52,7 @@ receiver_2 = 9
 amount_sent_2 = 10**18
 every_period_2 = 2629743
 agreement_duration_2 = 31556926
+agreements_number = 1
 
 @pytest.fixture(autouse=True)
 def new_agreement_8(deploy):
