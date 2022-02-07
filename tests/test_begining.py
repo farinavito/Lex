@@ -64,10 +64,10 @@ def new_agreement_2(deploy):
 '''TESTING CREATEAGREEMENT FUNCTION AGREEMENT 1'''
 
 
-
+@pytest.mark.mmm
 def test_exactAgreement_id(deploy):
     '''check if the first id of the agreement is zero'''
-    assert deploy.exactAgreement(agreements_number)[0] == '0'
+    assert deploy.exactAgreement(agreements_number)[0] == str(agreements_number)
 
 def test_exactAgreement_signee(deploy):
     '''check if the first address of the agreement's signee is the same as the signee'''
@@ -1180,7 +1180,7 @@ def test_wasContractBreached_timeNotBreached_false_emit_Terminated_pair(deploy, 
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
     function_initialize = deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
     assert function_initialize.events[0][0]['message'] != "This agreement is already terminated"
-@pytest.mark.mmm
+
 def test_wasContractBreached_agreement_not_activated(deploy):
     '''check if the wasContractBreached function emits NotifyUser when timeNotBreached is false'''
     deploy.ConfirmAgreement(agreements_number, {'from': accounts[receiver]})
