@@ -10,27 +10,31 @@ from brownie.network.state import Chain
 def deploy(AgreementBetweenSubjects):
     return AgreementBetweenSubjects.deploy({'from': accounts[0]})
 
-seconds_in_day = 60 * 60 * 24
-
+#new agreement
 signee = 1
-without_signee = [signee + 1, signee + 2, signee + 3]
-
 receiver = 9
+amount_sent = 10**5
+every_period = 604800
+agreement_duration = 2629743
+
+
+without_signee = [signee + 1, signee + 2, signee + 3]
 without_receiver = [receiver - 1, receiver - 2, receiver - 3]
 
-amount_sent = 10**5
+
 less_than_amount_sent = [amount_sent - 10**2, amount_sent - 10**3, amount_sent - 10**4]
 more_than_amount_sent = [amount_sent + 10**2, amount_sent + 10**3, amount_sent + 10**4]
 
-every_period = 604800
+
 less_than_every_period = [every_period - 10**2, every_period - 10**3, every_period - 10**4]
 more_than_every_period = [every_period + 10**2, every_period + 10**3, every_period + 10**4]
 
-agreement_duration = 2629743
+
 less_than_agreement_duration = [agreement_duration - 10**2, agreement_duration - 10**3, agreement_duration - 10**4]
 more_than_agreement_duration = [agreement_duration + 10**2, agreement_duration + 10**3, agreement_duration + 10**4]
 
 agreements_number = 0
+seconds_in_day = 60 * 60 * 24
 initial_every_time_unit = 7
 initial_howLong = 30
 
