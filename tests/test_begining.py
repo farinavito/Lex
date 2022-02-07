@@ -47,8 +47,8 @@ agreements_number = 0
 def new_agreement(deploy):
     return deploy.createAgreement(accounts[receiver], amount_sent, every_period, agreement_duration, {'from': accounts[signee]})
 
-signee_2 = 1
-receiver_2 = 9
+signee_2 = signee
+receiver_2 = receiver
 amount_sent_2 = 10**18
 every_period_2 = 2629743
 agreement_duration_2 = 31556926
