@@ -82,6 +82,7 @@ contract AgreementBetweenSubjects {
     uint256 _everyTimeUnit,
     uint256 _howLong
     ) public {
+        require(_amount > 0 && _everyTimeUnit > 0 && _howLong > 0, "All input data must be larger than 0");
         require(_howLong > _everyTimeUnit, "The period of the payment is greater than the duration of the contract");
         uint256 agreementId = numAgreement++;
         //creating a new agreement
