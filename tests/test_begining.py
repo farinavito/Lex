@@ -55,7 +55,7 @@ agreement_duration_2 = 31556926
 agreements_number_2 = 1
 
 @pytest.fixture(autouse=True)
-def new_agreement_8(deploy):
+def new_agreement_2(deploy):
     return deploy.createAgreement(accounts[receiver_2], amount_sent_2, every_period_2, agreement_duration_2, {'from': accounts[signee_2]})
     
 
