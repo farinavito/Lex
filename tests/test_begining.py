@@ -10,6 +10,8 @@ from brownie.network.state import Chain
 def deploy(AgreementBetweenSubjects):
     return AgreementBetweenSubjects.deploy({'from': accounts[0]})
 
+seconds_in_day = 60 * 60 * 24
+
 signee = 1
 without_signee = [signee + 1, signee + 2, signee + 3]
 
@@ -29,6 +31,8 @@ less_than_agreement_duration = [agreement_duration - 10**2, agreement_duration -
 more_than_agreement_duration = [agreement_duration + 10**2, agreement_duration + 10**3, agreement_duration + 10**4]
 
 agreements_number = 0
+initial_every_time_unit = 7
+initial_howLong = 30
 
 
 @pytest.fixture(autouse=True)
@@ -52,7 +56,7 @@ def new_agreement_2(deploy):
 '''TESTING CREATEAGREEMENT FUNCTION AGREEMENT 1'''
 
 
-@pytest.mark.mmm
+
 def test_exactAgreement_id(deploy):
     '''check if the first id of the agreement is zero'''
     assert deploy.exactAgreement(agreements_number)[0] == str(agreements_number)
@@ -88,11 +92,10 @@ def test_exactAgreement_approved(deploy):
 def test_exactAgreement_time_creation(deploy):
     '''check if the initial time creation is block.timestamp'''
     assert deploy.exactAgreement(agreements_number)[8] == deploy.exactAgreement(0)[8]
-  
+
 def test_exactAgreement_every_time_unit(deploy):
     '''check if the initial every time unit is every_period'''
-    seconds_in_day = 60 * 60 * 24
-    assert deploy.exactAgreement(agreements_number)[9] == seconds_in_day * 7
+    assert deploy.exactAgreement(agreements_number)[9] >= seconds_in_day * initial_every_time_unit
 
 def test_exactAgreement_position_period(deploy):
     '''check if the initial position period is 0'''
@@ -100,8 +103,7 @@ def test_exactAgreement_position_period(deploy):
 
 def test_exactAgreement_how_long(deploy):
     '''check if the initial how long is agreement_duration'''
-    seconds_in_day = 60 * 60 * 24
-    assert deploy.exactAgreement(agreements_number)[11] >= seconds_in_day * 30
+    assert deploy.exactAgreement(agreements_number)[11] >= seconds_in_day * initial_howLong
 #checks agreement 2
 def test_exactAgreement_id_agreement_2(deploy):
     '''check if the id of the agreement 2 is one'''
