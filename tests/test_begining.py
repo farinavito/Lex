@@ -113,7 +113,7 @@ def test_new_agreement_fails_require(deploy):
     '''check if the new agreement fails, because howLong > _everyTimeUnit in the require statement'''
     try:
         #length of the agreement is longer than _everyTimeUnit
-        deploy.createAgreement('0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2', 2, 500, 5, {'from': accounts[3]})
+        deploy.createAgreement('0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2', 2, 500, 5, {'from': accounts[signee]})
     except Exception as e:
         assert e.message[50:] == 'The period of the payment is greater than the duration of the contract'
     
@@ -214,7 +214,7 @@ def test_MySenderAgreements_fails_require(deploy):
     '''check if the MySenderAgreements fails, because msg.sender == _myAddress in the require statement'''
     try:
         #wrong sender's address
-        deploy.MySenderAgreements(accounts[signee], {'from': accounts[3]})
+        deploy.MySenderAgreements(accounts[signee], {'from': accounts[without_receiver[0]]})
     except Exception as e:
         assert e.message[50:] == "The address provided doesn't correspond with the one you're logged in"
 
@@ -289,7 +289,7 @@ def test_MyReceiverAgreements_fails_require(deploy):
     '''check if the MyReceiverAgreements fails, because msg.sender == _myAddress in the require statement'''
     try:
         #wrong sender's address
-        deploy.MyReceiverAgreements(accounts[signee], {'from': accounts[3]})
+        deploy.MyReceiverAgreements(accounts[signee], {'from': accounts[without_signee[0]]})
     except Exception as e:
         assert e.message[50:] == "The address provided doesn't correspond with the one you're logged in"
 
