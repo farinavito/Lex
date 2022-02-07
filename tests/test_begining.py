@@ -9,31 +9,6 @@ from brownie.network.state import Chain
 @pytest.fixture()
 def deploy(AgreementBetweenSubjects):
     return AgreementBetweenSubjects.deploy({'from': accounts[0]})
-''' 
-@pytest.fixture(autouse=True)
-def new_agreement_1(deploy):
-    return deploy.createAgreement('0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2', 2, 5, 500, {'from': signee})
-
-@pytest.fixture(autouse=True)
-def new_agreement_2(deploy):   
-    return deploy.createAgreement('0xdD870fA1b7C4700F2BD7f44238821C26f7392148', 100000000000000000000000000000000000000000000000000000000000000000000000000000, 499, 1000000000000000000000000000000000000000000000000000000000000000000000000, {'from': signee})
-
-@pytest.fixture(autouse=True)
-def new_agreement_3(deploy):
-    return deploy.createAgreement('0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2', 2, 5, 500, {'from': accounts[3]})
-
-@pytest.fixture(autouse=True)
-def new_agreement_4(deploy, module_isolation):
-    return deploy.createAgreement(receiver, 2, 5, 500, {'from': accounts[6]})
-
-@pytest.fixture(autouse=True)
-def new_agreement_5(deploy, module_isolation):
-    return deploy.createAgreement(receiver, 2, 5, 10, {'from': accounts[6]})
-
-@pytest.fixture(autouse=True)
-def new_agreement_6(deploy):
-    return deploy.createAgreement(receiver, 2, 0.0001, 10, {'from': signee})
-'''
 
 signee = 1
 receiver = 9
