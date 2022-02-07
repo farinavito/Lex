@@ -133,28 +133,28 @@ def test_new_agreement_fails_require(deploy):
 '''TESTING CREATEAGREEMENT FUNCTION AGREEMENT 2'''
 
 
-
+'''
 def test_increment_number_of_agreements_correctly(deploy):
     assert deploy.exactAgreement(1)[0] == '1'
 
 def test_exactAgreement_check_large_amount(deploy):
-    '''the max number of digits in "amount"'''
+    the max number of digits in "amount
     assert deploy.exactAgreement(1)[3] == amount_sent_2
 
 def test_exactAgreement_transactionCreated(deploy):
-    '''check that transactionCreated is 0'''
+    check that transactionCreated is 0
     assert deploy.exactAgreement(1)[4] == '0' 
 
 def test_exactAgreement_check_large_everyTimeUnit(deploy):
-    '''the max number of digits in "_everyTimeUnit"'''
+    the max number of digits in "_everyTimeUnit"
     seconds_in_day = 60 * 60 * 24
     assert deploy.exactAgreement(1)[9] >= seconds_in_day * 30
 
 def test_exactAgreement_check_large_howLong(deploy):
-    '''the max number of digits in _howLong'''
+    the max number of digits in _howLong
     seconds_in_day = 60 * 60 * 24
     assert deploy.exactAgreement(1)[11] >= seconds_in_day * 365
-
+'''
 
 
 '''TESTING EVENT AGREEMENTINFO INSIDE CREATEAGREEMENT FUNCTION'''
