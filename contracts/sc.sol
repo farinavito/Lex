@@ -71,11 +71,11 @@ contract AgreementBetweenSubjects {
   );
 
   /// @notice After the contract is terminated, emit an event with a message
-  event Terminated(string message );
+  event Terminated(string message);
   /// @notice After other event than Terminated happens, emit it and send a message
   event NotifyUser(string message);
 
-  /// @notice Createing a new agreement
+  /// @notice Creating a new agreement
   function createAgreement(
     address payable _receiver, 
     uint256 _amount,
