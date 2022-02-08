@@ -43,11 +43,13 @@ more_than_agreement_duration = [agreement_duration + 10**2, agreement_duration +
 
 seconds_in_day = 60 * 60 * 24
 
-
+all_agreements = []
 
 @pytest.fixture(autouse=True)
 def new_agreement(deploy):
-    return deploy.createAgreement(accounts[receiver], amount_sent, every_period, agreement_duration, {'from': accounts[signee]})
+    for _ in range(10):
+        new_one = deploy.createAgreement(accounts[receiver], amount_sent, every_period, agreement_duration, {'from': accounts[signee]})
+        all_agreements.append(new_one)
 
 signee_2 = signee
 receiver_2 = receiver
