@@ -47,10 +47,10 @@ seconds_in_day = 60 * 60 * 24
 all_agreements = []
 
 @pytest.fixture(autouse=True)
-def new_agreement(deploy):
+def new_agreement(deploy, scope="module"):
     for _ in range(10):
         new_one = deploy.createAgreement(accounts[receiver], amount_sent, every_period, agreement_duration, {'from': accounts[signee]})
-        all_agreements.append(new_one)
+        all_agreements.append(new_one.events)
 
 signee_2 = signee
 receiver_2 = receiver
@@ -63,7 +63,6 @@ agreements_number_2 = 1
 def new_agreement_2(deploy):
     return deploy.createAgreement(accounts[receiver_2], amount_sent_2, every_period_2, agreement_duration_2, {'from': accounts[signee_2]})
     
-
 
 
 '''TESTING CREATEAGREEMENT FUNCTION AGREEMENT 1'''
@@ -171,59 +170,62 @@ def test_exactAgreement_check_large_howLong(deploy):
 '''TESTING EVENT AGREEMENTINFO INSIDE CREATEAGREEMENT FUNCTION'''
 
 
-
-def test_event_AgreementInfo_agreementId(new_agreement, deploy):
+@pytest.mark.bbb
+def test_event_AgreementInfo_agreementId(deploy):
     '''check if the event AgreementInfo emits correctly agreementId'''
-    assert new_agreement.events[0]["agreementId"] == deploy.exactAgreement(agreements_number)[0]
-
-def test_event_AgreementInfo_agreementSignee(new_agreement, deploy):
+    #assert all_agreements[0].events[0]["agreementId"] == deploy.exactAgreement(agreements_number)[0]
+    assert all_agreements[0][0][0].get("agreementId") == deploy.exactAgreement(agreements_number)[0]
+    #assert all_agreements == 0
+@pytest.mark.bbb
+def test_event_AgreementInfo_agreementSignee(deploy):
     '''check if the event AgreementInfo emits correctly agreementSignee'''
-    assert new_agreement.events[0]["agreementSignee"] == deploy.exactAgreement(agreements_number)[1]
-
-def test_event_AgreementInfo_agreementReceiver(new_agreement, deploy):
+    #assert all_agreements[0].events[0]["agreementSignee"] == deploy.exactAgreement(agreements_number)[1]
+    assert all_agreements[0][0][0].get("agreementSignee") == deploy.exactAgreement(agreements_number)[1]
+@pytest.mark.mmm
+def test_event_AgreementInfo_agreementReceiver(deploy):
     '''check if the event AgreementInfo emits correctly agreementReceiver'''
-    assert new_agreement.events[0]["agreementReceiver"] == deploy.exactAgreement(agreements_number)[2]
-
-def test_event_AgreementInfo_agreementAmount(new_agreement, deploy):
+    assert all_agreements[0].events[0]["agreementReceiver"] == deploy.exactAgreement(agreements_number)[2]
+@pytest.mark.mmm
+def test_event_AgreementInfo_agreementAmount(deploy):
     '''check if the event AgreementInfo emits correctly agreementAmount'''
-    assert new_agreement.events[0]["agreementAmount"] == deploy.exactAgreement(agreements_number)[3]
-
-def test_event_AgreementInfo_transactionCreated(new_agreement, deploy):
+    assert all_agreements[0].events[0]["agreementAmount"] == deploy.exactAgreement(agreements_number)[3]
+@pytest.mark.mmm
+def test_event_AgreementInfo_transactionCreated(deploy):
     '''check if the event AgreementInfo emits correctly agreementAmount'''
-    assert new_agreement.events[0]["agreementTransactionCreated"] == deploy.exactAgreement(agreements_number)[4]
-
-def test_event_AgreementInfo_agreementDeposit(new_agreement, deploy):
+    assert all_agreements[0].events[0]["agreementTransactionCreated"] == deploy.exactAgreement(agreements_number)[4]
+@pytest.mark.mmm
+def test_event_AgreementInfo_agreementDeposit(deploy):
     '''check if the event AgreementInfo emits correctly agreementAmount'''
-    assert new_agreement.events[0]["agreementDeposit"] == deploy.exactAgreement(agreements_number)[5]
-
-def test_event_AgreementInfo_agreementStatus(new_agreement, deploy):
+    assert all_agreements[0].events[0]["agreementDeposit"] == deploy.exactAgreement(agreements_number)[5]
+@pytest.mark.mmm
+def test_event_AgreementInfo_agreementStatus(deploy):
     '''check if the event AgreementInfo emits correctly agreementStatus'''
-    assert new_agreement.events[0]["agreementStatus"] == deploy.exactAgreement(agreements_number)[6]
-
-def test_event_AgreementInfo_agreementApproved(new_agreement, deploy):
+    assert all_agreements[0].events[0]["agreementStatus"] == deploy.exactAgreement(agreements_number)[6]
+@pytest.mark.mmm
+def test_event_AgreementInfo_agreementApproved(deploy):
     '''check if the event AgreementInfo emits correctly agreementStatus'''
-    assert new_agreement.events[0]["agreementApproved"] == deploy.exactAgreement(agreements_number)[7]
-
-def test_event_AgreementInfo_agreementTimeCreation(new_agreement, deploy):
+    assert all_agreements[0].events[0]["agreementApproved"] == deploy.exactAgreement(agreements_number)[7]
+@pytest.mark.mmm
+def test_event_AgreementInfo_agreementTimeCreation(deploy):
     '''check if the event AgreementInfo emits correctly agreementTimeCreation'''
-    assert new_agreement.events[0]["agreementTimeCreation"] == deploy.exactAgreement(agreements_number)[8]
-
-def test_event_AgreementInfo_agreementTimePeriods(new_agreement, deploy):
+    assert all_agreements[0].events[0]["agreementTimeCreation"] == deploy.exactAgreement(agreements_number)[8]
+@pytest.mark.mmm
+def test_event_AgreementInfo_agreementTimePeriods(deploy):
     '''check if the event AgreementInfo emits correctly agreementTimePeriods in seconds'''
-    assert new_agreement.events[0]["agreementTimePeriods"] == deploy.exactAgreement(agreements_number)[9]
-
-def test_event_AgreementInfo_agreementPositionPeriod(new_agreement, deploy):
+    assert all_agreements[0].events[0]["agreementTimePeriods"] == deploy.exactAgreement(agreements_number)[9]
+@pytest.mark.mmm
+def test_event_AgreementInfo_agreementPositionPeriod(deploy):
     '''check if the event AgreementInfo emits correctly agreementPositionPeriod in days'''
-    assert new_agreement.events[0]["agreementPositionPeriod"] == deploy.exactAgreement(agreements_number)[10]
-
-def test_event_AgreementInfo_agreementTimeDuration(new_agreement, deploy):
+    assert all_agreements[0].events[0]["agreementPositionPeriod"] == deploy.exactAgreement(agreements_number)[10]
+@pytest.mark.mmm
+def test_event_AgreementInfo_agreementTimeDuration(deploy):
     '''check if the event AgreementInfo emits correctly agreementTimeDuration in seconds'''
-    assert new_agreement.events[0]["agreementTimeDuration"] == deploy.exactAgreement(agreements_number)[11]
-
-def test_event_AgreementInfo_equals_Agreement(deploy, new_agreement):
+    assert all_agreements[0].events[0]["agreementTimeDuration"] == deploy.exactAgreement(agreements_number)[11]
+@pytest.mark.mmm
+def test_event_AgreementInfo_equals_Agreement(deploy):
     '''check if the length of the AgreementInfo elements is the same as in exactAgreements'''
     agreement = deploy.exactAgreement(0)
-    event = new_agreement.events[0][0]
+    event = all_agreements[0].events[0][0]
     assert len(agreement) == len(event)
     
 
