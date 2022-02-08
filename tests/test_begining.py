@@ -6,10 +6,6 @@ from brownie import accounts
 from brownie.network import rpc
 from brownie.network.state import Chain
 
-@pytest.fixture()
-def deploy(AgreementBetweenSubjects):
-    return AgreementBetweenSubjects.deploy({'from': accounts[0]})
-
 
 accounts_number = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 amount_multiplied = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
