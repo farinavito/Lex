@@ -47,9 +47,8 @@ save_deploy = []
 def new_agreement(AgreementBetweenSubjects):
     deploy = AgreementBetweenSubjects.deploy({'from': accounts[0]})
     save_deploy.append(deploy)
-    for _ in range(10):
-        new_one = deploy.createAgreement(accounts[receiver], amount_sent, every_period, agreement_duration, {'from': accounts[signee]})
-        all_agreements.append(new_one.events)
+    new_one = deploy.createAgreement(accounts[receiver], amount_sent, every_period, agreement_duration, {'from': accounts[signee]})
+    all_agreements.append(new_one.events)
 
 signee_2 = signee
 receiver_2 = receiver
