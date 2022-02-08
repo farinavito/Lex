@@ -16,6 +16,9 @@ receiver = 9
 amount_sent = 10**5
 every_period = 604800
 agreement_duration = 2629743
+initial_every_time_unit = 7
+initial_howLong = 30
+agreements_number = 0
 
 
 without_signee = [signee + 1, signee + 2, signee + 3]
@@ -33,10 +36,8 @@ more_than_every_period = [every_period + 10**2, every_period + 10**3, every_peri
 less_than_agreement_duration = [agreement_duration - 10**2, agreement_duration - 10**3, agreement_duration - 10**4]
 more_than_agreement_duration = [agreement_duration + 10**2, agreement_duration + 10**3, agreement_duration + 10**4]
 
-agreements_number = 0
 seconds_in_day = 60 * 60 * 24
-initial_every_time_unit = 7
-initial_howLong = 30
+
 
 
 @pytest.fixture(autouse=True)
