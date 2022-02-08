@@ -14,7 +14,7 @@ def deploy(AgreementBetweenSubjects):
 accounts_number = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 amount_multiplied = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 time_period = [3600, 86400, 604800, 2629743, 31556926]
-days_in_time_period = [time_period/24, 1, 7, 30, 364]
+days_in_time_period = [time_period[0]/24, 1, 7, 30, 364]
 
 #new agreement
 signee = 1
