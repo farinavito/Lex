@@ -1124,7 +1124,7 @@ def test_wasContractBreached_timeNotBreached_false_status_Terminated_pair(deploy
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
     assert deploy.exactAgreement(agreements_number)[6] == "Activated"
- 
+
 @pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]])
 def test_wasContractBreached_timeNotBreached_false_send_deposit(deploy, seconds_sleep):
     '''check if the wasContractBreached function when timeNotBreached is false, sends a deposit to the receiver'''
@@ -1135,6 +1135,7 @@ def test_wasContractBreached_timeNotBreached_false_send_deposit(deploy, seconds_
     chain.sleep(seconds_sleep)
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
     deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
+    deploy.withdraw_when_you_are_receiver(agreements_number, {'from': accounts[receiver]})
     assert accounts[receiver].balance() == balance_receiver + amount_sent
 
 @pytest.mark.parametrize("seconds_sleep",  [0, less_than_every_period[0], less_than_every_period[1], less_than_every_period[2]])
