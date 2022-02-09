@@ -473,6 +473,7 @@ def test_transfer_deposit_back_to_signee(deploy, value_sent):
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
     balance_signee = accounts[signee].balance() 
     deploy.terminateContract(agreements_number, {'from': accounts[signee]})
+    deploy.withdraw_when_you_are_signee(agreements_number, {'from': accounts[signee]})
     assert accounts[signee].balance() == balance_signee + value_sent
 
 @pytest.mark.parametrize("value_sent", [less_than_amount_sent[0], less_than_amount_sent[1], less_than_amount_sent[2]])
