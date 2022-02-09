@@ -42,11 +42,11 @@ seconds_in_day = 60 * 60 * 24
 
 all_agreements = []
 
-@pytest.fixture()
+@pytest.fixture(autouse=True)
 def deploy(AgreementBetweenSubjects, module_isolation):
     return AgreementBetweenSubjects.deploy({'from': accounts[0]})
 
-@pytest.fixture( autouse=True)
+@pytest.fixture(autouse=True)
 def new_agreement(deploy, module_isolation):
     new_one = deploy.createAgreement(accounts[receiver], amount_sent, every_period, agreement_duration, {'from': accounts[signee]})
     all_agreements.append(new_one.events)
@@ -201,7 +201,7 @@ def test_event_AgreementInfo_agreementStatus(deploy):
 def test_event_AgreementInfo_agreementApproved(deploy):
     '''check if the event AgreementInfo emits correctly agreementStatus'''
     assert all_agreements[0][0][0].get("agreementApproved") == deploy.exactAgreement(agreements_number)[7]
-
+@pytest.mark.mmm
 def test_event_AgreementInfo_agreementTimeCreation(deploy):
     '''check if the event AgreementInfo emits correctly agreementTimeCreation'''
     assert all_agreements[0][0][0].get("agreementTimeCreation") == deploy.exactAgreement(agreements_number)[8]
