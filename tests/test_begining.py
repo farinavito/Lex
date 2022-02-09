@@ -794,11 +794,13 @@ def test_timeNotBreached_value_smaller_amount_status_pair(deploy, value_sent):
 @pytest.mark.parametrize("value_sent",  [0, less_than_amount_sent[0], less_than_amount_sent[1], less_than_amount_sent[2]])
 def test_timeNotBreached_value_smaller_amount_send_deposit(deploy, value_sent):
     '''check if the deposit is sent to the receiver when amount > msg.value in the timeNotBreached'''
-    deploy.ConfirmAgreement(agreements_number, {'from': accounts[receiver]})
-    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
-    balance_receiver = accounts[receiver].balance() 
-    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent}) 
-    assert accounts[receiver].balance() == balance_receiver + amount_sent
+    try:
+        deploy.ConfirmAgreement(agreements_number, {'from': accounts[receiver]})
+        deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
+        deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent}) 
+        deploy.withdraw_when_you_are_receiver(agreements_number, {'from': accounts[receiver]})
+    except Exception as e :
+        assert e.message[50:] == "There aren't any funds to withdraw"
 
 @pytest.mark.parametrize("value_sent",  [more_than_amount_sent[0], more_than_amount_sent[1], more_than_amount_sent[2]])
 def test_timeNotBreached_value_smaller_amount_send_deposit_pair(deploy, value_sent):
