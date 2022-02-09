@@ -335,6 +335,36 @@ contract AgreementBetweenSubjects {
 	  }
   }
 
+  function withdraw_when_you_are_signee(uint256 _id) public payable{
+	  require(exactAgreement[_id].signee == msg.sender, "Your logged in address isn't the same as the contract's signee address");
+    require(withdraw_signee[exactAgreement[_id].signee] > 0, "There is no funds to withdraw");
+	  uint256 current_amount = withdraw_signee[exactAgreement[_id].signee];
+	  withdraw_signee[exactAgreement[_id].signee] = 0;
+	  (bool sent, ) = exactAgreement[_id].signee.call{value: current_amount}("");
+    require(sent, "Failed to send Ether");
+	  emit NotifyUser("We have transfered ethers");
+  }
+
+  function withdraw_when_you_are_receiver(uint256 _id) public payable{
+    require(exactAgreement[_id].receiver == msg.sender, "Your logged in address isn't the same as the contract's receiver address");
+    require(withdraw_receiver[exactAgreement[_id].receiver] > 0, "There is no funds to withdraw");
+    uint256 current_amount = withdraw_receiver[exactAgreement[_id].receiver];
+    withdraw_receiver[exactAgreement[_id].receiver] = 0;
+    (bool sent, ) = exactAgreement[_id].receiver.call{value: current_amount}("");
+    require(sent, "Failed to send Ether");
+    emit NotifyUser("We have transfered ethers");
+  }
+
+  function get_withdraw_when_you_are_signee(uint256 _id) public view returns(uint256){
+    require(exactAgreement[_id].signee == msg.sender, "Your logged in address isn't the same as the contract's signee address");
+    return withdraw_signee[exactAgreement[_id].signee];
+  }
+
+  function get_withdraw_when_you_are_receiver(uint256 _id) public view returns(uint256){
+    require(exactAgreement[_id].receiver == msg.sender, "Your logged in address isn't the same as the contract's receiver address");
+    return withdraw_receiver[exactAgreement[_id].receiver];
+  }
+
   fallback() external {}
   receive() external payable {}
 
