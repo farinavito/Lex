@@ -835,7 +835,8 @@ def test_timeNotBreached_value_smaller_amount_return_transaction(deploy, value_s
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})  
     balance_signee = accounts[signee].balance() 
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent}) 
-    assert accounts[signee].balance() == balance_signee
+    deploy.withdraw_when_you_are_signee(agreements_number, {'from': accounts[signee]})
+    assert accounts[signee].balance() == balance_signee + amount_sent
 
 @pytest.mark.parametrize("value_sent",  [more_than_amount_sent[0], more_than_amount_sent[1], more_than_amount_sent[2]])
 def test_timeNotBreached_value_smaller_amount_return_transaction_pair(deploy, value_sent):
