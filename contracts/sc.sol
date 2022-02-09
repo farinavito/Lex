@@ -222,22 +222,16 @@ contract AgreementBetweenSubjects {
       if (timeNotBreached(_id)){
         if (exactAgreement[_id].amount <= msg.value){
           //send the transaction to the receiver
-          //(bool sent, ) = exactAgreement[_id].receiver.call{value: msg.value}("");
-          //require(sent, "Failed to send Ether");
           withdraw_receiver[exactAgreement[_id].receiver] += msg.value;
           emit NotifyUser("Transaction was sent to the receiver");
         //if the transaction was on time, but it wasn't enough
         } else {
             exactAgreement[_id].status = "Terminated"; 
             //sending the deposit to the receiver
-            //(bool sent, ) = exactAgreement[_id].receiver.call{value: exactAgreement[_id].deposit}("");
-            //require(sent, "Failed to send Ether");
             withdraw_signee[exactAgreement[_id].signee] += exactAgreement[_id].deposit;
             //ensure that the deposit is reduced to 0
             exactAgreement[_id].deposit = 0;
             //return the transaction to the signee
-            //(bool send, ) = exactAgreement[_id].signee.call{value: msg.value}("");
-            //require(send, "Failed to send Ether");
             withdraw_signee[exactAgreement[_id].signee] += msg.value;
             emit Terminated("This agreement was terminated due to different payment than in the terms");      
         }
@@ -245,14 +239,10 @@ contract AgreementBetweenSubjects {
       } else {
         exactAgreement[_id].status = "Terminated";
         //sending the deposit to the receiver
-        //(bool sent, ) = exactAgreement[_id].receiver.call{value: exactAgreement[_id].deposit}("");
-        //require(sent, "Failed to send Ether");
         withdraw_receiver[exactAgreement[_id].receiver] += exactAgreement[_id].deposit;
         //ensure that the deposit is reduced to 0
         exactAgreement[_id].deposit = 0;
         //return the transaction to the signee
-        //(bool send, ) = exactAgreement[_id].signee.call{value: msg.value}("");
-        //require(send, "Failed to send Ether"); 
         withdraw_signee[exactAgreement[_id].signee] += msg.value;
         emit Terminated("This agreement was terminated due to late payment");
       }
@@ -282,13 +272,9 @@ contract AgreementBetweenSubjects {
       require(exactAgreement[_id].signee == msg.sender, "Only the owner can terminate the agreement");
       exactAgreement[_id].status = "Terminated";
       //return the deposit to the signee
-      //(bool sent, ) = exactAgreement[_id].signee.call{value: exactAgreement[_id].deposit}("");
-      //require(sent, "Failed to send Ether");
       withdraw_signee[exactAgreement[_id].signee] += exactAgreement[_id].deposit;
       //ensure that the deposit is reduced to 0
       exactAgreement[_id].deposit = 0;
-      //return the msg.value to the signee
-      //payable(exactAgreement[_id].signee).send(msg.value);
       emit Terminated("This agreement has been terminated");
 	  }
   }
@@ -307,8 +293,6 @@ contract AgreementBetweenSubjects {
         //terminate the agreement
         exactAgreement[_id].status = "Terminated";
         //return deposit to receiver
-        //(bool sent, ) = exactAgreement[_id].receiver.call{value: exactAgreement[_id].deposit}("");
-        //require(sent, "Failed to send Ether");
         withdraw_receiver[exactAgreement[_id].receiver] += exactAgreement[_id].deposit;
         //ensure that the deposit is reduced to 0
         exactAgreement[_id].deposit = 0;
