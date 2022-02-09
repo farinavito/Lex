@@ -1148,6 +1148,7 @@ def test_wasContractBreached_timeNotBreached_false_send_deposit_pair(deploy, sec
     chain.sleep(seconds_sleep)
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
     deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
+    deploy.withdraw_when_you_are_receiver(agreements_number, {'from': accounts[receiver]})
     assert accounts[receiver].balance() == balance_receiver + 4*amount_sent
 
 @pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]])
