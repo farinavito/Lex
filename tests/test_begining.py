@@ -808,7 +808,8 @@ def test_timeNotBreached_value_smaller_amount_send_deposit_pair(deploy, value_se
     deploy.ConfirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     balance_receiver = accounts[receiver].balance() 
-    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent}) 
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
+    deploy.withdraw_when_you_are_receiver(agreements_number, {'from': accounts[receiver]}) 
     assert accounts[receiver].balance() == balance_receiver + value_sent
 
 @pytest.mark.parametrize("value_sent",  [0, less_than_amount_sent[0], less_than_amount_sent[1], less_than_amount_sent[2]])
