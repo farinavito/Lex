@@ -107,7 +107,7 @@ def test_exactAgreement_position_period(deploy):
 def test_exactAgreement_how_long(deploy):
     '''check if the initial how long is agreement_duration'''
     assert deploy.exactAgreement(agreements_number)[11] >= seconds_in_day * initial_howLong
-#checks agreement 2
+
 def test_exactAgreement_id_agreement_2(deploy):
     '''check if the id of the agreement 2 is one'''
     assert deploy.exactAgreement(1)[0] == '1'
@@ -277,7 +277,7 @@ def test_MySenderAgreements_emits_correctly_agreementPositionPeriod_agreements_1
 def test_MySenderAgreements_emits_correctly_agreementTimeDuration_agreements_1(deploy):
     '''check if the MySenderAgreements function emits correctly the agreementTimeDuration from agreement 1'''
     assert deploy.MySenderAgreements(accounts[signee], {'from': accounts[signee]}).events[0]['agreementTimeDuration'] == deploy.exactAgreement(agreements_number)[11]
-#checks agreement 2
+
 def test_MySenderAgreements_emits_correctly_agreementId_agreements_2(deploy):
     '''check if the MySenderAgreements function emits correctly the agreementId from agreement 2'''
     assert deploy.MySenderAgreements(accounts[signee], {'from': accounts[signee]}).events[1]['agreementId'] == deploy.exactAgreement(1)[0]
@@ -352,7 +352,7 @@ def test_MyReceiverAgreements_emits_correctly_agreementPositionPeriod_agreements
 def test_MyReceiverAgreements_emits_correctly_agreementTimeDuration_agreements_1(deploy):
     '''check if the MyReceiverAgreements function emits correctly the agreementTimeDuration from agreement 1'''
     assert deploy.MyReceiverAgreements(accounts[receiver], {'from': accounts[receiver]}).events[0]['agreementTimeDuration'] == deploy.exactAgreement(agreements_number)[11]
-#checks agreement 2
+
 def test_MyReceiverAgreements_emits_correctly_agreementId_agreements_2(deploy):
     '''check if the MyReceiverAgreements function emits correctly the agreementId from agreement 1'''
     assert deploy.MyReceiverAgreements(accounts[receiver], {'from': accounts[receiver]}).events[1]['agreementId'] == '1'
