@@ -931,6 +931,7 @@ def test_timeNotBreached_breached_on_time_false_send_deposit(deploy, seconds_sle
     chain = Chain()
     chain.sleep(seconds_sleep)
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent}) 
+    deploy.withdraw_when_you_are_receiver(agreements_number, {'from': accounts[receiver]})
     assert accounts[receiver].balance() == balance_receiver + amount_sent
 
 @pytest.mark.parametrize("seconds_sleep",  [0, less_than_every_period[0], less_than_every_period[1], less_than_every_period[2]])
