@@ -59,7 +59,7 @@ agreement_duration_2 = 31556926
 agreements_number_2 = 1
 
 @pytest.fixture(autouse=True)
-def new_agreement_2(AgreementBetweenSubjects, deploy):
+def new_agreement_2(deploy):
     return deploy.createAgreement(accounts[receiver_2], amount_sent_2, every_period_2, agreement_duration_2, {'from': accounts[signee_2]})
     
 
@@ -127,7 +127,7 @@ def test_new_agreement_fails_require(deploy):
         deploy.createAgreement('0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2', 2, 500, 5, {'from': accounts[signee]})
     except Exception as e:
         assert e.message[50:] == 'The period of the payment is greater than the duration of the contract'
-
+@pytest.mark.mmm
 @pytest.mark.parametrize("possibilities", [[0, 10, 15], [10, 0, 15], [10, 10, 0], [0, 0, 15], [10, 0, 0], [0, 10, 0], [0, 0, 0]])
 def test_new_agreement_fails_require_larger_than_zero(possibilities, deploy):
     '''check if the creation of the new agreement fails, because the input data should be larger than 0'''
