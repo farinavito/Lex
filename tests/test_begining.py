@@ -975,6 +975,7 @@ def test_timeNotBreached_breached_on_time_false_return_transaction(deploy, secon
     chain = Chain()
     chain.sleep(seconds_sleep)
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent}) 
+    deploy.withdraw_when_you_are_signee(agreements_number, {'from': accounts[signee]})
     assert accounts[signee].balance() == balance_signee
 
 @pytest.mark.parametrize("seconds_sleep",  [0, less_than_every_period[0], less_than_every_period[1], less_than_every_period[2]])
