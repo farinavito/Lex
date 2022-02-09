@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.1;
+pragma solidity 0.8.11;
 
 /// @title Implementing a legal contract: Person A commits sending X amount of ether to person B every Y days for Z days
 /// @author Farina Vito
@@ -42,6 +42,12 @@ contract AgreementBetweenSubjects {
         _;
         locked = false;
     }
+
+   /// @dev Saving the money sent for the signee to withdraw it
+  mapping(address => uint256) private withdraw_signee;
+
+  /// @dev Saving the money sent for the receiver to withdraw it
+  mapping(address => uint256) private withdraw_receiver;
 
   /// @dev A unique identifier of theagreement. The same as the id.
   mapping(uint256 => Agreement) public exactAgreement;
