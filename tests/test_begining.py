@@ -1201,3 +1201,6 @@ def test_wasContractBreached_agreement_not_activated(deploy):
     function_initialize = deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
     assert function_initialize.events[0][0]['message'] == "This agreement hasn't been activated"
 
+
+
+
