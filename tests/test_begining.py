@@ -1268,7 +1268,7 @@ def test_withdrawAsTheSignee_first_reguire_fails_pair(deploy):
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
     deploy.terminateContract(agreements_number, {'from': accounts[signee]})
     function_initialize = deploy.withdrawAsTheSignee(agreements_number, {'from': accounts[signee]})
-    assert function_initialize.events[0][0]['message'] == "We have transfered ethers"
+    assert function_initialize == amount_sent
 
 def test_withdrawAsTheSignee_second_reguire_fails(deploy):
     '''require statement withdraw_receiver[exactAgreement[_id].signee] > 0 fails, because we already withdraw the funds'''
@@ -1285,7 +1285,25 @@ def test_withdrawAsTheSignee_second_reguire_fails(deploy):
 
 
 
-def test_getWithdrawalReceiver(deploy):
+
+@pytest.mark.parametrize("wrong_account", [without_receiver[0], without_receiver[1], without_receiver[2]])
+def test_getWithdrawalReceiver_reguire_fails(deploy, wrong_account):
+    '''require statement exactAgreement[_id].receiver == msg.sender fails'''
+    deploy.ConfirmAgreement(agreements_number, {'from': accounts[receiver]})
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
+    with brownie.reverts("Your logged in address isn't the same as the contract's receiver address"):
+        deploy.getWithdrawalReceiver(agreements_number, {'from': accounts[wrong_account]})
+
+def test_getWithdrawalReceiver_reguire_fails_pair(deploy):
+    '''require statement exactAgreement[_id].receiver == msg.sender doesn't fail'''
+    deploy.ConfirmAgreement(agreements_number, {'from': accounts[receiver]})
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
+    function_initialize = deploy.getWithdrawalReceiver(agreements_number, {'from': accounts[receiver]})
+    assert function_initialize == 4*amount_sent
+
+def test_getWithdrawalReceiver_uninitialize(deploy):
     '''check if the withdraw_receiver is empty after only sending the deposit'''
     deploy.ConfirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
