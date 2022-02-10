@@ -1246,8 +1246,29 @@ def test_withdrawAsTheReceiver_second_reguire_fails_case_2(deploy):
     with brownie.reverts("There aren't any funds to withdraw"):
         deploy.withdrawAsTheReceiver(agreements_number, {'from': accounts[receiver]})
 
+
+
 '''TEST WITHDRAWASTHESIGNEE'''
 
+
+
+@pytest.mark.parametrize("wrong_account", [without_signee[0], without_signee[1], without_signee[2]])
+def test_withdrawAsTheSignee_first_reguire_fails(deploy, wrong_account):
+    '''require statement exactAgreement[_id].signee == msg.sender fails'''
+    deploy.ConfirmAgreement(agreements_number, {'from': accounts[receiver]})
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
+    with brownie.reverts("Your logged in address isn't the same as the contract's signee address"):
+        deploy.withdrawAsTheSignee(agreements_number, {'from': accounts[wrong_account]})
+
+def test_withdrawAsTheSignee_first_reguire_fails_pair(deploy):
+    '''require statement exactAgreement[_id].signee == msg.sender doesn't fail'''
+    deploy.ConfirmAgreement(agreements_number, {'from': accounts[receiver]})
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
+    deploy.terminateContract(agreements_number, {'from': accounts[signee]})
+    function_initialize = deploy.withdrawAsTheSignee(agreements_number, {'from': accounts[signee]})
+    assert function_initialize.events[0][0]['message'] == "We have transfered ethers"
 
 
 
