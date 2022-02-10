@@ -491,18 +491,16 @@ def test_transfer_deposit_back_to_signee_pair(deploy, value_sent):
     except Exception as e:
         assert e.message[50:] == "The deposit is not the same as the agreed in the terms"
     
-
-'''
-#not implemented 
-def test_transfer_msg_value_back_to_signee():
-    check if the deposit is transfered back to the signee
-    deploy.ConfirmAgreement(3, {'from': receiver})
-    deploy.sendPayment(3, {'from': accounts[6], 'value': 20})
-    balance_signee = accounts[6].balance() 
-    deploy.sendPayment(3, {'from': accounts[6], 'value': 20})
-    deploy.terminateContract(3, {'from': accounts[6]})
-    assert accounts[6].balance() == balance_signee + 20
-'''
+@pytest.mark.parametrize("value_sent", [more_than_amount_sent[0], more_than_amount_sent[1], more_than_amount_sent[2]])
+def test_transfer_msg_value_back_to_signee_2(deploy, value_sent):
+    '''check if the deposit is transfered back to the signee'''
+    deploy.ConfirmAgreement(agreements_number, {'from': accounts[receiver]})
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
+    balance_signee = accounts[signee].balance() 
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*value_sent})
+    deploy.terminateContract(agreements_number, {'from': accounts[signee]})
+    deploy.withdrawAsTheSignee(agreements_number, {'from': accounts[signee]})
+    assert accounts[signee].balance() == balance_signee - 3*value_sent
 
 def test_terminateContract_function_change_status_terminated_deposit(deploy):
     '''check if the function terminateContract changes deposit to zero"'''
@@ -1316,7 +1314,7 @@ def test_getWithdrawalReceiver_uninitialize(deploy):
 '''TEST GETWITHDRAWALSIGNEE'''
 
 
-@pytest.mark.mmm
+
 @pytest.mark.parametrize("wrong_account", [without_signee[0], without_signee[1], without_signee[2]])
 def test_getWithdrawalsignee_reguire_fails(deploy, wrong_account):
     '''require statement exactAgreement[_id].signee == msg.sender fails'''
