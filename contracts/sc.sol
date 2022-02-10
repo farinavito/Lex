@@ -341,12 +341,12 @@ contract AgreementBetweenSubjects {
     emit NotifyUser("We have transfered ethers");
   }
 
-  function get_withdraw_when_you_are_signee(uint256 _id) public view returns(uint256){
+  function getWithdrawAsTheSignee(uint256 _id) public view returns(uint256){
     require(exactAgreement[_id].signee == msg.sender, "Your logged in address isn't the same as the contract's signee address");
     return withdraw_signee[exactAgreement[_id].signee];
   }
 
-  function get_withdraw_when_you_are_receiver(uint256 _id) public view returns(uint256){
+  function getWithdrawAsTheReceiver(uint256 _id) public view returns(uint256){
     require(exactAgreement[_id].receiver == msg.sender, "Your logged in address isn't the same as the contract's receiver address");
     return withdraw_receiver[exactAgreement[_id].receiver];
   }
