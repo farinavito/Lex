@@ -1024,21 +1024,6 @@ def test_terminateContract_emit_Terminated_initial_status_terminated(deploy):
     
 
 
-#Checking when the agreement's status is else
-#this test will fail because i don't know how to change the status
-#def test_timeNotBreached_breached_value_larger_amount_status_not_defined(deploy):
-    '''check if the status is changed when timeNotBreached is breached in the timeNotBreached'''
-    #deploy.ConfirmAgreement(0, {'from': '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'})
-    #deploy.sendPayment(0, {'from': signee, 'value': 20})
-    #deploy.exactAgreement(0).status = "The status is something else"
-    #assert deploy.exactAgreement(0)[6] == "The status is something else"
-    #the contract has been activated, now send the smaller quantity of money again
-    #with brownie.reverts("There is no agreement with this id"):
-        #deploy.sendPayment(0, {'from': signee, 'value': 20})
-
-
-
-
 ''' TESTING WASCONTRACTBREACHED FUNCTION '''
 
 
