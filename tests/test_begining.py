@@ -1314,3 +1314,32 @@ def test_getWithdrawalReceiver_uninitialize(deploy):
 
 
 '''TEST GETWITHDRAWALSIGNEE'''
+
+
+@pytest.mark.mmm
+@pytest.mark.parametrize("wrong_account", [without_signee[0], without_signee[1], without_signee[2]])
+def test_getWithdrawalsignee_reguire_fails(deploy, wrong_account):
+    '''require statement exactAgreement[_id].signee == msg.sender fails'''
+    deploy.ConfirmAgreement(agreements_number, {'from': accounts[receiver]})
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
+    deploy.terminateContract(agreements_number, {'from': accounts[signee]})
+    with brownie.reverts("Your logged in address isn't the same as the contract's signee address"):
+        deploy.getWithdrawalSignee(agreements_number, {'from': accounts[wrong_account]})
+
+def test_getWithdrawalSignee_reguire_fails_pair(deploy):
+    '''require statement exactAgreement[_id].signee == msg.sender doesn't fail'''
+    deploy.ConfirmAgreement(agreements_number, {'from': accounts[receiver]})
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
+    deploy.terminateContract(agreements_number, {'from': accounts[signee]})
+    function_initialize = deploy.getWithdrawalSignee(agreements_number, {'from': accounts[signee]})
+    assert function_initialize == amount_sent
+
+def test_getWithdrawalSignee_uninitialize(deploy):
+    '''check if the withdraw_signee is not empty after only sending the deposit'''
+    deploy.ConfirmAgreement(agreements_number, {'from': accounts[receiver]})
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
+    deploy.terminateContract(agreements_number, {'from': accounts[signee]})
+    function_initialize = deploy.getWithdrawalSignee(agreements_number, {'from': accounts[signee]})
+    assert function_initialize == amount_sent
