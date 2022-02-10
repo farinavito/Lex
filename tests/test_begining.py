@@ -418,6 +418,11 @@ def test_ConfirmAgreement_agreement_status_confirmed(deploy):
     deploy.ConfirmAgreement(agreements_number, {'from': accounts[receiver]})
     assert deploy.exactAgreement(agreements_number)[7] == 'Confirmed'
 
+def test_ConfirmAgreement_notify_user(deploy):
+    '''check if the ConfirmAgreement emits an event '''
+    function_initialize = deploy.ConfirmAgreement(agreements_number, {'from': accounts[receiver]}) 
+    assert function_initialize.events[0][0]['message'] == "The agreement was confirmed"
+
 
 
 
@@ -1205,6 +1210,7 @@ def test_wasContractBreached_agreement_not_activated(deploy):
 
 
 '''TEST WITHDRAWASTHERECEIVER'''
+
 
 
 @pytest.mark.parametrize("wrong_account", [without_receiver[0], without_receiver[1], without_receiver[2]])
