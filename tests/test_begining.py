@@ -1270,9 +1270,27 @@ def test_withdrawAsTheSignee_first_reguire_fails_pair(deploy):
     function_initialize = deploy.withdrawAsTheSignee(agreements_number, {'from': accounts[signee]})
     assert function_initialize.events[0][0]['message'] == "We have transfered ethers"
 
+def test_withdrawAsTheSignee_second_reguire_fails(deploy):
+    '''require statement withdraw_receiver[exactAgreement[_id].signee] > 0 fails, because we already withdraw the funds'''
+    deploy.ConfirmAgreement(agreements_number, {'from': accounts[receiver]})
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
+    deploy.terminateContract(agreements_number, {'from': accounts[signee]})
+    deploy.withdrawAsTheSignee(agreements_number, {'from': accounts[signee]})
+    with brownie.reverts("There aren't any funds to withdraw"):
+        deploy.withdrawAsTheSignee(agreements_number, {'from': accounts[signee]})
+
 
 
 '''TEST GETWITHDRAWALRECEIVER'''
+
+
+
+def test_getWithdrawalReceiver(deploy):
+    '''check if the withdraw_receiver is empty after only sending the deposit'''
+    deploy.ConfirmAgreement(agreements_number, {'from': accounts[receiver]})
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
+    function_initialize = deploy.getWithdrawalReceiver(agreements_number, {'from': accounts[receiver]})
+    assert function_initialize == 0
 
 
 
