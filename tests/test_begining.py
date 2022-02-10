@@ -473,7 +473,7 @@ def test_transfer_deposit_back_to_signee(deploy, value_sent):
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
     balance_signee = accounts[signee].balance() 
     deploy.terminateContract(agreements_number, {'from': accounts[signee]})
-    deploy.withdraw_when_you_are_signee(agreements_number, {'from': accounts[signee]})
+    deploy.withdrawAsTheSignee(agreements_number, {'from': accounts[signee]})
     assert accounts[signee].balance() == balance_signee + value_sent
 
 @pytest.mark.parametrize("value_sent", [less_than_amount_sent[0], less_than_amount_sent[1], less_than_amount_sent[2]])
@@ -720,7 +720,7 @@ def test_timeNotBreached_value_large_amount_send_value(deploy, value_sent):
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
     balance_receiver = accounts[receiver].balance() 
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
-    deploy.withdraw_when_you_are_receiver(agreements_number, {'from': accounts[receiver]})
+    deploy.withdrawAsTheReceiver(agreements_number, {'from': accounts[receiver]})
     assert accounts[receiver].balance() == balance_receiver + value_sent
 
 @pytest.mark.parametrize("value_sent",  [amount_sent])
@@ -749,7 +749,7 @@ def test_timeNotBreached_value_large_amount_send_value_check_signee_pair(deploy,
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
     balance_signee = accounts[signee].balance() 
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent - value_decreased}) 
-    deploy.withdraw_when_you_are_signee(agreements_number, {'from': accounts[signee]})
+    deploy.withdrawAsTheSignee(agreements_number, {'from': accounts[signee]})
     assert accounts[signee].balance() == balance_signee + value_sent
 
 '''
@@ -798,7 +798,7 @@ def test_timeNotBreached_value_smaller_amount_send_deposit(deploy, value_sent):
         deploy.ConfirmAgreement(agreements_number, {'from': accounts[receiver]})
         deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
         deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent}) 
-        deploy.withdraw_when_you_are_receiver(agreements_number, {'from': accounts[receiver]})
+        deploy.withdrawAsTheReceiver(agreements_number, {'from': accounts[receiver]})
     except Exception as e :
         assert e.message[50:] == "There aren't any funds to withdraw"
 
@@ -809,7 +809,7 @@ def test_timeNotBreached_value_smaller_amount_send_deposit_pair(deploy, value_se
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     balance_receiver = accounts[receiver].balance() 
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
-    deploy.withdraw_when_you_are_receiver(agreements_number, {'from': accounts[receiver]}) 
+    deploy.withdrawAsTheReceiver(agreements_number, {'from': accounts[receiver]}) 
     assert accounts[receiver].balance() == balance_receiver + value_sent
 
 @pytest.mark.parametrize("value_sent",  [0, less_than_amount_sent[0], less_than_amount_sent[1], less_than_amount_sent[2]])
@@ -835,7 +835,7 @@ def test_timeNotBreached_value_smaller_amount_return_transaction(deploy, value_s
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})  
     balance_signee = accounts[signee].balance() 
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent}) 
-    deploy.withdraw_when_you_are_signee(agreements_number, {'from': accounts[signee]})
+    deploy.withdrawAsTheSignee(agreements_number, {'from': accounts[signee]})
     assert accounts[signee].balance() == balance_signee + amount_sent
 
 @pytest.mark.parametrize("value_sent",  [more_than_amount_sent[0], more_than_amount_sent[1], more_than_amount_sent[2]])
@@ -931,7 +931,7 @@ def test_timeNotBreached_breached_on_time_false_send_deposit(deploy, seconds_sle
     chain = Chain()
     chain.sleep(seconds_sleep)
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent}) 
-    deploy.withdraw_when_you_are_receiver(agreements_number, {'from': accounts[receiver]})
+    deploy.withdrawAsTheReceiver(agreements_number, {'from': accounts[receiver]})
     assert accounts[receiver].balance() == balance_receiver + amount_sent
 
 @pytest.mark.parametrize("seconds_sleep",  [0, less_than_every_period[0], less_than_every_period[1], less_than_every_period[2]])
@@ -943,7 +943,7 @@ def test_timeNotBreached_breached_on_time_false_send_deposit_pair(deploy, second
     chain = Chain()
     chain.sleep(seconds_sleep)
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent}) 
-    deploy.withdraw_when_you_are_receiver(agreements_number, {'from': accounts[receiver]})
+    deploy.withdrawAsTheReceiver(agreements_number, {'from': accounts[receiver]})
     assert accounts[receiver].balance() == balance_receiver + 4*amount_sent
 
 @pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]])
@@ -975,7 +975,7 @@ def test_timeNotBreached_breached_on_time_false_return_transaction(deploy, secon
     chain = Chain()
     chain.sleep(seconds_sleep)
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent}) 
-    deploy.withdraw_when_you_are_signee(agreements_number, {'from': accounts[signee]})
+    deploy.withdrawAsTheSignee(agreements_number, {'from': accounts[signee]})
     assert accounts[signee].balance() == balance_signee
 
 @pytest.mark.parametrize("seconds_sleep",  [0, less_than_every_period[0], less_than_every_period[1], less_than_every_period[2]])
@@ -1135,7 +1135,7 @@ def test_wasContractBreached_timeNotBreached_false_send_deposit(deploy, seconds_
     chain.sleep(seconds_sleep)
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
     deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
-    deploy.withdraw_when_you_are_receiver(agreements_number, {'from': accounts[receiver]})
+    deploy.withdrawAsTheReceiver(agreements_number, {'from': accounts[receiver]})
     assert accounts[receiver].balance() == balance_receiver + amount_sent
 
 @pytest.mark.parametrize("seconds_sleep",  [0, less_than_every_period[0], less_than_every_period[1], less_than_every_period[2]])
@@ -1148,7 +1148,7 @@ def test_wasContractBreached_timeNotBreached_false_send_deposit_pair(deploy, sec
     chain.sleep(seconds_sleep)
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
     deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
-    deploy.withdraw_when_you_are_receiver(agreements_number, {'from': accounts[receiver]})
+    deploy.withdrawAsTheReceiver(agreements_number, {'from': accounts[receiver]})
     assert accounts[receiver].balance() == balance_receiver + 4*amount_sent
 
 @pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]])
