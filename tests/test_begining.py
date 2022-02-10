@@ -1204,3 +1204,19 @@ def test_wasContractBreached_agreement_not_activated(deploy):
 
 
 
+'''TEST WITHDRAWASTHERECEIVER'''
+
+
+
+
+'''TEST WITHDRAWASTHESIGNEE'''
+
+
+
+
+'''TEST GETWITHDRAWALRECEIVER'''
+
+
+
+
+'''TEST GETWITHDRAWALSIGNEE'''
