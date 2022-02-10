@@ -1207,7 +1207,38 @@ def test_wasContractBreached_agreement_not_activated(deploy):
 '''TEST WITHDRAWASTHERECEIVER'''
 
 
+@pytest.mark.parametrize("wrong_account", [without_receiver[0], without_receiver[1], without_receiver[2]])
+def test_withdrawAsTheReceiver_first_reguire_fails(deploy, wrong_account):
+    '''require statement exactAgreement[_id].receiver == msg.sender fails'''
+    deploy.ConfirmAgreement(agreements_number, {'from': accounts[receiver]})
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
+    with brownie.reverts("Your logged in address isn't the same as the contract's receiver address"):
+        deploy.withdrawAsTheReceiver(agreements_number, {'from': accounts[wrong_account]})
 
+def test_withdrawAsTheReceiver_first_reguire_fails_pair(deploy):
+    '''require statement exactAgreement[_id].receiver == msg.sender doesn't fail'''
+    deploy.ConfirmAgreement(agreements_number, {'from': accounts[receiver]})
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
+    function_initialize = deploy.withdrawAsTheReceiver(agreements_number, {'from': accounts[receiver]})
+    assert function_initialize.events[0][0]['message'] == "We have transfered ethers"
+
+def test_withdrawAsTheReceiver_second_reguire_fails_case_1(deploy):
+    '''require statement withdraw_receiver[exactAgreement[_id].receiver] > 0 fails, because we send only the deposit'''
+    deploy.ConfirmAgreement(agreements_number, {'from': accounts[receiver]})
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
+    with brownie.reverts("There aren't any funds to withdraw"):
+        deploy.withdrawAsTheReceiver(agreements_number, {'from': accounts[receiver]})
+
+def test_withdrawAsTheReceiver_second_reguire_fails_case_2(deploy):
+    '''require statement withdraw_receiver[exactAgreement[_id].receiver] > 0 fails, because we already withdraw the funds'''
+    deploy.ConfirmAgreement(agreements_number, {'from': accounts[receiver]})
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
+    deploy.withdrawAsTheReceiver(agreements_number, {'from': accounts[receiver]})
+    with brownie.reverts("There aren't any funds to withdraw"):
+        deploy.withdrawAsTheReceiver(agreements_number, {'from': accounts[receiver]})
 
 '''TEST WITHDRAWASTHESIGNEE'''
 
