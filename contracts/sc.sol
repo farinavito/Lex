@@ -268,11 +268,19 @@ contract AgreementBetweenSubjects {
   function terminateContract(uint256 _id) public noReentrant{
     if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Terminated"))){
 		  emit NotifyUser("This agreement is already terminated");
-	  }else{
+	  } else if (exactAgreement[_id].howLong + exactAgreement[_id].agreementTimeCreation < block.timestamp){
       require(exactAgreement[_id].signee == msg.sender, "Only the owner can terminate the agreement");
       exactAgreement[_id].status = "Terminated";
       //return the deposit to the signee
       withdraw_signee[exactAgreement[_id].signee] += exactAgreement[_id].deposit;
+      //ensure that the deposit is reduced to 0
+      exactAgreement[_id].deposit = 0;
+      emit Terminated("This agreement has been terminated");
+    } else {
+      require(exactAgreement[_id].signee == msg.sender, "Only the owner can terminate the agreement");
+      exactAgreement[_id].status = "Terminated";
+      //return the deposit to the receiver
+      withdraw_signee[exactAgreement[_id].receiver] += exactAgreement[_id].deposit;
       //ensure that the deposit is reduced to 0
       exactAgreement[_id].deposit = 0;
       emit Terminated("This agreement has been terminated");
