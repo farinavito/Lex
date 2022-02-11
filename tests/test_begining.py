@@ -110,10 +110,6 @@ def test_exactAgreement_how_long(deploy):
     '''check if the initial how long is agreement_duration'''
     assert deploy.exactAgreement(agreements_number)[11] >= seconds_in_day * initial_howLong
 
-def test_exactAgreement_id_agreement_2(deploy):
-    '''check if the id of the agreement 2 is one'''
-    assert deploy.exactAgreement(1)[0] == '1'
-
 def test_new_agreement_fails_require(deploy):
     '''check if the new agreement fails, because howLong > _everyTimeUnit in the require statement'''
     try:
