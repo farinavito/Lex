@@ -754,18 +754,6 @@ def test_timeNotBreached_value_large_amount_send_value_check_signee_pair(deploy,
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent - value_decreased}) 
     deploy.withdrawAsTheSignee(agreements_number, {'from': accounts[signee]})
     assert accounts[signee].balance() == balance_signee + value_sent
-
-'''
-tried to test failed sent , but couldn't fugure it out
-@pytest.mark.vvv
-def test_timeNotBreached_value_large_amount_fail_sending(deploy):
-    check if the "Failed to send Ether" is outposted when sending the money fails
-    try:
-        deploy.ConfirmAgreement(5, {'from': "0x0000000000000000000000000000000000000000"})
-        deploy.sendPayment(5, {'from': accounts[6]})
-        #deploy.sendPayment(5, {'from': accounts[6], 'value': 20})
-    except Exception as e:        
-        assert e.message[50:] == "Failed to send Ether"'''
    
 def test_timeNotBreached_value_large_amount_emit_NotifyUser(deploy):
     '''check if the event NotifyUser is emitted when amount <= msg.value in the timeNotBreached'''
