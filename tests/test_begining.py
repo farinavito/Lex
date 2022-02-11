@@ -541,6 +541,17 @@ def test_transfer_msg_value_back_to_signee_2(deploy, value_sent, time):
     deploy.withdrawAsTheSignee(agreements_number, {'from': accounts[signee]})
     assert accounts[signee].balance() == balance_signee - 3*value_sent
 
+@pytest.mark.parametrize("value_sent", [more_than_amount_sent[0], more_than_amount_sent[1], more_than_amount_sent[2]])
+def test_transfer_msg_value_back_to_receiver_2(deploy, value_sent):
+    '''check if the deposit is transfered back to the receiver'''
+    deploy.ConfirmAgreement(agreements_number, {'from': accounts[receiver]})
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
+    balance_receiver = accounts[receiver].balance()  
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*value_sent})
+    deploy.terminateContract(agreements_number, {'from': accounts[signee]})
+    deploy.withdrawAsTheReceiver(agreements_number, {'from': accounts[receiver]})
+    assert accounts[receiver].balance() == balance_receiver + 5*value_sent
+
 def test_terminateContract_function_change_status_terminated_deposit(deploy):
     '''check if the function terminateContract changes deposit to zero"'''
     deploy.ConfirmAgreement(agreements_number, {'from': accounts[receiver]})
