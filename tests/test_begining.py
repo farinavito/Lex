@@ -48,6 +48,8 @@ receiver_2 = receiver
 amount_sent_2 = 10**18
 every_period_2 = 2629743
 agreement_duration_2 = 31556926
+initial_every_time_unit_2 = 30
+initial_howLong_2 = 364
 agreements_number_2 = 1
 
 @pytest.fixture(autouse=True)
@@ -134,28 +136,53 @@ def test_new_agreement_fails_require_larger_than_zero(possibilities, deploy):
 '''TESTING CREATEAGREEMENT FUNCTION AGREEMENT 2'''
 
 
-'''
-def test_increment_number_of_agreements_correctly(deploy):
-    assert deploy.exactAgreement(1)[0] == '1'
+def test_exactAgreement_id_2(deploy):
+    '''check if the first id of the agreement is zero'''
+    assert deploy.exactAgreement(agreements_number_2)[0] == str(agreements_number_2)
 
-def test_exactAgreement_check_large_amount(deploy):
-    the max number of digits in "amount
-    assert deploy.exactAgreement(1)[3] == amount_sent_2
+def test_exactAgreement_signee_2(deploy):
+    '''check if the first address of the agreement's signee is the same as the signee'''
+    assert deploy.exactAgreement(agreements_number_2)[1] == accounts[signee_2]
 
-def test_exactAgreement_transactionCreated(deploy):
-    check that transactionCreated is 0
-    assert deploy.exactAgreement(1)[4] == '0' 
+def test_exactAgreement_receiver_2(deploy):
+    '''check if the first address of the agreement's receiver is the same as the accounts[0]'''
+    assert deploy.exactAgreement(agreements_number_2)[2] == accounts[receiver_2]
 
-def test_exactAgreement_check_large_everyTimeUnit(deploy):
-    the max number of digits in "_everyTimeUnit"
-    seconds_in_day = 60 * 60 * 24
-    assert deploy.exactAgreement(1)[9] >= seconds_in_day * 30
+def test_exactAgreement_amount_2(deploy):
+    '''check if the amount of the agreement is 2'''
+    assert deploy.exactAgreement(agreements_number_2)[3] == amount_sent_2  
 
-def test_exactAgreement_check_large_howLong(deploy):
-    the max number of digits in _howLong
-    seconds_in_day = 60 * 60 * 24
-    assert deploy.exactAgreement(1)[11] >= seconds_in_day * 365
-'''
+def test_exactAgreement_initialize_transactionCreated_2(deploy):
+    '''check if the transactionCreated is 0'''
+    assert deploy.exactAgreement(agreements_number_2)[4] == '0'
+
+def test_exactAgreement_deposit_2(deploy):
+    '''check if the initial amount of the deposit is 0'''
+    assert deploy.exactAgreement(agreements_number_2)[5] == '0'
+
+def test_exactAgreement_status_2(deploy):
+    '''check if the initial status is equal to "Created"'''
+    assert deploy.exactAgreement(agreements_number_2)[6] == 'Created'
+
+def test_exactAgreement_approved_2(deploy):
+    '''check if the initial approve "Not Confirmed"'''
+    assert deploy.exactAgreement(agreements_number_2)[7] == 'Not Confirmed'
+
+def test_exactAgreement_time_creation_2(deploy):
+    '''check if the initial time creation is block.timestamp'''
+    assert deploy.exactAgreement(agreements_number_2)[8] == deploy.exactAgreement(1)[8]
+
+def test_exactAgreement_every_time_unit_2(deploy):
+    '''check if the initial every time unit is every_period'''
+    assert deploy.exactAgreement(agreements_number_2)[9] >= seconds_in_day * initial_every_time_unit_2
+
+def test_exactAgreement_position_period_2(deploy):
+    '''check if the initial position period is 0'''
+    assert deploy.exactAgreement(agreements_number_2)[10] == '0'
+
+def test_exactAgreement_how_long_2(deploy):
+    '''check if the initial how long is agreement_duration'''
+    assert deploy.exactAgreement(agreements_number_2)[11] >= seconds_in_day * initial_howLong_2
 
 
 '''TESTING EVENT AGREEMENTINFO INSIDE CREATEAGREEMENT FUNCTION'''
