@@ -516,14 +516,17 @@ def test_transfer_deposit_back_to_signee_pair(deploy, value_sent):
         deploy.terminateContract(agreements_number, {'from': accounts[signee]})
     except Exception as e:
         assert e.message[50:] == "The deposit is not the same as the agreed in the terms"
-    
+
+@pytest.mark.parametrize("time", [more_than_agreement_duration[0], more_than_agreement_duration[1], more_than_agreement_duration[2]])    
 @pytest.mark.parametrize("value_sent", [more_than_amount_sent[0], more_than_amount_sent[1], more_than_amount_sent[2]])
-def test_transfer_msg_value_back_to_signee_2(deploy, value_sent):
+def test_transfer_msg_value_back_to_signee_2(deploy, value_sent, time):
     '''check if the deposit is transfered back to the signee'''
     deploy.ConfirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
     balance_signee = accounts[signee].balance() 
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*value_sent})
+    chain = Chain()
+    chain.sleep(time)
     deploy.terminateContract(agreements_number, {'from': accounts[signee]})
     deploy.withdrawAsTheSignee(agreements_number, {'from': accounts[signee]})
     assert accounts[signee].balance() == balance_signee - 3*value_sent
