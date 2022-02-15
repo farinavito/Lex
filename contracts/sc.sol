@@ -287,6 +287,13 @@ contract AgreementBetweenSubjects {
 	  }
   }
 
+  /// @notice Receiver checking if the contract has been breached for free
+  function getWasContractBreached(uint256 _id) public view returns(bool){
+    require(keccak256(bytes(exactAgreement[_id].approved)) != keccak256(bytes("Not Confirmed")), "The receiver has to confirm the contract");
+    require(keccak256(bytes(exactAgreement[_id].status)) != keccak256(bytes("Created")), "The agreement hasn't been activated yet");
+    return timeWasntBreached(_id);
+  }
+
   /// @notice Receiver checking if the contract has been breached
   function wasContractBreached(uint256 _id) public noReentrant{
     require(exactAgreement[_id].receiver == msg.sender, "The receiver in the agreement's id isn't the same as the address you're logged in");
