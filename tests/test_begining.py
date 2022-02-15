@@ -1105,13 +1105,13 @@ def test_agreement_wasnt_breached_false2(deploy, time):
     chain = Chain()
     #now = chain.time()
     chain.sleep(time)
-    till_when = deploy.exactAgreement(agreements_number)[11]
-    created = deploy.exactAgreement(agreements_number)[8]
-    present = chain.time()
-    assert present + time == created + till_when
+    #till_when = deploy.exactAgreement(agreements_number)[11]
+    #created = deploy.exactAgreement(agreements_number)[8]
+    #present = chain.time()
+    #assert present + time == created + till_when
     #then = chain.time()
-    #function_initialize = deploy.getWasContractBreached(agreements_number)
-    #assert function_initialize == False
+    function_initialize = deploy.getWasContractBreached(agreements_number)
+    assert function_initialize == False
     #assert then == now + time
 
 
