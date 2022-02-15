@@ -1069,20 +1069,20 @@ def test_terminateContract_emit_Terminated_initial_status_terminated(deploy):
 def test_agreement_wasnt_breached_true_require(deploy):
     '''checking if the require statement works'''
     with brownie.reverts("The receiver has to confirm the contract"):
-        deploy.getWasContractBreached(agreements_number)
+        deploy.contractWasntBreached(agreements_number)
 
 def test_agreement_wasnt_breached_true_require2(deploy):
     '''checking if the require statement 2 works'''
     deploy.ConfirmAgreement(agreements_number, {'from': accounts[receiver]})
     with brownie.reverts("The agreement hasn't been activated yet"):
-        deploy.getWasContractBreached(agreements_number)
+        deploy.contractWasntBreached(agreements_number)
 
 def test_agreement_wasnt_breached_true(deploy):
     '''checking if the function returns true'''
     deploy.ConfirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
-    function_initialize = deploy.getWasContractBreached(agreements_number)
+    function_initialize = deploy.contractWasntBreached(agreements_number)
     assert function_initialize == True
 
 @pytest.mark.parametrize("time", [more_than_agreement_duration[0], more_than_agreement_duration[1], more_than_agreement_duration[2]])
@@ -1093,9 +1093,8 @@ def test_agreement_wasnt_breached_false(deploy, time):
     chain = Chain()
     chain.sleep(time)
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
-    function_initialize = deploy.getWasContractBreached(agreements_number)
+    function_initialize = deploy.contractWasntBreached(agreements_number)
     assert function_initialize == False
-
 
 @pytest.mark.parametrize("time", [more_than_agreement_duration[0], more_than_agreement_duration[1], more_than_agreement_duration[2]])
 def test_agreement_wasnt_breached_false2(deploy, time):
@@ -1103,17 +1102,11 @@ def test_agreement_wasnt_breached_false2(deploy, time):
     deploy.ConfirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     chain = Chain()
-    #now = chain.time()
     chain.sleep(time)
-    #till_when = deploy.exactAgreement(agreements_number)[11]
-    #created = deploy.exactAgreement(agreements_number)[8]
-    #present = chain.time()
-    #assert present + time == created + till_when
-    #then = chain.time()
-    function_initialize = deploy.getWasContractBreached(agreements_number)
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
+    function_initialize = deploy.contractWasntBreached(agreements_number)
     assert function_initialize == False
-    #assert then == now + time
-
+ 
 
 
 
