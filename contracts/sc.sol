@@ -241,29 +241,6 @@ contract AgreementBetweenSubjects {
 	  }
   }
 
-  function getFalse() private pure returns(bool){
-    return false;
-  }
-
-  function getTrue() private pure returns(bool){
-    return true;
-  }
-
-  /// @notice Receiver checking if the contract has been breached for free
-  function contractWasntBreached(uint256 _id) public view returns(bool){
-    require(exactAgreement[_id].receiver == msg.sender, "The receiver in the agreement's id isn't the same as the address you're logged in");
-    require(keccak256(bytes(exactAgreement[_id].approved)) != keccak256(bytes("Not Confirmed")), "The receiver has to confirm the contract");
-    require(keccak256(bytes(exactAgreement[_id].status)) != keccak256(bytes("Created")), "The agreement hasn't been activated yet");
-    //if(timeWasntBreached(_id)){
-    if(1 > 0){
-      //getTrue();
-      return true;
-    } else {
-      //getFalse();
-      return false;
-    }
-  }
-
   /// @notice Receiver checking if the contract has been breached
   function wasContractBreached(uint256 _id) public noReentrant{
     require(exactAgreement[_id].receiver == msg.sender, "The receiver in the agreement's id isn't the same as the address you're logged in");
