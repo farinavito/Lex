@@ -134,52 +134,6 @@ contract AgreementBetweenSubjects {
           
   }
 
-  /// @notice Emiting the info of all the signee's agreements from the address given 
-  function MySenderAgreements(address _myAddress) public {
-      require(msg.sender == _myAddress, "The address provided doesn't correspond with the one you're logged in");
-      for (uint256 i = 0; i < mySenderAgreements[_myAddress].length; i++){
-          Agreement storage newAgreement = exactAgreement[mySenderAgreements[_myAddress][i]];
-          emit AgreementInfo(
-            newAgreement.id, 
-            newAgreement.signee, 
-            newAgreement.receiver, 
-            newAgreement.amount,
-            newAgreement.transactionCreated,
-            newAgreement.deposit, 
-            newAgreement.status,
-            newAgreement.approved,
-            newAgreement.agreementTimeCreation, 
-            newAgreement.everyTimeUnit, 
-            newAgreement.positionPeriod, 
-            newAgreement.howLong
-            );
-      }
-  }
-
-
-  /// @notice Emiting the info of all the signee's agreements from the address given 
-  function MyReceiverAgreements(address _myAddress) public {
-      require(msg.sender == _myAddress, "The address provided doesn't correspond with the one you're logged in");
-      for (uint256 i = 0; i < myReceiverAgreements[_myAddress].length; i++){
-          Agreement storage newAgreement = exactAgreement[myReceiverAgreements[_myAddress][i]];
-          emit AgreementInfo(
-            newAgreement.id, 
-            newAgreement.signee, 
-            newAgreement.receiver, 
-            newAgreement.amount,
-            newAgreement.transactionCreated,
-            newAgreement.deposit, 
-            newAgreement.status,
-            newAgreement.approved,
-            newAgreement.agreementTimeCreation, 
-            newAgreement.everyTimeUnit, 
-            newAgreement.positionPeriod, 
-            newAgreement.howLong
-            );  
-      }
-    }
-
-
   /// @notice Initializing the position from where the everyTimeUnit is added
   function initializingPositionPeriod(uint256 _id) private {
       exactAgreement[_id].positionPeriod = exactAgreement[_id].agreementTimeCreation + (exactAgreement[_id].everyTimeUnit);
