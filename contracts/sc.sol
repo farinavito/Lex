@@ -205,7 +205,6 @@ contract AgreementBetweenSubjects {
         emit Terminated("This agreement was terminated due to late payment");
       }
     } else if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Created"))){
-        //CHANGE
         require(exactAgreement[_id].agreementTimeCreation <= block.timestamp, "The agreement hasn't started yet");
         require(exactAgreement[_id].howLong + exactAgreement[_id].agreementTimeCreation > block.timestamp, "This agreement's deadline has ended");
         require(exactAgreement[_id].amount <= msg.value, "The deposit is not the same as the agreed in the terms");

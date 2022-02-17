@@ -570,6 +570,20 @@ def test_sendPayments_fails_require_not_confirmed(deploy):
 
 #Checking when the agreement's status is "Created"
 
+def test_sendPayments_require_statement_fails_agreement_not_started(deploy):
+    '''check if the require statement fails when the agreement hasn't started yet'''
+    try:
+        chain = Chain()
+        now = chain.time()
+        _startAgreement = now + 10
+        
+        deploy.createAgreement(accounts[receiver], amount_sent, every_period, agreement_duration, _startAgreement, {'from': accounts[signee], 'value': amount_sent})
+        assert deploy.exactAgreement(2)[8] == _startAgreement
+        deploy.ConfirmAgreement(2, {'from': accounts[receiver]})
+        deploy.sendPayment(2, {'from': accounts[signee], 'value': amount_sent})
+    except Exception as e:
+        assert e.message[50:] == "The agreement hasn't started yet"
+
 @pytest.mark.parametrize("seconds_sleep",  [more_than_agreement_duration[0], more_than_agreement_duration[1], more_than_agreement_duration[2]])
 def test_sendPayments_require_statement_fails_agreement_not_ended(deploy, seconds_sleep):
     '''check if the require statement fails when the agreement's deadline has ended'''
