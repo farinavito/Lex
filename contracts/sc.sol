@@ -250,7 +250,6 @@ contract AgreementBetweenSubjects {
     require(keccak256(bytes(exactAgreement[_id].approved)) == keccak256(bytes("Confirmed")), "The receiver has to confirm the contract");
     require(exactAgreement[_id].receiver == msg.sender, "The receiver in the agreement's id isn't the same as the address you're logged in");
     //checking if the agreement was Activated
-    //CHANGE
     if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Activated"))){
       //checking if the deadline was breached
       if(timeWasntBreached(_id)){
