@@ -140,8 +140,17 @@ def test_new_agreement_fails_require_larger_than_zero(possibilities, deploy):
             deploy.createAgreement('0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2', possibilities[0], possibilities[1], possibilities[2], startAgreement, {'from': accounts[signee], 'value': amount_sent})
         except Exception as e:
             assert e.message[50:] == 'All input data must be larger than 0'
-    
 
+@pytest.mark.parametrize("_amount", [less_than_amount_sent[0], less_than_amount_sent[1], less_than_amount_sent[2]])    
+def test_new_agreement_fails_require_msg_value_larger_than_amount(deploy, _amount):
+    '''check if the creation of the new agreement fails, because the msg.value should be larger or equal to amount sent'''
+    try:
+        chain = Chain()
+        now = chain.time()
+        startAgreement = now + 10000
+        deploy.createAgreement(accounts[receiver], amount_sent, every_period, agreement_duration, startAgreement, {'from': accounts[signee], 'value': _amount})
+    except Exception as e:
+            assert e.message[50:] == 'Deposit has to be at least the size of the amount'
 
 '''TESTING CREATEAGREEMENT FUNCTION AGREEMENT 2'''
 
