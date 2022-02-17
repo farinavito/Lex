@@ -1169,6 +1169,16 @@ def test_wasContractBreached_status_created_status_terminated(deploy, seconds_sl
     deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
     assert deploy.exactAgreement(agreements_number)[6] == "Terminated" 
 
+@pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]])    
+def test_wasContractBreached_status_created_status_terminated(deploy, seconds_sleep):
+    '''check if the wasContractBreached function emits NotifyUser when exactAgreement[_id].agreementTimeCreation + (6*60*60*24) > block.timestamp fails'''
+    balance_receiver = accounts[receiver].balance()
+    chain = Chain()
+    chain.sleep(seconds_sleep)
+    deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
+    deploy.withdrawAsTheReceiver(agreements_number, {'from': accounts[receiver]})
+    assert accounts[receiver].balance() == balance_receiver + amount_sent
+
 
 
 '''TEST WITHDRAWASTHERECEIVER'''
