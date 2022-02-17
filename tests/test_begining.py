@@ -91,7 +91,7 @@ def test_exactAgreement_initialize_transactionCreated(deploy):
     assert deploy.exactAgreement(agreements_number)[4] == '0'
 
 def test_exactAgreement_deposit(deploy):
-    '''check if the initial amount of the deposit is 0'''
+    '''check if the initial amount of the deposit is amount_sent'''
     assert deploy.exactAgreement(agreements_number)[5] == amount_sent
 
 def test_exactAgreement_status(deploy):
@@ -103,7 +103,7 @@ def test_exactAgreement_approved(deploy):
     assert deploy.exactAgreement(agreements_number)[7] == 'Not Confirmed'
 
 def test_exactAgreement_time_creation(deploy):
-    '''check if the initial time creation is block.timestamp'''
+    '''check if the initial time creation is startAgreement'''
     assert deploy.exactAgreement(agreements_number)[8] == deploy.exactAgreement(0)[8]
 
 def test_exactAgreement_every_time_unit(deploy):

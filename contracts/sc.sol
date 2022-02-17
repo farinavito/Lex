@@ -102,15 +102,12 @@ contract AgreementBetweenSubjects {
         newAgreement.amount = _amount;
 
         //the amount that is actually deposited to the agreement. We initialize it with 0
-        //CHANGE
         newAgreement.deposit = msg.value;
-        //newAgreement.deposit = 0;
         //the status of the agreement when its created
         newAgreement.status = "Created";
         //initialize the approved term
         newAgreement.approved = "Not Confirmed";
         //when was the agreement created
-        //CHANGE
         newAgreement.agreementTimeCreation = _startOfTheAgreement;
         //newAgreement.agreementTimeCreation = block.timestamp;
         //period of the payment
