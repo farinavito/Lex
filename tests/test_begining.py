@@ -629,12 +629,6 @@ def test_sendPayments_change_initializePeriod_initial_status_created(deploy):
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     assert deploy.exactAgreement(agreements_number)[10] == deploy.exactAgreement(0)[8] + deploy.exactAgreement(0)[9]
 
-def test_sendPayments_change_agreementDeposit_initial_status_created(deploy):
-    '''checking if the deposit has been initialized to msg.value when msg.value is larger or equal to agreedDeposit'''
-    deploy.ConfirmAgreement(agreements_number, {'from': accounts[receiver]})
-    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
-    assert deploy.exactAgreement(agreements_number)[5] == amount_sent
-
 def test_sendPayments_emit_NotifyUser_initial_status_created(deploy):
     '''checking if the event has been emitted as "We have activate the agreement" when msg.value is larger or equal to agreedDeposit'''
     deploy.ConfirmAgreement(agreements_number, {'from': accounts[receiver]})

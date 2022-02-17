@@ -211,9 +211,6 @@ contract AgreementBetweenSubjects {
         exactAgreement[_id].status = "Activated";
         //set the position period
         initializingPositionPeriod(_id);
-        //deposit the amount
-        //CHANGE
-        //exactAgreement[_id].deposit = msg.value;
         emit NotifyUser("We have activate the agreement"); 
     } else if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Terminated"))){
           //return the transaction to the signee
