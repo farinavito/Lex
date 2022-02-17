@@ -247,7 +247,7 @@ contract AgreementBetweenSubjects {
   /// @notice Receiver checking if the contract has been breached
   function wasContractBreached(uint256 _id) public noReentrant{
     //CHANGE
-    require(keccak256(bytes(exactAgreement[_id].approved)) == keccak256(bytes("Confirmed")), "The receiver has to confirm the contract");
+    //require(keccak256(bytes(exactAgreement[_id].approved)) == keccak256(bytes("Confirmed")), "The receiver has to confirm the contract");
     require(exactAgreement[_id].receiver == msg.sender, "The receiver in the agreement's id isn't the same as the address you're logged in");
     //checking if the agreement was Activated
     if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Activated"))){

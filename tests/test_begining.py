@@ -1151,6 +1151,15 @@ def test_wasContractBreached_agreement_not_activated(deploy):
     function_initialize = deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
     assert function_initialize.events[0][0]['message'] == "The agreement wasn't breached"
 
+def test_wasContractBreached_status_created_notify_user(deploy):
+    '''check if the wasContractBreached function emits NotifyUser when exactAgreement[_id].agreementTimeCreation + (6*60*60*24) > block.timestamp'''
+    function_initialize = deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
+    assert function_initialize.events[0][0]['message'] == "The agreement wasn't breached"
+@pytest.mark.skip(reason='doesn not work correctly')
+def test_wasContractBreached_status_created_require_fails(deploy):
+    '''check if the wasContractBreached function emits NotifyUser when exactAgreement[_id].agreementTimeCreation + (6*60*60*24) > block.timestamp'''
+    deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
+    
 
 
 
