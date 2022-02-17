@@ -277,12 +277,9 @@ contract AgreementBetweenSubjects {
         exactAgreement[_id].deposit = 0;
         emit Terminated("This agreement has been terminated");
       }
-    }else if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Terminated"))){
-        emit NotifyUser("This agreement is already terminated");
     } else {
-        emit NotifyUser("This agreement doesn't exist");
+        emit NotifyUser("This agreement is already terminated");
     }
-    
   }
 
   //function for the receiver - wether he agrees with the terms or not, approves the contract or not. If he does, we are able to activate it, otherwise we can't
