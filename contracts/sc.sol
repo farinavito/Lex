@@ -246,8 +246,6 @@ contract AgreementBetweenSubjects {
 
   /// @notice Receiver checking if the contract has been breached
   function wasContractBreached(uint256 _id) public noReentrant{
-    //CHANGE
-    //require(keccak256(bytes(exactAgreement[_id].approved)) == keccak256(bytes("Confirmed")), "The receiver has to confirm the contract");
     require(exactAgreement[_id].receiver == msg.sender, "The receiver in the agreement's id isn't the same as the address you're logged in");
     //checking if the agreement was Activated
     if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Activated"))){
@@ -264,8 +262,7 @@ contract AgreementBetweenSubjects {
         //ensure that the deposit is reduced to 0
         exactAgreement[_id].deposit = 0;
         emit Terminated("This agreement has been terminated");
-      }
-     //CHANGE 
+      } 
     }else if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Created"))){
       if(exactAgreement[_id].agreementTimeCreation + (6*60*60*24) > block.timestamp){
         emit NotifyUser("The agreement wasn't breached");
@@ -283,7 +280,6 @@ contract AgreementBetweenSubjects {
     }else if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Terminated"))){
         emit NotifyUser("This agreement is already terminated");
     } else {
-        //CHANGE
         emit NotifyUser("This agreement doesn't exist");
     }
     
