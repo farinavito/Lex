@@ -9,7 +9,7 @@ from brownie.network.state import Chain
 #new agreement
 signee = 1
 receiver = 9
-amount_sent = 10**5
+amount_sent = 10**1
 every_period = 604800
 agreement_duration = 2629743
 initial_every_time_unit = 7
@@ -21,7 +21,7 @@ without_signee = [signee + 1, signee + 2, signee + 3]
 without_receiver = [receiver - 1, receiver - 2, receiver - 3]
 
 
-less_than_amount_sent = [amount_sent - 10**2, amount_sent - 10**3, amount_sent - 10**4]
+less_than_amount_sent = [amount_sent - 5, amount_sent - 6, amount_sent - 7]
 more_than_amount_sent = [amount_sent + 10**2, amount_sent + 10**3, amount_sent + 10**4]
 
 
@@ -34,18 +34,23 @@ more_than_agreement_duration = [agreement_duration + 10**5, agreement_duration +
 
 seconds_in_day = 60 * 60 * 24
 
+
+
 @pytest.fixture()
 def deploy(AgreementBetweenSubjects, module_isolation):
     return AgreementBetweenSubjects.deploy({'from': accounts[0]})
 
 @pytest.fixture(autouse=True)
 def new_agreement(deploy, module_isolation):
-    return deploy.createAgreement(accounts[receiver], amount_sent, every_period, agreement_duration, {'from': accounts[signee]})
+    chain = Chain()
+    now = chain.time()
+    startAgreement = now + 1
+    return deploy.createAgreement(accounts[receiver], amount_sent, every_period, agreement_duration, startAgreement, {'from': accounts[signee], 'value': amount_sent})
     
 
 signee_2 = signee
 receiver_2 = receiver
-amount_sent_2 = 10**18
+amount_sent_2 = 10**1
 every_period_2 = 2629743
 agreement_duration_2 = 31556926
 initial_every_time_unit_2 = 30
@@ -54,7 +59,10 @@ agreements_number_2 = 1
 
 @pytest.fixture(autouse=True)
 def new_agreement_2(deploy, module_isolation):
-    return deploy.createAgreement(accounts[receiver_2], amount_sent_2, every_period_2, agreement_duration_2, {'from': accounts[signee_2]})
+    chain = Chain()
+    now = chain.time()
+    startAgreement = now + 4
+    return deploy.createAgreement(accounts[receiver_2], amount_sent_2, every_period_2, agreement_duration_2, startAgreement, {'from': accounts[signee_2], 'value': amount_sent_2})
     
 
 
@@ -84,7 +92,7 @@ def test_exactAgreement_initialize_transactionCreated(deploy):
 
 def test_exactAgreement_deposit(deploy):
     '''check if the initial amount of the deposit is 0'''
-    assert deploy.exactAgreement(agreements_number)[5] == '0'
+    assert deploy.exactAgreement(agreements_number)[5] == amount_sent
 
 def test_exactAgreement_status(deploy):
     '''check if the initial status is equal to "Created"'''
@@ -113,8 +121,11 @@ def test_exactAgreement_how_long(deploy):
 def test_new_agreement_fails_require(deploy):
     '''check if the new agreement fails, because howLong > _everyTimeUnit in the require statement'''
     try:
+        chain = Chain()
+        now = chain.time()
+        startAgreement = now + 10000
         #length of the agreement is longer than _everyTimeUnit
-        deploy.createAgreement('0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2', 2, 500, 5, {'from': accounts[signee]})
+        deploy.createAgreement('0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2', 2, 500, 5, startAgreement, {'from': accounts[signee], 'value': amount_sent})
     except Exception as e:
         assert e.message[50:] == 'The period of the payment is greater than the duration of the contract'
 
@@ -123,7 +134,10 @@ def test_new_agreement_fails_require_larger_than_zero(possibilities, deploy):
     '''check if the creation of the new agreement fails, because the input data should be larger than 0'''
     for _ in range(7):
         try:
-            deploy.createAgreement('0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2', possibilities[0], possibilities[1], possibilities[2], {'from': accounts[signee]})
+            chain = Chain()
+            now = chain.time()
+            startAgreement = now + 10000
+            deploy.createAgreement('0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2', possibilities[0], possibilities[1], possibilities[2], startAgreement, {'from': accounts[signee], 'value': amount_sent})
         except Exception as e:
             assert e.message[50:] == 'All input data must be larger than 0'
     
@@ -154,7 +168,7 @@ def test_exactAgreement_initialize_transactionCreated_2(deploy):
 
 def test_exactAgreement_deposit_2(deploy):
     '''check if the initial amount of the deposit is 0'''
-    assert deploy.exactAgreement(agreements_number_2)[5] == '0'
+    assert deploy.exactAgreement(agreements_number_2)[5] == amount_sent_2
 
 def test_exactAgreement_status_2(deploy):
     '''check if the initial status is equal to "Created"'''
@@ -386,7 +400,7 @@ def test_transfer_deposit_back_to_signee(deploy, value_sent, time):
     chain.sleep(time)
     deploy.terminateContract(agreements_number, {'from': accounts[signee]})
     deploy.withdrawAsTheSignee(agreements_number, {'from': accounts[signee]})
-    assert accounts[signee].balance() == balance_signee + value_sent
+    assert accounts[signee].balance() == balance_signee + amount_sent
 
 @pytest.mark.parametrize("value_sent", [less_than_amount_sent[0], less_than_amount_sent[1], less_than_amount_sent[2]])
 def test_transfer_deposit_back_to_signee_pair(deploy, value_sent):
@@ -406,7 +420,7 @@ def test_transfer_deposit_back_to_receiver(deploy, value_sent):
     balance_receiver = accounts[receiver].balance() 
     deploy.terminateContract(agreements_number, {'from': accounts[signee]})
     deploy.withdrawAsTheReceiver(agreements_number, {'from': accounts[receiver]})
-    assert accounts[receiver].balance() == balance_receiver + value_sent
+    assert accounts[receiver].balance() == balance_receiver + amount_sent
 
 @pytest.mark.parametrize("time", [more_than_agreement_duration[0], more_than_agreement_duration[1], more_than_agreement_duration[2]])    
 @pytest.mark.parametrize("value_sent", [more_than_amount_sent[0], more_than_amount_sent[1], more_than_amount_sent[2]])
@@ -420,7 +434,7 @@ def test_transfer_msg_value_back_to_signee_2(deploy, value_sent, time):
     chain.sleep(time)
     deploy.terminateContract(agreements_number, {'from': accounts[signee]})
     deploy.withdrawAsTheSignee(agreements_number, {'from': accounts[signee]})
-    assert accounts[signee].balance() == balance_signee - 3*value_sent
+    assert accounts[signee].balance() == balance_signee - 4*value_sent + amount_sent
 
 @pytest.mark.parametrize("value_sent", [more_than_amount_sent[0], more_than_amount_sent[1], more_than_amount_sent[2]])
 def test_transfer_msg_value_back_to_receiver_2(deploy, value_sent):
@@ -431,7 +445,7 @@ def test_transfer_msg_value_back_to_receiver_2(deploy, value_sent):
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*value_sent})
     deploy.terminateContract(agreements_number, {'from': accounts[signee]})
     deploy.withdrawAsTheReceiver(agreements_number, {'from': accounts[receiver]})
-    assert accounts[receiver].balance() == balance_receiver + 5*value_sent
+    assert accounts[receiver].balance() == balance_receiver + 4*value_sent + amount_sent
 
 def test_terminateContract_function_change_status_terminated_deposit(deploy):
     '''check if the function terminateContract changes deposit to zero"'''
@@ -544,6 +558,8 @@ def test_sendPayments_require_statement_fails_agreement_not_ended(deploy, second
         deploy.ConfirmAgreement(agreements_number, {'from': accounts[receiver]})
         chain = Chain()
         chain.sleep(seconds_sleep)
+        #now = chain.time()
+        #assert deploy.exactAgreement(agreements_number)[8] >= now
         deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})      
     except Exception as e:
         assert e.message[50:] == "This agreement's deadline has ended"
@@ -790,7 +806,7 @@ def test_timeNotBreached_value_smaller_amount_emit_Terminated_pair(deploy, value
 
 #if the transaction wasn't sent on time
 
-@pytest.mark.parametrize("seconds_sleep",  [every_period, 604801, 688888])
+@pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]])
 def test_timeNotBreached_received_on_time_false_1st_part_if_statement(deploy, seconds_sleep):
     '''check if the timeNotBreached returns false, when transactionCreated > positionPeriod'''
     deploy.ConfirmAgreement(agreements_number, {'from': accounts[receiver]})
@@ -800,7 +816,7 @@ def test_timeNotBreached_received_on_time_false_1st_part_if_statement(deploy, se
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     assert deploy.exactAgreement(agreements_number)[6] == 'Terminated' 
 
-@pytest.mark.parametrize("seconds_sleep",  [60*60*24*7, 60*60*24*8, 60*60*24*10])
+@pytest.mark.parametrize("seconds_sleep",  [60*60*24*8, 60*60*24*9, 60*60*24*10])
 def test_timeNotBreached_received_on_time_false_2nd_part_if_statement(deploy, seconds_sleep):
     '''check if the timeNotBreached returns false, when transaction received wasn't on time'''
     deploy.ConfirmAgreement(agreements_number, {'from': accounts[receiver]})
@@ -810,7 +826,7 @@ def test_timeNotBreached_received_on_time_false_2nd_part_if_statement(deploy, se
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     assert deploy.exactAgreement(agreements_number)[6] == 'Terminated'
 
-@pytest.mark.parametrize("seconds_sleep",  [2240000, agreement_duration, 2629744, 26297440])
+@pytest.mark.parametrize("seconds_sleep",  [agreement_duration, 2629744, 26297440])
 def test_timeNotBreached_breached_on_time_false_3rd_part_if_statement(deploy, seconds_sleep):
     '''check if the timeNotBreached returns false, when the deadline of the agreement has ended'''
     chain = Chain()

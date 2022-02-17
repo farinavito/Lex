@@ -80,16 +80,21 @@ contract AgreementBetweenSubjects {
   event Terminated(string message);
   /// @notice After other event than Terminated happens, emit it and send a message
   event NotifyUser(string message);
-
+  //CHANGE
   /// @notice Creating a new agreement
   function createAgreement(
     address payable _receiver, 
     uint256 _amount,
     uint256 _everyTimeUnit,
-    uint256 _howLong
-    ) public {
+    uint256 _howLong,
+    uint256 _startOfTheAgreement
+    ) public payable {
         require(_amount > 0 && _everyTimeUnit > 0 && _howLong > 0, "All input data must be larger than 0");
         require(_howLong > _everyTimeUnit, "The period of the payment is greater than the duration of the contract");
+        //CHANGE
+        require(msg.value >= _amount, "Deposit has to be at least the size of the amount");
+        //CHANGE
+        require(_startOfTheAgreement >= block.timestamp, "The agreement can't be created in the past");
         uint256 agreementId = numAgreement++;
         //creating a new agreement
         Agreement storage newAgreement = exactAgreement[agreementId];
@@ -99,13 +104,17 @@ contract AgreementBetweenSubjects {
         newAgreement.amount = _amount;
 
         //the amount that is actually deposited to the agreement. We initialize it with 0
-        newAgreement.deposit = 0;
+        //CHANGE
+        newAgreement.deposit = msg.value;
+        //newAgreement.deposit = 0;
         //the status of the agreement when its created
         newAgreement.status = "Created";
         //initialize the approved term
         newAgreement.approved = "Not Confirmed";
         //when was the agreement created
-        newAgreement.agreementTimeCreation = block.timestamp;
+        //CHANGE
+        newAgreement.agreementTimeCreation = _startOfTheAgreement;
+        //newAgreement.agreementTimeCreation = block.timestamp;
         //period of the payment
         newAgreement.everyTimeUnit = _everyTimeUnit;
         //position of the end of the period in which the signee has to send the money (for example: ...every 3 weeks... - this period needs to update itself)
@@ -201,13 +210,16 @@ contract AgreementBetweenSubjects {
         emit Terminated("This agreement was terminated due to late payment");
       }
     } else if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Created"))){
+        //CHANGE
+        require(exactAgreement[_id].agreementTimeCreation <= block.timestamp, "The agreement hasn't started yet");
         require(exactAgreement[_id].howLong + exactAgreement[_id].agreementTimeCreation > block.timestamp, "This agreement's deadline has ended");
         require(exactAgreement[_id].amount <= msg.value, "The deposit is not the same as the agreed in the terms");
         exactAgreement[_id].status = "Activated";
         //set the position period
         initializingPositionPeriod(_id);
         //deposit the amount
-        exactAgreement[_id].deposit = msg.value;
+        //CHANGE
+        //exactAgreement[_id].deposit = msg.value;
         emit NotifyUser("We have activate the agreement"); 
     } else if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Terminated"))){
           //return the transaction to the signee
@@ -243,9 +255,12 @@ contract AgreementBetweenSubjects {
 
   /// @notice Receiver checking if the contract has been breached
   function wasContractBreached(uint256 _id) public noReentrant{
+    //CHANGE
+    require(keccak256(bytes(exactAgreement[_id].approved)) == keccak256(bytes("Confirmed")), "The receiver has to confirm the contract");
     require(exactAgreement[_id].receiver == msg.sender, "The receiver in the agreement's id isn't the same as the address you're logged in");
     //checking if the agreement was Activated
-    if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Activated"))){
+    //CHANGE
+    if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Activated")) || keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Created"))){
       //checking if the deadline was breached
       if(timeWasntBreached(_id)){
         emit NotifyUser("The agreement wasn't breached");
@@ -263,7 +278,8 @@ contract AgreementBetweenSubjects {
     } else if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Terminated"))){
         emit NotifyUser("This agreement is already terminated");
     } else {
-        emit NotifyUser("This agreement hasn't been activated");
+        //CHANGE
+        emit NotifyUser("This agreement doesn't exist");
     }
     
   }
