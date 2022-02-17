@@ -260,7 +260,7 @@ contract AgreementBetweenSubjects {
     require(exactAgreement[_id].receiver == msg.sender, "The receiver in the agreement's id isn't the same as the address you're logged in");
     //checking if the agreement was Activated
     //CHANGE
-    if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Activated")) || keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Created"))){
+    if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Activated"))){
       //checking if the deadline was breached
       if(timeWasntBreached(_id)){
         emit NotifyUser("The agreement wasn't breached");
@@ -275,7 +275,22 @@ contract AgreementBetweenSubjects {
         exactAgreement[_id].deposit = 0;
         emit Terminated("This agreement has been terminated");
       }
-    } else if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Terminated"))){
+     //CHANGE 
+    }else if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Created"))){
+      if(exactAgreement[_id].agreementTimeCreation + (6*60*60*24) > block.timestamp){
+        emit NotifyUser("The agreement wasn't breached");
+      } else {
+        //receiver has to wait 7 days after the breached date to withdraw the deposit
+        require(exactAgreement[_id].positionPeriod + (60*60*24*7) < block.timestamp, "You have to wait at least 7 days after breached deadline to withdraw the deposit");
+        //terminate the agreement
+        exactAgreement[_id].status = "Terminated";
+        //return deposit to receiver
+        withdraw_receiver[exactAgreement[_id].receiver] += exactAgreement[_id].deposit;
+        //ensure that the deposit is reduced to 0
+        exactAgreement[_id].deposit = 0;
+        emit Terminated("This agreement has been terminated");
+      }
+    }else if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Terminated"))){
         emit NotifyUser("This agreement is already terminated");
     } else {
         //CHANGE
