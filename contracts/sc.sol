@@ -222,7 +222,7 @@ contract AgreementBetweenSubjects {
   }
 
   /// @notice Terminating the agreement by the signee
-  function terminateContract(uint256 _id) public noReentrant{
+  function terminateContract(uint256 _id) public {
     if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Terminated"))){
 		  emit NotifyUser("This agreement is already terminated");
 	  } else if (exactAgreement[_id].howLong + exactAgreement[_id].agreementTimeCreation < block.timestamp){
@@ -245,7 +245,7 @@ contract AgreementBetweenSubjects {
   }
 
   /// @notice Receiver checking if the contract has been breached
-  function wasContractBreached(uint256 _id) public noReentrant{
+  function wasContractBreached(uint256 _id) public {
     require(exactAgreement[_id].receiver == msg.sender, "The receiver in the agreement's id isn't the same as the address you're logged in");
     //checking if the agreement was Activated
     if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Activated"))){
