@@ -360,7 +360,11 @@ def test_ConfirmAgreement_notify_user(deploy):
     function_initialize = deploy.ConfirmAgreement(agreements_number, {'from': accounts[receiver]}) 
     assert function_initialize.events[0][0]['message'] == "The agreement was confirmed"
 
-
+def test_ConfirmAgreement_terminated_notify_user(deploy):
+    '''check if the ConfirmAgreement emits an event when already terminated'''
+    deploy.terminateContract(agreements_number, {'from': accounts[signee]})
+    function_initialize = deploy.ConfirmAgreement(agreements_number, {'from': accounts[receiver]}) 
+    assert function_initialize.events[0][0]['message'] == "The agreement is already terminated"
 
 
 
