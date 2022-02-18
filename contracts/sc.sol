@@ -94,6 +94,7 @@ contract AgreementBetweenSubjects {
         require(msg.value >= _amount, "Deposit has to be at least the size of the amount");
         require(_startOfTheAgreement >= block.timestamp, "The agreement can't be created in the past");
         uint256 agreementId = numAgreement++;
+
         //creating a new agreement
         Agreement storage newAgreement = exactAgreement[agreementId];
         newAgreement.id = agreementId;
@@ -109,7 +110,6 @@ contract AgreementBetweenSubjects {
         newAgreement.approved = "Not Confirmed";
         //when was the agreement created
         newAgreement.agreementTimeCreation = _startOfTheAgreement;
-        //newAgreement.agreementTimeCreation = block.timestamp;
         //period of the payment
         newAgreement.everyTimeUnit = _everyTimeUnit;
         //position of the end of the period in which the signee has to send the money (for example: ...every 3 weeks... - this period needs to update itself)
