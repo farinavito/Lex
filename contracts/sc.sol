@@ -14,8 +14,8 @@ contract AgreementBetweenSubjects {
   /// @param deposit The agreed amount of the deposit by both sides for the contract. Initial state will be zero
   /// @param status Representation of different stages in the agreement: Created, Activated, Terminated
   /// @param approved Confirmation of the agreedDeposit by the receiver. Stages: Not Confirmed, Confirmed
-  /// @param agreementTimeCreation The unix timestamp of the agreement's creation. FRONTEND
-  /// @param everyTimeUnit The number of days till when the signee's transaction has to be created. First calculated by agreementTimeCreation + everyTimeUnit. Later just adding everyTimeUnit
+  /// @param agreementStartDateThe unix timestamp of the agreement's creation. FRONTEND
+  /// @param everyTimeUnit The number of days till when the signee's transaction has to be created. First calculated by agreementStartDate+ everyTimeUnit. Later just adding everyTimeUnit
   /// @param positionPeriod A pointer to the current everyTimeUnit parameter
   /// @param howLong The number of days till the agreement expires
   struct Agreement{
@@ -27,7 +27,7 @@ contract AgreementBetweenSubjects {
     uint256 deposit;
     string status;
     string approved;
-    uint256 agreementTimeCreation;
+    uint256 agreementStartDate;
     uint256 everyTimeUnit;
     uint256 positionPeriod;
     uint256 howLong;
@@ -70,7 +70,7 @@ contract AgreementBetweenSubjects {
     uint256 agreementDeposit,
     string agreementStatus,
     string agreementApproved,
-    uint256 agreementTimeCreation,
+    uint256 agreementStartDate,
     uint256 agreementTimePeriods,
     uint256 agreementPositionPeriod,
     uint256 agreementTimeDuration
@@ -109,7 +109,7 @@ contract AgreementBetweenSubjects {
         //initialize the approved term
         newAgreement.approved = "Not Confirmed";
         //when was the agreement created
-        newAgreement.agreementTimeCreation = _startOfTheAgreement;
+        newAgreement.agreementStartDate= _startOfTheAgreement;
         //period of the payment
         newAgreement.everyTimeUnit = _everyTimeUnit;
         //position of the end of the period in which the signee has to send the money (for example: ...every 3 weeks... - this period needs to update itself)
@@ -130,7 +130,7 @@ contract AgreementBetweenSubjects {
           newAgreement.deposit, 
           newAgreement.status,
           newAgreement.approved,
-          newAgreement.agreementTimeCreation, 
+          newAgreement.agreementStartDate, 
           newAgreement.everyTimeUnit, 
           newAgreement.positionPeriod, 
           newAgreement.howLong
@@ -140,7 +140,7 @@ contract AgreementBetweenSubjects {
 
   /// @notice Initializing the position from where the everyTimeUnit is added
   function initializingPositionPeriod(uint256 _id) private {
-      exactAgreement[_id].positionPeriod = exactAgreement[_id].agreementTimeCreation + (exactAgreement[_id].everyTimeUnit);
+      exactAgreement[_id].positionPeriod = exactAgreement[_id].agreementStartDate+ (exactAgreement[_id].everyTimeUnit);
     }
 
   /// @notice Verifying that the transaction created was sooner than its deadline 
@@ -148,7 +148,7 @@ contract AgreementBetweenSubjects {
       //period till when we have to receive the transaction
       uint256 extendedPeriod = exactAgreement[_id].positionPeriod + (6*60*60*24);
       //if the transaction sent was on time, transaction was received on time and transaction was sent before the agreement's deadline
-	    if (exactAgreement[_id].positionPeriod  >= exactAgreement[_id].transactionCreated && extendedPeriod >= block.timestamp && exactAgreement[_id].howLong + exactAgreement[_id].agreementTimeCreation >= block.timestamp){ 
+	    if (exactAgreement[_id].positionPeriod  >= exactAgreement[_id].transactionCreated && extendedPeriod >= block.timestamp && exactAgreement[_id].howLong + exactAgreement[_id].agreementStartDate>= block.timestamp){ 
         exactAgreement[_id].positionPeriod += exactAgreement[_id].everyTimeUnit;
 		    return true;
 	    } else{
@@ -161,7 +161,7 @@ contract AgreementBetweenSubjects {
       //period till when we have to receive the transaction
       uint256 extendedPeriod = exactAgreement[_id].positionPeriod + (6*60*60*24);
       //if the transaction sent was on time, transaction was received on time and transaction was sent before the agreement's deadline
-	    if (exactAgreement[_id].positionPeriod  >= exactAgreement[_id].transactionCreated && extendedPeriod >= block.timestamp && exactAgreement[_id].howLong + exactAgreement[_id].agreementTimeCreation >= block.timestamp){ 
+	    if (exactAgreement[_id].positionPeriod  >= exactAgreement[_id].transactionCreated && extendedPeriod >= block.timestamp && exactAgreement[_id].howLong + exactAgreement[_id].agreementStartDate>= block.timestamp){ 
 		    return true;
 	    } else{
 		    return false;
@@ -205,8 +205,8 @@ contract AgreementBetweenSubjects {
         emit Terminated("This agreement was terminated due to late payment");
       }
     } else if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Created"))){
-        require(exactAgreement[_id].agreementTimeCreation <= block.timestamp, "The agreement hasn't started yet");
-        require(exactAgreement[_id].howLong + exactAgreement[_id].agreementTimeCreation > block.timestamp, "This agreement's deadline has ended");
+        require(exactAgreement[_id].agreementStartDate<= block.timestamp, "The agreement hasn't started yet");
+        require(exactAgreement[_id].howLong + exactAgreement[_id].agreementStartDate> block.timestamp, "This agreement's deadline has ended");
         require(exactAgreement[_id].amount <= msg.value, "The deposit is not the same as the agreed in the terms");
         exactAgreement[_id].status = "Activated";
         //set the position period
@@ -225,7 +225,7 @@ contract AgreementBetweenSubjects {
   function terminateContract(uint256 _id) public {
     if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Terminated"))){
 		  emit NotifyUser("This agreement is already terminated");
-	  } else if (exactAgreement[_id].howLong + exactAgreement[_id].agreementTimeCreation < block.timestamp){
+	  } else if (exactAgreement[_id].howLong + exactAgreement[_id].agreementStartDate< block.timestamp){
       require(exactAgreement[_id].signee == msg.sender, "Only the owner can terminate the agreement");
       exactAgreement[_id].status = "Terminated";
       //return the deposit to the signee
@@ -264,7 +264,7 @@ contract AgreementBetweenSubjects {
         emit Terminated("This agreement has been terminated");
       } 
     }else if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Created"))){
-      if(exactAgreement[_id].agreementTimeCreation + (6*60*60*24) > block.timestamp){
+      if(exactAgreement[_id].agreementStartDate+ (6*60*60*24) > block.timestamp){
         emit NotifyUser("The agreement wasn't breached");
       } else {
         //receiver has to wait 7 days after the breached date to withdraw the deposit
@@ -291,7 +291,7 @@ contract AgreementBetweenSubjects {
     }else{
       require(exactAgreement[_id].receiver == msg.sender, "Only the receiver can confirm the agreement");
       //cannot confirm an agreement that ends in the past
-      require(exactAgreement[_id].howLong + exactAgreement[_id].agreementTimeCreation >= block.timestamp, "The agreement's deadline has ended");
+      require(exactAgreement[_id].howLong + exactAgreement[_id].agreementStartDate>= block.timestamp, "The agreement's deadline has ended");
       //confirm the agreement
       exactAgreement[_id].approved = "Confirmed";
       //emit that the agreement was confirmed
