@@ -250,9 +250,9 @@ def test_event_AgreementInfo_agreementApproved(deploy, new_agreement):
     '''check if the event AgreementInfo emits correctly agreementApproved'''
     assert new_agreement.events[0]["agreementApproved"] == deploy.exactAgreement(agreements_number)[7]
 
-def test_event_AgreementInfo_agreementTimeCreation(deploy, new_agreement):
-    '''check if the event AgreementInfo emits correctly agreementTimeCreation'''
-    assert new_agreement.events[0]["agreementTimeCreation"] == deploy.exactAgreement(agreements_number)[8]
+def test_event_AgreementInfo_agreementStartDate(deploy, new_agreement):
+    '''check if the event AgreementInfo emits correctly agreementStartDate'''
+    assert new_agreement.events[0]["agreementStartDate"] == deploy.exactAgreement(agreements_number)[8]
 
 def test_event_AgreementInfo_agreementTimePeriods(deploy, new_agreement):
     '''check if the event AgreementInfo emits correctly agreementTimePeriods in seconds'''
@@ -305,7 +305,7 @@ def test_myReceiverAgreements_emits_correct_id_agreement_2(deploy):
 
 
 
-''' TESTING confirmAgreement FUNCTION'''
+''' TESTING CONFIRMAGREEMENT FUNCTION'''
 
 
 
@@ -628,7 +628,7 @@ def test_sendPayments_fails_require_smaller_deposit_initial_status_created_pair(
     assert deploy.exactAgreement(agreements_number)[6] == 'Activated'
 
 def test_sendPayments_change_initializePeriod_initial_status_created(deploy):
-    '''checking if the InitializedPeriod is initialize (sum of agreementTimeCreation and everyTimeUnit) when msg.value is larger or equal to agreedDeposit'''
+    '''checking if the InitializedPeriod is initialize (sum of agreementStartDate and everyTimeUnit) when msg.value is larger or equal to agreedDeposit'''
     deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     assert deploy.exactAgreement(agreements_number)[10] == deploy.exactAgreement(0)[8] + deploy.exactAgreement(0)[9]
@@ -1156,18 +1156,18 @@ def test_wasContractBreached_agreement_not_activated(deploy):
     assert function_initialize.events[0][0]['message'] == "The agreement wasn't breached"
 
 def test_wasContractBreached_status_created_notify_user(deploy):
-    '''check if the wasContractBreached function emits NotifyUser when exactAgreement[_id].agreementTimeCreation + (6*60*60*24) > block.timestamp'''
+    '''check if the wasContractBreached function emits NotifyUser when exactAgreement[_id].agreementStartDate + (6*60*60*24) > block.timestamp'''
     function_initialize = deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
     assert function_initialize.events[0][0]['message'] == "The agreement wasn't breached"
 
 @pytest.mark.skip(reason='doesn not work correctly')
 def test_wasContractBreached_status_created_require_fails(deploy):
-    '''check if the wasContractBreached function emits NotifyUser when exactAgreement[_id].agreementTimeCreation + (6*60*60*24) > block.timestamp'''
+    '''check if the wasContractBreached function emits NotifyUser when exactAgreement[_id].agreementStartDate + (6*60*60*24) > block.timestamp'''
     deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
 
 @pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]])    
 def test_wasContractBreached_status_created_status_terminated(deploy, seconds_sleep):
-    '''check if the wasContractBreached function emits NotifyUser when exactAgreement[_id].agreementTimeCreation + (6*60*60*24) > block.timestamp fails'''
+    '''check if the wasContractBreached function emits NotifyUser when exactAgreement[_id].agreementStartDate + (6*60*60*24) > block.timestamp fails'''
     chain = Chain()
     chain.sleep(seconds_sleep)
     deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
@@ -1175,7 +1175,7 @@ def test_wasContractBreached_status_created_status_terminated(deploy, seconds_sl
 
 @pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]])    
 def test_wasContractBreached_status_created_status_terminated(deploy, seconds_sleep):
-    '''check if the wasContractBreached function emits NotifyUser when exactAgreement[_id].agreementTimeCreation + (6*60*60*24) > block.timestamp fails'''
+    '''check if the wasContractBreached function emits NotifyUser when exactAgreement[_id].agreementStartDate + (6*60*60*24) > block.timestamp fails'''
     balance_receiver = accounts[receiver].balance()
     chain = Chain()
     chain.sleep(seconds_sleep)
@@ -1185,7 +1185,7 @@ def test_wasContractBreached_status_created_status_terminated(deploy, seconds_sl
 
 @pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]]) 
 def test_wasContractBreached_status_created_deposit_zero(deploy, seconds_sleep):
-    '''check if the wasContractBreached function emits NotifyUser when exactAgreement[_id].agreementTimeCreation + (6*60*60*24) > block.timestamp fails'''
+    '''check if the wasContractBreached function emits NotifyUser when exactAgreement[_id].agreementStartDate + (6*60*60*24) > block.timestamp fails'''
     chain = Chain()
     chain.sleep(seconds_sleep)
     deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
@@ -1193,7 +1193,7 @@ def test_wasContractBreached_status_created_deposit_zero(deploy, seconds_sleep):
 
 @pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]])
 def test_wasContractBreached_status_created_false_emit_Terminated(deploy, seconds_sleep):
-    '''check if the wasContractBreached function emits NotifyUser when exactAgreement[_id].agreementTimeCreation + (6*60*60*24) > block.timestamp fails'''
+    '''check if the wasContractBreached function emits NotifyUser when exactAgreement[_id].agreementStartDate + (6*60*60*24) > block.timestamp fails'''
     chain = Chain()
     chain.sleep(seconds_sleep)
     function_initialize = deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
