@@ -299,7 +299,7 @@ contract AgreementBetweenSubjects {
 	  }
   }
 
-  function withdrawAsTheSignee(uint256 _id) public payable{
+  function withdrawAsTheSignee(uint256 _id) public payable noReentrant{
 	  require(exactAgreement[_id].signee == msg.sender, "Your logged in address isn't the same as the contract's signee address");
     require(withdraw_signee[exactAgreement[_id].signee] > 0, "There aren't any funds to withdraw");
 	  uint256 current_amount = withdraw_signee[exactAgreement[_id].signee];
@@ -309,7 +309,7 @@ contract AgreementBetweenSubjects {
 	  emit NotifyUser("We have transfered ethers");
   }
 
-  function withdrawAsTheReceiver(uint256 _id) public payable{
+  function withdrawAsTheReceiver(uint256 _id) public payable noReentrant{
     require(exactAgreement[_id].receiver == msg.sender, "Your logged in address isn't the same as the contract's receiver address");
     require(withdraw_receiver[exactAgreement[_id].receiver] > 0, "There aren't any funds to withdraw");
     uint256 current_amount = withdraw_receiver[exactAgreement[_id].receiver];
