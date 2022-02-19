@@ -88,7 +88,7 @@ contract AgreementBetweenSubjects {
     uint256 _everyTimeUnit,
     uint256 _howLong,
     uint256 _startOfTheAgreement
-    ) public payable {
+    ) external payable {
         require(_amount > 0 && _everyTimeUnit > 0 && _howLong > 0, "All input data must be larger than 0");
         require(_howLong > _everyTimeUnit, "The period of the payment is greater than the duration of the contract");
         require(msg.value >= _amount, "Deposit has to be at least the size of the amount");
@@ -169,7 +169,7 @@ contract AgreementBetweenSubjects {
     }
 
   /// @notice Sending the payment based on the status of the agreement
-  function sendPayment(uint256 _id) public payable {
+  function sendPayment(uint256 _id) external payable {
     require(exactAgreement[_id].signee == msg.sender, "Only the owner can pay the agreement's terms");
     //the agreement has to be confirmed from the receiver of the agreement
     require(keccak256(bytes(exactAgreement[_id].approved)) == keccak256(bytes("Confirmed")), "The receiver has to confirm the contract");
@@ -222,7 +222,7 @@ contract AgreementBetweenSubjects {
   }
 
   /// @notice Terminating the agreement by the signee
-  function terminateContract(uint256 _id) public {
+  function terminateContract(uint256 _id) external {
     if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Terminated"))){
 		  emit NotifyUser("This agreement is already terminated");
 	  } else if (exactAgreement[_id].howLong + exactAgreement[_id].agreementStartDate< block.timestamp){
@@ -245,7 +245,7 @@ contract AgreementBetweenSubjects {
   }
 
   /// @notice Receiver checking if the contract has been breached
-  function wasContractBreached(uint256 _id) public {
+  function wasContractBreached(uint256 _id) external {
     require(exactAgreement[_id].receiver == msg.sender, "The receiver in the agreement's id isn't the same as the address you're logged in");
     //checking if the agreement was Activated
     if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Activated"))){
@@ -283,7 +283,7 @@ contract AgreementBetweenSubjects {
   }
 
   //function for the receiver - wether he agrees with the terms or not, approves the contract or not. If he does, we are able to activate it, otherwise we can't
-  function confirmAgreement(uint256 _id) public {
+  function confirmAgreement(uint256 _id) external {
     if (keccak256(bytes(exactAgreement[_id].approved)) == keccak256(bytes("Confirmed"))){
 		  emit NotifyUser("This agreement is already confirmed");
 	  }else if(keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Terminated"))){
@@ -299,7 +299,7 @@ contract AgreementBetweenSubjects {
 	  }
   }
 
-  function withdrawAsTheSignee(uint256 _id) public payable noReentrant{
+  function withdrawAsTheSignee(uint256 _id) external payable noReentrant{
 	  require(exactAgreement[_id].signee == msg.sender, "Your logged in address isn't the same as the contract's signee address");
     require(withdraw_signee[exactAgreement[_id].signee] > 0, "There aren't any funds to withdraw");
 	  uint256 current_amount = withdraw_signee[exactAgreement[_id].signee];
@@ -309,7 +309,7 @@ contract AgreementBetweenSubjects {
 	  emit NotifyUser("We have transfered ethers");
   }
 
-  function withdrawAsTheReceiver(uint256 _id) public payable noReentrant{
+  function withdrawAsTheReceiver(uint256 _id) external payable noReentrant{
     require(exactAgreement[_id].receiver == msg.sender, "Your logged in address isn't the same as the contract's receiver address");
     require(withdraw_receiver[exactAgreement[_id].receiver] > 0, "There aren't any funds to withdraw");
     uint256 current_amount = withdraw_receiver[exactAgreement[_id].receiver];
@@ -319,12 +319,12 @@ contract AgreementBetweenSubjects {
     emit NotifyUser("We have transfered ethers");
   }
 
-  function getWithdrawalSignee(uint256 _id) public view returns(uint256){
+  function getWithdrawalSignee(uint256 _id) external view returns(uint256){
     require(exactAgreement[_id].signee == msg.sender, "Your logged in address isn't the same as the contract's signee address");
     return withdraw_signee[exactAgreement[_id].signee];
   }
 
-  function getWithdrawalReceiver(uint256 _id) public view returns(uint256){
+  function getWithdrawalReceiver(uint256 _id) external view returns(uint256){
     require(exactAgreement[_id].receiver == msg.sender, "Your logged in address isn't the same as the contract's receiver address");
     return withdraw_receiver[exactAgreement[_id].receiver];
   }
