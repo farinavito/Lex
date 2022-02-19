@@ -81,62 +81,6 @@ contract AgreementBetweenSubjects {
   /// @notice After other event than Terminated happens, emit it and send a message
   event NotifyUser(string message);
   
-  /// @notice Creating a new agreement
-  function createAgreement(
-    address payable _receiver, 
-    uint256 _amount,
-    uint256 _everyTimeUnit,
-    uint256 _howLong,
-    uint256 _startOfTheAgreement
-    ) external payable {
-        require(_amount > 0 && _everyTimeUnit > 0 && _howLong > 0, "All input data must be larger than 0");
-        require(_howLong > _everyTimeUnit, "The period of the payment is greater than the duration of the contract");
-        require(msg.value >= _amount, "Deposit has to be at least the size of the amount");
-        require(_startOfTheAgreement >= block.timestamp, "The agreement can't be created in the past");
-        uint256 agreementId = numAgreement++;
-
-        //creating a new agreement
-        Agreement storage newAgreement = exactAgreement[agreementId];
-        newAgreement.id = agreementId;
-        newAgreement.signee = msg.sender;
-        newAgreement.receiver = _receiver;
-        newAgreement.amount = _amount;
-
-        //the amount that is actually deposited to the agreement. We initialize it with 0
-        newAgreement.deposit = msg.value;
-        //the status of the agreement when its created
-        newAgreement.status = "Created";
-        //initialize the approved term
-        newAgreement.approved = "Not Confirmed";
-        //when was the agreement created
-        newAgreement.agreementStartDate= _startOfTheAgreement;
-        //period of the payment
-        newAgreement.everyTimeUnit = _everyTimeUnit;
-        //position of the end of the period in which the signee has to send the money (for example: ...every 3 weeks... - this period needs to update itself)
-        newAgreement.positionPeriod = 0;
-        //how long will the agreement last
-        newAgreement.howLong = _howLong;
-        //storing the ids of the agreements and connecting them to msg.sender's address so we can display them to the frontend
-        mySenderAgreements[msg.sender].push(agreementId);
-        //storing the ids of the agreements and connecting them to _receiver's address so we can display them to the frontend
-        myReceiverAgreements[_receiver].push(agreementId);
-
-        emit AgreementInfo(
-          newAgreement.id, 
-          newAgreement.signee, 
-          newAgreement.receiver, 
-          newAgreement.amount,
-          newAgreement.transactionCreated,
-          newAgreement.deposit, 
-          newAgreement.status,
-          newAgreement.approved,
-          newAgreement.agreementStartDate, 
-          newAgreement.everyTimeUnit, 
-          newAgreement.positionPeriod, 
-          newAgreement.howLong
-          );
-          
-  }
 
   /// @notice Initializing the position from where the everyTimeUnit is added
   function initializingPositionPeriod(uint256 _id) private {
@@ -221,6 +165,99 @@ contract AgreementBetweenSubjects {
     }
   }
 
+  function withdrawAsTheSignee(uint256 _id) external payable noReentrant{
+	  require(exactAgreement[_id].signee == msg.sender, "Your logged in address isn't the same as the agreement's signee");
+    require(withdraw_signee[exactAgreement[_id].signee] > 0, "There aren't any funds to withdraw");
+	  uint256 current_amount = withdraw_signee[exactAgreement[_id].signee];
+	  withdraw_signee[exactAgreement[_id].signee] = 0;
+	  (bool sent, ) = exactAgreement[_id].signee.call{value: current_amount}("");
+    require(sent, "Failed to send Ether");
+	  emit NotifyUser("Withdrawal has been transfered");
+  }
+
+  function withdrawAsTheReceiver(uint256 _id) external payable noReentrant{
+    require(exactAgreement[_id].receiver == msg.sender, "Your logged in address isn't the same as the agreement's receiver");
+    require(withdraw_receiver[exactAgreement[_id].receiver] > 0, "There aren't any funds to withdraw");
+    uint256 current_amount = withdraw_receiver[exactAgreement[_id].receiver];
+    withdraw_receiver[exactAgreement[_id].receiver] = 0;
+    (bool sent, ) = exactAgreement[_id].receiver.call{value: current_amount}("");
+    require(sent, "Failed to send Ether");
+    emit NotifyUser("Withdrawal has been transfered");
+  }
+
+  /// @notice Creating a new agreement
+  function createAgreement(
+    address payable _receiver, 
+    uint256 _amount,
+    uint256 _everyTimeUnit,
+    uint256 _howLong,
+    uint256 _startOfTheAgreement
+    ) external payable {
+        require(_amount > 0 && _everyTimeUnit > 0 && _howLong > 0, "All input data must be larger than 0");
+        require(_howLong > _everyTimeUnit, "The period of the payment is greater than the duration of the contract");
+        require(msg.value >= _amount, "Deposit has to be at least the size of the amount");
+        require(_startOfTheAgreement >= block.timestamp, "The agreement can't be created in the past");
+        uint256 agreementId = numAgreement++;
+
+        //creating a new agreement
+        Agreement storage newAgreement = exactAgreement[agreementId];
+        newAgreement.id = agreementId;
+        newAgreement.signee = msg.sender;
+        newAgreement.receiver = _receiver;
+        newAgreement.amount = _amount;
+
+        //the amount that is actually deposited to the agreement. We initialize it with 0
+        newAgreement.deposit = msg.value;
+        //the status of the agreement when its created
+        newAgreement.status = "Created";
+        //initialize the approved term
+        newAgreement.approved = "Not Confirmed";
+        //when was the agreement created
+        newAgreement.agreementStartDate= _startOfTheAgreement;
+        //period of the payment
+        newAgreement.everyTimeUnit = _everyTimeUnit;
+        //position of the end of the period in which the signee has to send the money (for example: ...every 3 weeks... - this period needs to update itself)
+        newAgreement.positionPeriod = 0;
+        //how long will the agreement last
+        newAgreement.howLong = _howLong;
+        //storing the ids of the agreements and connecting them to msg.sender's address so we can display them to the frontend
+        mySenderAgreements[msg.sender].push(agreementId);
+        //storing the ids of the agreements and connecting them to _receiver's address so we can display them to the frontend
+        myReceiverAgreements[_receiver].push(agreementId);
+
+        emit AgreementInfo(
+          newAgreement.id, 
+          newAgreement.signee, 
+          newAgreement.receiver, 
+          newAgreement.amount,
+          newAgreement.transactionCreated,
+          newAgreement.deposit, 
+          newAgreement.status,
+          newAgreement.approved,
+          newAgreement.agreementStartDate, 
+          newAgreement.everyTimeUnit, 
+          newAgreement.positionPeriod, 
+          newAgreement.howLong
+          ); 
+  }
+
+  //function for the receiver - wether he agrees with the terms or not, approves the contract or not. If he does, we are able to activate it, otherwise we can't
+  function confirmAgreement(uint256 _id) external {
+    if (keccak256(bytes(exactAgreement[_id].approved)) == keccak256(bytes("Confirmed"))){
+		  emit NotifyUser("The agreement is already confirmed");
+	  }else if(keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Terminated"))){
+      emit NotifyUser("The agreement is already terminated");
+    }else{
+      require(exactAgreement[_id].receiver == msg.sender, "Only the receiver can confirm the agreement");
+      //cannot confirm an agreement that ends in the past
+      require(exactAgreement[_id].howLong + exactAgreement[_id].agreementStartDate>= block.timestamp, "The agreement's deadline has ended");
+      //confirm the agreement
+      exactAgreement[_id].approved = "Confirmed";
+      //emit that the agreement was confirmed
+      emit NotifyUser("The agreement was confirmed");
+	  }
+  }
+
   /// @notice Terminating the agreement by the signee
   function terminateContract(uint256 _id) external {
     if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Terminated"))){
@@ -280,44 +317,7 @@ contract AgreementBetweenSubjects {
     } else {
         emit NotifyUser("The agreement is already terminated");
     }
-  }
-
-  //function for the receiver - wether he agrees with the terms or not, approves the contract or not. If he does, we are able to activate it, otherwise we can't
-  function confirmAgreement(uint256 _id) external {
-    if (keccak256(bytes(exactAgreement[_id].approved)) == keccak256(bytes("Confirmed"))){
-		  emit NotifyUser("The agreement is already confirmed");
-	  }else if(keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Terminated"))){
-      emit NotifyUser("The agreement is already terminated");
-    }else{
-      require(exactAgreement[_id].receiver == msg.sender, "Only the receiver can confirm the agreement");
-      //cannot confirm an agreement that ends in the past
-      require(exactAgreement[_id].howLong + exactAgreement[_id].agreementStartDate>= block.timestamp, "The agreement's deadline has ended");
-      //confirm the agreement
-      exactAgreement[_id].approved = "Confirmed";
-      //emit that the agreement was confirmed
-      emit NotifyUser("The agreement was confirmed");
-	  }
-  }
-
-  function withdrawAsTheSignee(uint256 _id) external payable noReentrant{
-	  require(exactAgreement[_id].signee == msg.sender, "Your logged in address isn't the same as the agreement's signee");
-    require(withdraw_signee[exactAgreement[_id].signee] > 0, "There aren't any funds to withdraw");
-	  uint256 current_amount = withdraw_signee[exactAgreement[_id].signee];
-	  withdraw_signee[exactAgreement[_id].signee] = 0;
-	  (bool sent, ) = exactAgreement[_id].signee.call{value: current_amount}("");
-    require(sent, "Failed to send Ether");
-	  emit NotifyUser("Withdrawal has been transfered");
-  }
-
-  function withdrawAsTheReceiver(uint256 _id) external payable noReentrant{
-    require(exactAgreement[_id].receiver == msg.sender, "Your logged in address isn't the same as the agreement's receiver");
-    require(withdraw_receiver[exactAgreement[_id].receiver] > 0, "There aren't any funds to withdraw");
-    uint256 current_amount = withdraw_receiver[exactAgreement[_id].receiver];
-    withdraw_receiver[exactAgreement[_id].receiver] = 0;
-    (bool sent, ) = exactAgreement[_id].receiver.call{value: current_amount}("");
-    require(sent, "Failed to send Ether");
-    emit NotifyUser("Withdrawal has been transfered");
-  }
+  } 
 
   function getWithdrawalSignee(uint256 _id) external view returns(uint256){
     require(exactAgreement[_id].signee == msg.sender, "Your logged in address isn't the same as the agreement's signee");
