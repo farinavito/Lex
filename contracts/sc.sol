@@ -211,7 +211,7 @@ contract AgreementBetweenSubjects {
         exactAgreement[_id].status = "Activated";
         //set the position period
         initializingPositionPeriod(_id);
-        emit NotifyUser("The agreement hasn been activated"); 
+        emit NotifyUser("The agreement has been activated"); 
     } else if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Terminated"))){
           //return the transaction to the signee
           revert("The agreement is already terminated");

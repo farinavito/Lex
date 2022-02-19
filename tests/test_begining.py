@@ -314,7 +314,7 @@ def test_confirmAgreement_agreement_already_confirmed(deploy):
     deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     function_enabled = deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     message = function_enabled.events[0][0]['message']
-    assert message == 'This agreement is already confirmed'
+    assert message == 'The agreement is already confirmed'
 
 @pytest.mark.parametrize("seconds_sleep",  [more_than_agreement_duration[0], more_than_agreement_duration[1], more_than_agreement_duration[2]])
 def test_confirmAgreement_fail_require_2(deploy, seconds_sleep):
@@ -381,7 +381,7 @@ def test_terminateContract_emit_Terminated_initial_status_activated_already_term
     deploy.terminateContract(agreements_number, {'from': accounts[signee]})
     function_enabled = deploy.terminateContract(agreements_number, {'from': accounts[signee]})
     message = function_enabled.events[0][0]['message']
-    assert message == 'This agreement is already terminated'
+    assert message == 'The agreement is already terminated'
 
 @pytest.mark.parametrize("accounts_number", [without_signee[0], without_signee[1], without_signee[2]])
 def test_terminateContract_fails_require_wrong_address_initial_status_activated(deploy, accounts_number):
@@ -433,7 +433,7 @@ def test_transfer_deposit_back_to_signee_pair(deploy, value_sent):
         deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
         deploy.terminateContract(agreements_number, {'from': accounts[signee]})
     except Exception as e:
-        assert e.message[50:] == "The deposit is not the same as the agreed in the terms"
+        assert e.message[50:] == "The deposit is not the same as agreed in the terms"
 
 @pytest.mark.parametrize("value_sent", [more_than_amount_sent[0], more_than_amount_sent[1], more_than_amount_sent[2]])
 def test_transfer_deposit_back_to_receiver(deploy, value_sent):
@@ -483,7 +483,7 @@ def test_terminateContract_emit_Terminated_initial_status_activated(deploy):
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     function_enabled = deploy.terminateContract(agreements_number, {'from': accounts[signee]})
     message = function_enabled.events[0][0]['message']
-    assert message == 'This agreement has been terminated'
+    assert message == 'The agreement has been terminated'
 
 #here we aren't contacting sendPayments prior terminating the contract
 
@@ -531,7 +531,7 @@ def test_terminateContract_emit_Terminated_initial_status_activated_without_send
     deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     function_enabled = deploy.terminateContract(agreements_number, {'from': accounts[signee]})
     message = function_enabled.events[0][0]['message']
-    assert message == 'This agreement has been terminated'
+    assert message == 'The agreement has been terminated'
 
 
 
@@ -599,7 +599,7 @@ def test_sendPayments_require_statement_fails_agreement_not_ended(deploy, second
         #assert deploy.exactAgreement(agreements_number)[8] >= now
         deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})      
     except Exception as e:
-        assert e.message[50:] == "This agreement's deadline has ended"
+        assert e.message[50:] == "The agreement's deadline has ended"
 
 @pytest.mark.parametrize("seconds_sleep",  [less_than_agreement_duration[0], less_than_agreement_duration[1], less_than_agreement_duration[2]])
 def test_sendPayments_require_statement_fails_agreement_not_ended_pair(deploy, seconds_sleep):
@@ -618,7 +618,7 @@ def test_sendPayments_fails_require_smaller_deposit_initial_status_created(deplo
         #'value' is smaller than it should be
         deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
     except Exception as e:
-        assert e.message[50:] == "The deposit is not the same as the agreed in the terms"
+        assert e.message[50:] == "The deposit is not the same as agreed in the terms"
 
 @pytest.mark.parametrize("value_sent",  [more_than_amount_sent[0], more_than_amount_sent[1], more_than_amount_sent[2]])
 def test_sendPayments_fails_require_smaller_deposit_initial_status_created_pair(deploy, value_sent):
@@ -638,7 +638,7 @@ def test_sendPayments_emit_NotifyUser_initial_status_created(deploy):
     deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     function_enabled = deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     message = function_enabled.events[0][0]['message']
-    assert message == 'We have activate the agreement'
+    assert message == 'The agreement has been activated'
 
 
 
@@ -823,7 +823,7 @@ def test_timeNotBreached_value_smaller_amount_emit_Terminated(deploy, value_sent
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     #the contract has been activated, now send the smaller quantity of money again
     function_initialize = deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
-    assert function_initialize.events[0][0]['message'] == "This agreement was terminated due to different payment than in the terms"
+    assert function_initialize.events[0][0]['message'] == "The agreement was terminated due to different amount sent than in the terms"
 
 @pytest.mark.parametrize("value_sent",  [more_than_amount_sent[0], more_than_amount_sent[1], more_than_amount_sent[2]]) 
 def test_timeNotBreached_value_smaller_amount_emit_Terminated_pair(deploy, value_sent):
@@ -966,7 +966,7 @@ def test_timeNotBreached_breached_on_time_false_emit_Terminated(deploy, seconds_
     chain = Chain()
     chain.sleep(seconds_sleep)
     function_initialize = deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
-    assert function_initialize.events[0][0]['message'] == "This agreement was terminated due to late payment"
+    assert function_initialize.events[0][0]['message'] == "The agreement was terminated due to late payment"
 
 @pytest.mark.parametrize("seconds_sleep",  [0, less_than_every_period[0], less_than_every_period[1], less_than_every_period[2]])
 def test_timeNotBreached_breached_on_time_false_emit_Terminated_pair(deploy, seconds_sleep):
@@ -976,7 +976,7 @@ def test_timeNotBreached_breached_on_time_false_emit_Terminated_pair(deploy, sec
     chain = Chain()
     chain.sleep(seconds_sleep)
     function_initialize = deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
-    assert function_initialize.events[0][0]['message'] != "This agreement was terminated due to late payment"
+    assert function_initialize.events[0][0]['message'] != "The agreement was terminated due to late payment"
 
 #Checking when the agreement's status is "Terminated"
 
@@ -985,7 +985,7 @@ def test_terminateContract_emit_Terminated_initial_status_terminated(deploy):
     deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     deploy.terminateContract(agreements_number, {'from': accounts[signee]})
-    with brownie.reverts("This agreement was already terminated"):
+    with brownie.reverts("The agreement was already terminated"):
         deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
 
 
@@ -999,7 +999,7 @@ def test_wasContractBreached_require_receiver_equals_msg_sender(deploy, wrong_ac
     '''check if the wasContractBreached fails, because exactAgreement[_id].receiver == msg.sender is the require statement'''
     deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
-    with brownie.reverts("The receiver in the agreement's id isn't the same as the address you're logged in"):
+    with brownie.reverts("Your logged in address isn't the same as the agreement's receiver"):
         #wrong signee's address
         deploy.wasContractBreached(agreements_number, {'from': accounts[wrong_accounts]})
 
@@ -1011,7 +1011,7 @@ def test_wasContractBreached_require_receiver_equals_msg_sender_pair(deploy, rig
         deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
         deploy.wasContractBreached(agreements_number, {'from': accounts[right_accounts]})
     except Exception as e:        
-        assert e.message[50:] == "This agreement's deadline has ended"
+        assert e.message[50:] == "The agreement's deadline has ended"
 
 def test_wasContractBreached_fail_if_statement_in_timeNotBreached(deploy):
     '''check if the timeNotBreached fails because transaction was sent after the agreement's deadline - it fails because of the check in the confirmAgreement function'''
@@ -1022,7 +1022,7 @@ def test_wasContractBreached_fail_if_statement_in_timeNotBreached(deploy):
         deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
         deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
     except Exception as e:        
-        assert e.message[50:] == "This agreement's deadline has ended"
+        assert e.message[50:] == "The agreement's deadline has ended"
 
 #if timeNotBreached is True
 
@@ -1136,7 +1136,7 @@ def test_wasContractBreached_timeNotBreached_false_emit_Terminated(deploy, secon
     chain.sleep(seconds_sleep)
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
     function_initialize = deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
-    assert function_initialize.events[0][0]['message'] == "This agreement is already terminated"
+    assert function_initialize.events[0][0]['message'] == "The agreement is already terminated"
 
 @pytest.mark.parametrize("seconds_sleep",  [0, less_than_every_period[0], less_than_every_period[1], less_than_every_period[2]])
 def test_wasContractBreached_timeNotBreached_false_emit_Terminated_pair(deploy, seconds_sleep):
@@ -1197,7 +1197,7 @@ def test_wasContractBreached_status_created_false_emit_Terminated(deploy, second
     chain = Chain()
     chain.sleep(seconds_sleep)
     function_initialize = deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
-    assert function_initialize.events[0][0]['message'] == "This agreement has been terminated"
+    assert function_initialize.events[0][0]['message'] == "The agreement has been terminated"
 
 
 
@@ -1211,7 +1211,7 @@ def test_withdrawAsTheReceiver_first_reguire_fails(deploy, wrong_account):
     deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
-    with brownie.reverts("Your logged in address isn't the same as the contract's receiver address"):
+    with brownie.reverts("Your logged in address isn't the same as the agreement's receiver"):
         deploy.withdrawAsTheReceiver(agreements_number, {'from': accounts[wrong_account]})
 
 def test_withdrawAsTheReceiver_first_reguire_fails_pair(deploy):
@@ -1220,7 +1220,7 @@ def test_withdrawAsTheReceiver_first_reguire_fails_pair(deploy):
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
     function_initialize = deploy.withdrawAsTheReceiver(agreements_number, {'from': accounts[receiver]})
-    assert function_initialize.events[0][0]['message'] == "We have transfered ethers"
+    assert function_initialize.events[0][0]['message'] == "Withdrawal has been transfered"
 
 def test_withdrawAsTheReceiver_second_reguire_fails_case_1(deploy):
     '''require statement withdraw_receiver[exactAgreement[_id].receiver] > 0 fails, because we send only the deposit'''
@@ -1250,7 +1250,7 @@ def test_withdrawAsTheSignee_first_reguire_fails(deploy, wrong_account):
     deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
-    with brownie.reverts("Your logged in address isn't the same as the contract's signee address"):
+    with brownie.reverts("Your logged in address isn't the same as the agreement's signee"):
         deploy.withdrawAsTheSignee(agreements_number, {'from': accounts[wrong_account]})
 
 @pytest.mark.parametrize("time", [more_than_agreement_duration[0], more_than_agreement_duration[1], more_than_agreement_duration[2]])
@@ -1263,7 +1263,7 @@ def test_withdrawAsTheSignee_first_reguire_fails_pair(deploy, time):
     chain.sleep(time)
     deploy.terminateContract(agreements_number, {'from': accounts[signee]})
     function_initialize = deploy.withdrawAsTheSignee(agreements_number, {'from': accounts[signee]})
-    assert function_initialize.events[0][0]['message'] == "We have transfered ethers"
+    assert function_initialize.events[0][0]['message'] == "Withdrawal has been transfered"
 
 @pytest.mark.parametrize("time", [more_than_agreement_duration[0], more_than_agreement_duration[1], more_than_agreement_duration[2]])
 def test_withdrawAsTheSignee_second_reguire_fails(deploy, time):
@@ -1290,7 +1290,7 @@ def test_getWithdrawalReceiver_reguire_fails(deploy, wrong_account):
     deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
-    with brownie.reverts("Your logged in address isn't the same as the contract's receiver address"):
+    with brownie.reverts("Your logged in address isn't the same as the agreement's receiver"):
         deploy.getWithdrawalReceiver(agreements_number, {'from': accounts[wrong_account]})
 
 def test_getWithdrawalReceiver_reguire_fails_pair(deploy):
@@ -1322,7 +1322,7 @@ def test_getWithdrawalsignee_reguire_fails(deploy, wrong_account):
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
     deploy.terminateContract(agreements_number, {'from': accounts[signee]})
-    with brownie.reverts("Your logged in address isn't the same as the contract's signee address"):
+    with brownie.reverts("Your logged in address isn't the same as the agreement's signee"):
         deploy.getWithdrawalSignee(agreements_number, {'from': accounts[wrong_account]})
 
 @pytest.mark.parametrize("time", [more_than_agreement_duration[0], more_than_agreement_duration[1], more_than_agreement_duration[2]])
