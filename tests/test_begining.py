@@ -1348,3 +1348,13 @@ def test_getWithdrawalSignee_uninitialize(deploy, time):
     deploy.terminateContract(agreements_number, {'from': accounts[signee]})
     function_initialize = deploy.getWithdrawalSignee(agreements_number, {'from': accounts[signee]})
     assert function_initialize == amount_sent
+
+
+
+'''TEST CHANGECOMMISSION'''
+
+def test_changeCommission_not_owner(deploy):
+    '''check if the onlyOwner modifier works properly'''
+    with brownie.reverts("You are not the owner"):
+        deploy.changeCommission(5, {'from': accounts[7]})
+    
