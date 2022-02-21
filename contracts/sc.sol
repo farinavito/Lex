@@ -356,7 +356,7 @@ contract AgreementBetweenSubjects {
     require(exactAgreement[_id].receiver == msg.sender, "Your logged in address isn't the same as the agreement's receiver");
     return withdraw_receiver[exactAgreement[_id].receiver];
   }
-  //NEW
+  
   function changeCommission(uint256 _newCommission) external onlyOwner{
 		require(_newCommission > 0 && _newCommission < 10*15 + 1, "Commission doesn't follow the rules");
 		commission = _newCommission;
