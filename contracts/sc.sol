@@ -50,11 +50,16 @@ contract AgreementBetweenSubjects {
 
   //doesn't allow reentrance attack
   modifier noReentrant() {
-        require(locked == 1, "No re-entrancy");
-        locked = 2;
-        _;
-        locked = 1;
-    }
+    require(locked == 1, "No re-entrancy");
+    locked = 2;
+    _;
+    locked = 1;
+  }
+  // NEW
+  modifier onlyWhitelisted() {
+    require(isWhitelisted(msg.sender));
+    _;
+  }
 
   /// @dev The commission we charge
   uint256 public commission = 1;
@@ -79,6 +84,10 @@ contract AgreementBetweenSubjects {
   /// @dev Storing the id's of the agreements of the same receiver address
   mapping(address => uint[]) public myReceiverAgreements;
 
+  //NEW
+  /// @dev Whitelisted accounts that can access withdrawal_amount_owner
+  mapping(address => bool) private whitelist;
+
   /// @notice Emitting agreement's info 
   event AgreementInfo(
     uint256 agreementId,
@@ -97,9 +106,15 @@ contract AgreementBetweenSubjects {
 
   /// @notice After the contract is terminated, emit an event with a message
   event Terminated(string message);
+
   /// @notice After other event than Terminated happens, emit it and send a message
   event NotifyUser(string message);
-  
+  // NEW
+  /// @notice When an account is white- or blacklisted
+  event AddedToTheList(address indexed account);
+  // NEW
+  /// @notice When an account is removed from white- or blacklist
+  event RemovedFromTheList(address indexed account);
 
   /// @notice Initializing the position from where the everyTimeUnit is added
   function initializingPositionPeriod(uint256 _id) private {
@@ -208,6 +223,15 @@ contract AgreementBetweenSubjects {
     require(sent, "Failed to send Ether");
     emit NotifyUser("Withdrawal has been transfered");
   }
+  // NEW
+  function withdrawAsTheOwner() external payable noReentrant onlyWhitelisted{
+		require(withdrawal_amount_owner > 0, "There aren't any funds to withdraw");
+    uint256 current_amount = withdrawal_amount_owner; 
+    withdrawal_amount_owner = 0;
+    (bool sent, ) = msg.sender.call{value: current_amount}("");
+    require(sent, "Failed to send Ether");
+    emit NotifyUser("Withdrawal has been transfered");
+}
 
   /// @notice Creating a new agreement
   function createAgreement(
@@ -358,6 +382,20 @@ contract AgreementBetweenSubjects {
 		commission = _newCommission;
 		emit NotifyUser("Commission changed");
 	}
+  // NEW
+  function addToWhitelist(address _address) external onlyOwner {
+    whitelist[_address] = true;
+    emit AddedToTheList(_address);
+  }
+  // NEW
+  function removedFromWhitelist(address _address) external onlyOwner {
+    whitelist[_address] = false;
+    emit RemovedFromTheList(_address);
+  }
+  // NEW
+  function isWhitelisted(address _address) public view returns(bool) {
+    return whitelist[_address];
+  }
 
   fallback() external {}
   receive() external payable {}
