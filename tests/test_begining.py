@@ -1364,3 +1364,10 @@ def test_changeCommission_require_1(deploy):
         deploy.changeCommission(0, {'from' : accounts[0]})
     except Exception as e:
         assert e.message[50:] == "Commission doesn't follow the rules"
+
+def test_changeCommission_require_2(deploy):
+    '''check if the commission < 10*15 + 1 works properly'''
+    try:
+        deploy.changeCommission(10*15 + 1, {'from' : accounts[0]})
+    except Exception as e:
+        assert e.message[50:] == "Commission doesn't follow the rules"
