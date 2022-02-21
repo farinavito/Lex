@@ -1402,4 +1402,14 @@ def test_changeCommission_emit_event(deploy):
     '''check if the commission is changed'''
     function_initialize = deploy.changeCommission(10*15, {'from' : accounts[0]})
     assert function_initialize.events[0][0]['message'] == "Commission changed"
+
+
+
+'''TEST ADDTOWHITELIST '''
+
+
+def test_addToWhitelist_check_onlyOwner(deploy):
+    '''Check if onlyOwner modifier doesn't let other accounts to call this function'''
+    with brownie.reverts("You are not the owner"):
+        deploy.addToWhitelist(accounts[9], {'from': accounts[3]})
      
