@@ -7,6 +7,7 @@ from brownie.network import rpc
 from brownie.network.state import Chain
 
 #new agreement
+commission = 1
 signee = 1
 receiver = 9
 amount_sent = 10**1
@@ -468,7 +469,7 @@ def test_transfer_msg_value_back_to_receiver_2(deploy, value_sent):
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*value_sent})
     deploy.terminateContract(agreements_number, {'from': accounts[signee]})
     deploy.withdrawAsTheReceiver(agreements_number, {'from': accounts[receiver]})
-    assert accounts[receiver].balance() == balance_receiver + 4*value_sent + amount_sent
+    assert accounts[receiver].balance() == balance_receiver + 4*value_sent + amount_sent - commission
 
 def test_terminateContract_function_change_status_terminated_deposit(deploy):
     '''check if the function terminateContract changes deposit to zero"'''
@@ -702,7 +703,7 @@ def test_timeNotBreached_value_large_amount_send_value(deploy, value_sent):
     balance_receiver = accounts[receiver].balance() 
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
     deploy.withdrawAsTheReceiver(agreements_number, {'from': accounts[receiver]})
-    assert accounts[receiver].balance() == balance_receiver + value_sent
+    assert accounts[receiver].balance() == balance_receiver + value_sent - commission
 
 @pytest.mark.parametrize("value_sent",  [amount_sent])
 @pytest.mark.parametrize("value_decreased",  [less_than_amount_sent[0], less_than_amount_sent[1], less_than_amount_sent[2]])
@@ -779,7 +780,7 @@ def test_timeNotBreached_value_smaller_amount_send_deposit_pair(deploy, value_se
     balance_receiver = accounts[receiver].balance() 
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
     deploy.withdrawAsTheReceiver(agreements_number, {'from': accounts[receiver]}) 
-    assert accounts[receiver].balance() == balance_receiver + value_sent
+    assert accounts[receiver].balance() == balance_receiver + value_sent - commission
 
 @pytest.mark.parametrize("value_sent",  [0, less_than_amount_sent[0], less_than_amount_sent[1], less_than_amount_sent[2]])
 def test_timeNotBreached_value_smaller_amount_deposit_equals_zero(deploy, value_sent):
@@ -913,7 +914,7 @@ def test_timeNotBreached_breached_on_time_false_send_deposit_pair(deploy, second
     chain.sleep(seconds_sleep)
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent}) 
     deploy.withdrawAsTheReceiver(agreements_number, {'from': accounts[receiver]})
-    assert accounts[receiver].balance() == balance_receiver + 4*amount_sent
+    assert accounts[receiver].balance() == balance_receiver + 4*amount_sent - commission
 
 @pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]])
 def test_timeNotBreached_breached_on_time_false_deposit_equals_zero(deploy, seconds_sleep):
@@ -1103,7 +1104,7 @@ def test_wasContractBreached_timeNotBreached_false_send_deposit_pair(deploy, sec
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
     deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
     deploy.withdrawAsTheReceiver(agreements_number, {'from': accounts[receiver]})
-    assert accounts[receiver].balance() == balance_receiver + 4*amount_sent
+    assert accounts[receiver].balance() == balance_receiver + 4*amount_sent - commission
 
 @pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]])
 def test_wasContractBreached_timeNotBreached_false_status_deposit_equals_zero_1(deploy, seconds_sleep):
@@ -1299,7 +1300,7 @@ def test_getWithdrawalReceiver_reguire_fails_pair(deploy):
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
     function_initialize = deploy.getWithdrawalReceiver(agreements_number, {'from': accounts[receiver]})
-    assert function_initialize == 4*amount_sent
+    assert function_initialize == 4*amount_sent - commission
 
 def test_getWithdrawalReceiver_uninitialize(deploy):
     '''check if the withdraw_receiver is empty after only sending the deposit'''

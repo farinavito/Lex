@@ -32,6 +32,19 @@ contract AgreementBetweenSubjects {
     uint256 positionPeriod;
     uint256 howLong;
   }
+  //NEW
+  //storing the owner's address
+  address public owner;
+  //NEW
+	constructor (){
+		owner = msg.sender;
+	}
+  //NEW
+  //allows only the owner
+	modifier onlyOwner(){
+		require(msg.sender == owner, "You are not the owner");
+		_;
+	}
 
   uint16 internal locked = 1;
 
@@ -42,6 +55,12 @@ contract AgreementBetweenSubjects {
         _;
         locked = 1;
     }
+  //NEW
+  /// @dev The commission we charge
+  uint256 public commission = 1;
+
+  //NEW
+  uint256 public withdrawal_amount_owner;
 
    /// @dev Saving the money sent for the signee to withdraw it
   mapping(address => uint256) private withdraw_signee;
@@ -123,8 +142,17 @@ contract AgreementBetweenSubjects {
       //if the transaction sent was on time and transaction was sent before the agreement's deadline
       if (timeNotBreached(_id)){
         if (exactAgreement[_id].amount <= msg.value){
+          //NEW
+          //storing the amount sent subtracted by commission
+          uint256 changedAmount;
+          //NEW
+          changedAmount = msg.value - commission;
+          //NEW
+          //adding the commission to a owner's withdrawal
+          withdrawal_amount_owner += commission;
+          //NEW
           //send the transaction to the receiver
-          withdraw_receiver[exactAgreement[_id].receiver] += msg.value;
+          withdraw_receiver[exactAgreement[_id].receiver] += changedAmount;
           emit NotifyUser("Transaction was sent to the receiver");
         //if the transaction was on time, but it wasn't enough
         } else {
@@ -328,6 +356,12 @@ contract AgreementBetweenSubjects {
     require(exactAgreement[_id].receiver == msg.sender, "Your logged in address isn't the same as the agreement's receiver");
     return withdraw_receiver[exactAgreement[_id].receiver];
   }
+  //NEW
+  function changeCommission(uint256 _newCommission) external onlyOwner{
+		require(commission > 0 && commission < 10*15 + 1, "Commission doesn't followed the rules");
+		commission = _newCommission;
+		emit NotifyUser("Commission changed");
+	}
 
   fallback() external {}
   receive() external payable {}
