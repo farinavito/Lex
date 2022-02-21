@@ -32,14 +32,14 @@ contract AgreementBetweenSubjects {
     uint256 positionPeriod;
     uint256 howLong;
   }
-  //NEW
+  
   //storing the owner's address
   address public owner;
-  //NEW
+  
 	constructor (){
 		owner = msg.sender;
 	}
-  //NEW
+  
   //allows only the owner
 	modifier onlyOwner(){
 		require(msg.sender == owner, "You are not the owner");
@@ -55,7 +55,7 @@ contract AgreementBetweenSubjects {
         _;
         locked = 1;
     }
-  //NEW
+
   /// @dev The commission we charge
   uint256 public commission = 1;
 
