@@ -1485,3 +1485,15 @@ def test_withdrawAsTheOwner_check_require_statement(deploy):
         deploy.withdrawAsTheOwner({'from': accounts[9]})
     except Exception as e:
         assert e.message[50:] == "There aren't any funds to withdraw"
+
+def test_withdrawAsTheOwner_check_require_statement_2(deploy):
+    '''Check if the function is reverted, because there aren't any funds to withdraw '''
+    try:
+        deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+        deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
+        deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
+        deploy.addToWhitelist(accounts[9], {'from': accounts[0]})
+        deploy.withdrawAsTheOwner({'from': accounts[9]})
+        deploy.withdrawAsTheOwner({'from': accounts[9]})
+    except Exception as e:
+        assert e.message[50:] == "There aren't any funds to withdraw"
