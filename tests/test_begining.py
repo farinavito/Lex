@@ -715,6 +715,23 @@ def test_timeNotBreached_value_large_amount_send_value_pair(deploy, value_sent, 
     assert deploy.exactAgreement(agreements_number)[6] == 'Terminated'
 
 @pytest.mark.parametrize("value_sent",  [more_than_amount_sent[0], more_than_amount_sent[1], more_than_amount_sent[2]])
+def test_timeNotBreached_value_larger_amount_withdrawal_amount_owner(deploy, value_sent):
+    '''check if withdrawal_amount_owner is correctly initialized'''
+    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent}) 
+    assert deploy.withdrawal_amount_owner() == commission
+
+@pytest.mark.parametrize("value_sent",  [more_than_amount_sent[0], more_than_amount_sent[1], more_than_amount_sent[2]])
+def test_timeNotBreached_value_larger_amount_withdrawal_amount_owner_increased(deploy, value_sent):
+    '''check if withdrawal_amount_owner is correctly increased'''
+    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent}) 
+    assert deploy.withdrawal_amount_owner() == 2*commission
+
+@pytest.mark.parametrize("value_sent",  [more_than_amount_sent[0], more_than_amount_sent[1], more_than_amount_sent[2]])
 def test_timeNotBreached_value_large_amount_send_value_check_signee(deploy, value_sent):
     '''check if the balance of the signee is changed when amount <= msg.value in the timeNotBreached'''
     deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})

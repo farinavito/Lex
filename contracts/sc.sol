@@ -59,7 +59,7 @@ contract AgreementBetweenSubjects {
   /// @dev The commission we charge
   uint256 public commission = 1;
 
-  //NEW
+  /// @dev The commission collected
   uint256 public withdrawal_amount_owner;
 
    /// @dev Saving the money sent for the signee to withdraw it
@@ -142,15 +142,11 @@ contract AgreementBetweenSubjects {
       //if the transaction sent was on time and transaction was sent before the agreement's deadline
       if (timeNotBreached(_id)){
         if (exactAgreement[_id].amount <= msg.value){
-          //NEW
           //storing the amount sent subtracted by commission
           uint256 changedAmount;
-          //NEW
           changedAmount = msg.value - commission;
-          //NEW
           //adding the commission to a owner's withdrawal
           withdrawal_amount_owner += commission;
-          //NEW
           //send the transaction to the receiver
           withdraw_receiver[exactAgreement[_id].receiver] += changedAmount;
           emit NotifyUser("Transaction was sent to the receiver");
