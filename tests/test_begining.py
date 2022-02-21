@@ -1358,3 +1358,9 @@ def test_changeCommission_not_owner(deploy):
     with brownie.reverts("You are not the owner"):
         deploy.changeCommission(5, {'from': accounts[7]})
     
+def test_changeCommission_require_1(deploy):
+    '''check if the commission > 0 works properly'''
+    try:
+        deploy.changeCommission(0, {'from' : accounts[0]})
+    except Exception as e:
+        assert e.message[50:] == "Commission doesn't follow the rules"

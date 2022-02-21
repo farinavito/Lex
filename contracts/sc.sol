@@ -358,7 +358,7 @@ contract AgreementBetweenSubjects {
   }
   //NEW
   function changeCommission(uint256 _newCommission) external onlyOwner{
-		require(commission > 0 && commission < 10*15 + 1, "Commission doesn't followed the rules");
+		require(_newCommission > 0 && _newCommission < 10*15 + 1, "Commission doesn't follow the rules");
 		commission = _newCommission;
 		emit NotifyUser("Commission changed");
 	}
