@@ -1445,3 +1445,24 @@ def test_removedFromWhitelist_emit_event(deploy):
     '''Check if RemovedFromTheList event is emitted'''
     function_initialize = deploy.addToWhitelist(accounts[9], {'from': accounts[0]})
     assert function_initialize.events[0][0]['account'] == accounts[9]
+
+
+
+'''TEST ISWHITELISTED '''
+
+
+
+def test_isWhitelisted_return_true(deploy):
+    '''Check if the account is added to the whitelist'''
+    deploy.addToWhitelist(accounts[9], {'from': accounts[0]})
+    assert deploy.isWhitelisted(accounts[9]) == True
+
+def test_isWhitelisted_return_false(deploy):
+    '''Check if the account is removed from the whitelist'''
+    deploy.addToWhitelist(accounts[9], {'from': accounts[0]})
+    deploy.removedFromWhitelist(accounts[9], {'from': accounts[0]})
+    assert deploy.isWhitelisted(accounts[9]) == False
+
+def test_isWhitelisted_return_false_2(deploy):
+    '''Check if the function isWhitelisted returns false when account isn't even added to whitelist'''
+    assert deploy.isWhitelisted(accounts[9]) == False
