@@ -57,7 +57,7 @@ contract AgreementBetweenSubjects {
   }
   // NEW
   modifier onlyWhitelisted() {
-    require(isWhitelisted(msg.sender));
+    require(isWhitelisted(msg.sender), "You aren't whitelisted");
     _;
   }
 

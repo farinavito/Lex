@@ -1466,3 +1466,14 @@ def test_isWhitelisted_return_false(deploy):
 def test_isWhitelisted_return_false_2(deploy):
     '''Check if the function isWhitelisted returns false when account isn't even added to whitelist'''
     assert deploy.isWhitelisted(accounts[9]) == False
+
+
+
+'''TEST WITHDRAWASTHEOWNER '''
+
+
+
+def test_withdrawAsTheOwner_check_onlyWhitelisted(deploy):
+    '''Check if onlyWhitelisted doesn't allow any othe raccount to call the function '''
+    with brownie.reverts("You aren't whitelisted"):
+        deploy.withdrawAsTheOwner({'from': accounts[9]})
