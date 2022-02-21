@@ -1417,4 +1417,8 @@ def test_addToWhitelist_check_added_to_whitelist(deploy):
     '''Check if the account is added to the whitelist'''
     deploy.addToWhitelist(accounts[9], {'from': accounts[0]})
     assert deploy.isWhitelisted(accounts[9]) == True
-     
+
+def test_addToWhitelist_emit_event(deploy):
+    '''Check if AddedToTheList event is emitted'''
+    function_initialize = deploy.addToWhitelist(accounts[9], {'from': accounts[0]})
+    assert function_initialize.events[0][0]['account'] == accounts[9]

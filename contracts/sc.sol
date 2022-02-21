@@ -111,10 +111,10 @@ contract AgreementBetweenSubjects {
   event NotifyUser(string message);
   // NEW
   /// @notice When an account is white- or blacklisted
-  event AddedToTheList(address indexed account);
+  event AddedToTheList(address account);
   // NEW
   /// @notice When an account is removed from white- or blacklist
-  event RemovedFromTheList(address indexed account);
+  event RemovedFromTheList(address account);
 
   /// @notice Initializing the position from where the everyTimeUnit is added
   function initializingPositionPeriod(uint256 _id) private {
