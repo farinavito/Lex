@@ -1477,3 +1477,11 @@ def test_withdrawAsTheOwner_check_onlyWhitelisted(deploy):
     '''Check if onlyWhitelisted doesn't allow any othe raccount to call the function '''
     with brownie.reverts("You aren't whitelisted"):
         deploy.withdrawAsTheOwner({'from': accounts[9]})
+
+def test_withdrawAsTheOwner_check_require_statement(deploy):
+    '''Check if the function is reverted, because there aren't any funds to withdraw '''
+    try:
+        deploy.addToWhitelist(accounts[9], {'from': accounts[0]})
+        deploy.withdrawAsTheOwner({'from': accounts[9]})
+    except Exception as e:
+        assert e.message[50:] == "There aren't any funds to withdraw"
