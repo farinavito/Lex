@@ -1526,4 +1526,13 @@ def test_withdrawAsTheOwner_check_commission_sent_3(deploy):
     deploy.withdrawAsTheOwner({'from': accounts[9]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
     deploy.withdrawAsTheOwner({'from': accounts[9]})
-    assert accounts[9].balance() == 10**20 + 2*commission        
+    assert accounts[9].balance() == 10**20 + 2*commission
+
+def test_withdrawAsTheOwner_check_event_emitted(deploy):
+    '''Check if the event NotifyUser is emitted'''
+    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
+    deploy.addToWhitelist(accounts[9], {'from': accounts[0]})
+    function_initialize = deploy.withdrawAsTheOwner({'from': accounts[9]})
+    assert function_initialize.events[0][0]['message'] == "Withdrawal has been transfered"        
