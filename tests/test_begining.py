@@ -1376,4 +1376,9 @@ def test_changeCommission_change_commission(deploy):
     '''check if the commission is changed'''
     deploy.changeCommission(10*15, {'from' : accounts[0]})
     assert deploy.commission() == 10*15
+
+def test_changeCommission_emit_event(deploy):
+    '''check if the commission is changed'''
+    function_initialize = deploy.changeCommission(10*15, {'from' : accounts[0]})
+    assert function_initialize.events[0][0]['message'] == "Commission changed"
      
