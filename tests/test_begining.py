@@ -1412,4 +1412,9 @@ def test_addToWhitelist_check_onlyOwner(deploy):
     '''Check if onlyOwner modifier doesn't let other accounts to call this function'''
     with brownie.reverts("You are not the owner"):
         deploy.addToWhitelist(accounts[9], {'from': accounts[3]})
+
+def test_addToWhitelist_check_added_to_whitelist(deploy):
+    '''Check if the account is added to the whitelist'''
+    deploy.addToWhitelist(accounts[9], {'from': accounts[0]})
+    assert deploy.isWhitelisted(accounts[9]) == True
      
