@@ -1506,4 +1506,14 @@ def test_withdrawAsTheOwner_check_commission_sent(deploy):
     deploy.addToWhitelist(accounts[9], {'from': accounts[0]})
     deploy.withdrawAsTheOwner({'from': accounts[9]})
     assert accounts[9].balance() == 10**20 + commission
+
+def test_withdrawAsTheOwner_check_commission_sent_2(deploy):
+    '''Check if the commission is sent to account 9'''
+    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
+    deploy.addToWhitelist(accounts[9], {'from': accounts[0]})
+    deploy.withdrawAsTheOwner({'from': accounts[9]})
+    assert accounts[9].balance() == 10**20 + 2*commission
         
