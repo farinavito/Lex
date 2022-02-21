@@ -1269,6 +1269,17 @@ def test_withdrawAsTheReceiver_withdrawal_sent(deploy):
     deploy.withdrawAsTheReceiver(agreements_number, {'from': accounts[receiver]})
     assert accounts[receiver].balance() == receiver_balance + amount_sent - commission
 
+def test_withdrawAsTheReceiver_withdrawal_sent_2(deploy):
+    '''Check if the withdrawal was sent to receiver'''
+    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
+    deploy.withdrawAsTheReceiver(agreements_number, {'from': accounts[receiver]})
+    receiver_balance = accounts[receiver].balance()
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
+    deploy.withdrawAsTheReceiver(agreements_number, {'from': accounts[receiver]})
+    assert accounts[receiver].balance() == receiver_balance + amount_sent - commission
+
 
 
 '''TEST WITHDRAWASTHESIGNEE'''
