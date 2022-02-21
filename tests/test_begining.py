@@ -985,7 +985,7 @@ def test_terminateContract_emit_Terminated_initial_status_terminated(deploy):
     deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     deploy.terminateContract(agreements_number, {'from': accounts[signee]})
-    with brownie.reverts("The agreement was already terminated"):
+    with brownie.reverts("The agreement is already terminated"):
         deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
 
 

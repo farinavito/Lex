@@ -33,14 +33,14 @@ contract AgreementBetweenSubjects {
     uint256 howLong;
   }
 
-  bool internal locked;
+  uint16 internal locked = 1;
 
   //doesn't allow reentrance attack
   modifier noReentrant() {
-        require(!locked, "No re-entrancy");
-        locked = true;
+        require(locked == 1, "No re-entrancy");
+        locked = 2;
         _;
-        locked = false;
+        locked = 1;
     }
 
    /// @dev Saving the money sent for the signee to withdraw it
