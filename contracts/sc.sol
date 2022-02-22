@@ -60,6 +60,11 @@ contract AgreementBetweenSubjects {
     require(isWhitelisted(msg.sender), "You aren't whitelisted");
     _;
   }
+  // NEW
+  modifier notBlacklisted() {
+    require(!isBlacklisted(msg.sender), "Your address is blacklisted");
+    _;
+  }
 
   /// @dev The commission we charge
   uint256 public commission = 1;
@@ -86,6 +91,9 @@ contract AgreementBetweenSubjects {
 
   /// @dev Whitelisted accounts that can access withdrawal_amount_owner
   mapping(address => bool) private whitelist;
+  // NEW
+  /// @dev Blacklisted accounts that can't access the smart contract
+  mapping(address => bool) private blacklist;
 
   /// @notice Emitting agreement's info 
   event AgreementInfo(
@@ -394,6 +402,20 @@ contract AgreementBetweenSubjects {
   
   function isWhitelisted(address _address) public view returns(bool) {
     return whitelist[_address];
+  }
+  // NEW
+  function addToBlacklist(address _address) external onlyOwner {
+    blacklist[_address] = true;
+    emit AddedToTheList(_address);
+  }
+  // NEW
+  function removedFromBlacklist(address _address) external onlyOwner {
+    blacklist[_address] = false;
+    emit RemovedFromTheList(_address);
+  }
+  // NEW
+  function isBlacklisted(address _address) public view returns(bool) {
+    return blacklist[_address];
   }
 
   fallback() external {}
