@@ -55,7 +55,7 @@ contract AgreementBetweenSubjects {
     _;
     locked = 1;
   }
-  // NEW
+
   modifier onlyWhitelisted() {
     require(isWhitelisted(msg.sender), "You aren't whitelisted");
     _;
@@ -84,7 +84,6 @@ contract AgreementBetweenSubjects {
   /// @dev Storing the id's of the agreements of the same receiver address
   mapping(address => uint[]) public myReceiverAgreements;
 
-  //NEW
   /// @dev Whitelisted accounts that can access withdrawal_amount_owner
   mapping(address => bool) private whitelist;
 
@@ -109,10 +108,10 @@ contract AgreementBetweenSubjects {
 
   /// @notice After other event than Terminated happens, emit it and send a message
   event NotifyUser(string message);
-  // NEW
+ 
   /// @notice When an account is white- or blacklisted
   event AddedToTheList(address account);
-  // NEW
+ 
   /// @notice When an account is removed from white- or blacklist
   event RemovedFromTheList(address account);
 
@@ -382,17 +381,17 @@ contract AgreementBetweenSubjects {
 		commission = _newCommission;
 		emit NotifyUser("Commission changed");
 	}
-  // NEW
+ 
   function addToWhitelist(address _address) external onlyOwner {
     whitelist[_address] = true;
     emit AddedToTheList(_address);
   }
-  // NEW
+  
   function removedFromWhitelist(address _address) external onlyOwner {
     whitelist[_address] = false;
     emit RemovedFromTheList(_address);
   }
-  // NEW
+  
   function isWhitelisted(address _address) public view returns(bool) {
     return whitelist[_address];
   }
