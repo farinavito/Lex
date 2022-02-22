@@ -1569,4 +1569,15 @@ def test_withdrawAsTheOwner_check_event_emitted(deploy):
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
     deploy.addToWhitelist(accounts[9], {'from': accounts[0]})
     function_initialize = deploy.withdrawAsTheOwner({'from': accounts[9]})
-    assert function_initialize.events[0][0]['message'] == "Withdrawal has been transfered"        
+    assert function_initialize.events[0][0]['message'] == "Withdrawal has been transfered"  
+
+
+
+'''TEST ADDTOBLACKLIST'''    
+
+
+
+def test_addToBlacklist_check_onlyOwner(deploy):
+    '''Check if the onlyOwner requirement works as planned'''
+    with brownie.reverts("You are not the owner"):
+        deploy.addToBlacklist(accounts[9], {'from': accounts[3]})
