@@ -1581,3 +1581,13 @@ def test_addToBlacklist_check_onlyOwner(deploy):
     '''Check if the onlyOwner requirement works as planned'''
     with brownie.reverts("You are not the owner"):
         deploy.addToBlacklist(accounts[9], {'from': accounts[3]})
+
+def test_addToBlacklist_check_if_blacklisted(deploy):
+    '''Check if the account is blacklisted'''
+    deploy.addToBlacklist(accounts[9], {'from': accounts[0]})
+    assert deploy.isBlacklisted(accounts[9]) == True
+
+def test_addToBlacklist_emit_event(deploy):
+    '''Check if the event AddedToTheList is emitted'''
+    function_initialize = deploy.addToBlacklist(accounts[9], {'from': accounts[0]})
+    assert function_initialize.events[0][0]['account'] == accounts[9] 
