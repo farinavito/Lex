@@ -1294,6 +1294,15 @@ def test_withdrawAsTheReceiver_withdrawal_sent_2(deploy):
 
 
 
+def test_withdrawAsTheSignee_check_notBlacklisted_fails(deploy):
+    '''Check if modifier notBlacklisted works as expected'''
+    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
+    deploy.addToBlacklist(accounts[signee], {'from': accounts[0]})
+    with brownie.reverts("Your address is blacklisted"):
+        deploy.withdrawAsTheSignee(agreements_number, {'from': accounts[signee]})
+
 @pytest.mark.parametrize("wrong_account", [without_signee[0], without_signee[1], without_signee[2]])
 def test_withdrawAsTheSignee_first_reguire_fails(deploy, wrong_account):
     '''require statement exactAgreement[_id].signee == msg.sender fails'''

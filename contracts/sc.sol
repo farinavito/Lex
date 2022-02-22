@@ -211,7 +211,7 @@ contract AgreementBetweenSubjects {
     }
   }
 
-  function withdrawAsTheSignee(uint256 _id) external payable noReentrant{
+  function withdrawAsTheSignee(uint256 _id) external payable noReentrant notBlacklisted{
 	  require(exactAgreement[_id].signee == msg.sender, "Your logged in address isn't the same as the agreement's signee");
     require(withdraw_signee[exactAgreement[_id].signee] > 0, "There aren't any funds to withdraw");
 	  uint256 current_amount = withdraw_signee[exactAgreement[_id].signee];
