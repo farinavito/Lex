@@ -577,6 +577,14 @@ def test_sendPayments_fails_require_not_confirmed(deploy):
     except Exception as e:
         assert e.message[50:] == "The receiver has to confirm the contract"
 
+def test_sendPayments_check_notBlacklisted_fails(deploy):
+    '''Check if the notBlacklisted modifier works as expected'''
+    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
+    deploy.addToBlacklist(accounts[signee], {'from': accounts[0]})
+    with brownie.reverts("Your address is blacklisted"):
+        deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
+
 #Checking when the agreement's status is "Created"
 
 def test_sendPayments_require_statement_fails_agreement_not_started(deploy):
