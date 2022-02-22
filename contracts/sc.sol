@@ -221,7 +221,7 @@ contract AgreementBetweenSubjects {
 	  emit NotifyUser("Withdrawal has been transfered");
   }
 
-  function withdrawAsTheReceiver(uint256 _id) external payable noReentrant{
+  function withdrawAsTheReceiver(uint256 _id) external payable noReentrant notBlacklisted{
     require(exactAgreement[_id].receiver == msg.sender, "Your logged in address isn't the same as the agreement's receiver");
     require(withdraw_receiver[exactAgreement[_id].receiver] > 0, "There aren't any funds to withdraw");
     uint256 current_amount = withdraw_receiver[exactAgreement[_id].receiver];
