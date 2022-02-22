@@ -1607,3 +1607,8 @@ def test_removedFromBlacklist_check_if_removed(deploy):
     deploy.addToBlacklist(accounts[9], {'from': accounts[0]})
     deploy.removedFromBlacklist(accounts[9], {'from': accounts[0]})
     assert deploy.isBlacklisted(accounts[9]) == False
+
+def test_removedFromBlacklist_emit_event(deploy):
+    '''Check if the event AddedToTheList is emitted'''
+    function_initialize = deploy.removedFromBlacklist(accounts[9], {'from': accounts[0]})
+    assert function_initialize.events[0][0]['account'] == accounts[9] 
