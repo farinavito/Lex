@@ -337,7 +337,7 @@ contract AgreementBetweenSubjects {
   }
 
   /// @notice Receiver checking if the contract has been breached
-  function wasContractBreached(uint256 _id) external {
+  function wasContractBreached(uint256 _id) external notBlacklisted{
     require(exactAgreement[_id].receiver == msg.sender, "Your logged in address isn't the same as the agreement's receiver");
     //checking if the agreement was Activated
     if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Activated"))){

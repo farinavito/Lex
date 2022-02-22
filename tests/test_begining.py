@@ -1046,7 +1046,15 @@ def test_terminateContract_emit_Terminated_initial_status_terminated(deploy):
 ''' TESTING WASCONTRACTBREACHED FUNCTION '''
 
 
- 
+
+def test_wasContractBreached_check_notBlacklisted_fails(deploy):
+    '''Check if the modifier notBlacklisted works as expected'''
+    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
+    deploy.addToBlacklist(accounts[receiver], {'from': accounts[0]})
+    with brownie.reverts("Your address is blacklisted"):
+        deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
+
 @pytest.mark.parametrize("wrong_accounts",  [without_receiver[0], without_receiver[1], without_receiver[2]])
 def test_wasContractBreached_require_receiver_equals_msg_sender(deploy, wrong_accounts):
     '''check if the wasContractBreached fails, because exactAgreement[_id].receiver == msg.sender is the require statement'''
