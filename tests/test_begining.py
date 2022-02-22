@@ -319,10 +319,15 @@ def test_myReceiverAgreements_emits_correct_id_agreement_2(deploy):
 
 
 
-
 ''' TESTING CONFIRMAGREEMENT FUNCTION'''
 
 
+
+def test_confirmAgreement_check_notBlacklisted_fails(deploy):
+    '''Check if the modifier notBlacklisted works as exected'''
+    deploy.addToBlacklist(accounts[receiver], {'from': accounts[0]})
+    with brownie.reverts("Your address is blacklisted"):
+        deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
 
 def test_confirmAgreement_agreement_already_confirmed(deploy):
     '''check if the confirmAgreement checks if the agreement is already confirmed'''
