@@ -60,7 +60,7 @@ contract AgreementBetweenSubjects {
     require(isWhitelisted(msg.sender), "You aren't whitelisted");
     _;
   }
-  // NEW
+  
   modifier notBlacklisted() {
     require(!isBlacklisted(msg.sender), "Your address is blacklisted");
     _;
@@ -91,7 +91,7 @@ contract AgreementBetweenSubjects {
 
   /// @dev Whitelisted accounts that can access withdrawal_amount_owner
   mapping(address => bool) private whitelist;
-  // NEW
+  
   /// @dev Blacklisted accounts that can't access the smart contract
   mapping(address => bool) private blacklist;
 
@@ -230,7 +230,7 @@ contract AgreementBetweenSubjects {
     require(sent, "Failed to send Ether");
     emit NotifyUser("Withdrawal has been transfered");
   }
-  // NEW
+  
   function withdrawAsTheOwner() external payable noReentrant onlyWhitelisted{
 		require(withdrawal_amount_owner > 0, "There aren't any funds to withdraw");
     uint256 current_amount = withdrawal_amount_owner; 
@@ -403,17 +403,17 @@ contract AgreementBetweenSubjects {
   function isWhitelisted(address _address) public view returns(bool) {
     return whitelist[_address];
   }
-  // NEW
+  
   function addToBlacklist(address _address) external onlyOwner {
     blacklist[_address] = true;
     emit AddedToTheList(_address);
   }
-  // NEW
+  
   function removedFromBlacklist(address _address) external onlyOwner {
     blacklist[_address] = false;
     emit RemovedFromTheList(_address);
   }
-  // NEW
+  
   function isBlacklisted(address _address) public view returns(bool) {
     return blacklist[_address];
   }
