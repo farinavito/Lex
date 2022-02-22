@@ -1612,3 +1612,24 @@ def test_removedFromBlacklist_emit_event(deploy):
     '''Check if the event AddedToTheList is emitted'''
     function_initialize = deploy.removedFromBlacklist(accounts[9], {'from': accounts[0]})
     assert function_initialize.events[0][0]['account'] == accounts[9] 
+
+
+
+'''TEST ISBLACKLISTED'''
+
+
+
+def test_isBlacklisted_return_true(deploy):
+    '''Check if the account is added to the blacklist'''
+    deploy.addToBlacklist(accounts[9], {'from': accounts[0]})
+    assert deploy.isBlacklisted(accounts[9]) == True
+
+def test_isBlacklisted_return_false(deploy):
+    '''Check if the account is removed from the blacklist'''
+    deploy.addToBlacklist(accounts[9], {'from': accounts[0]})
+    deploy.removedFromBlacklist(accounts[9], {'from': accounts[0]})
+    assert deploy.isBlacklisted(accounts[9]) == False
+
+def test_isWhitelisted_return_false_2(deploy):
+    '''Check if the function isBlacklisted returns false when account isn't even added to whitelist'''
+    assert deploy.isBlacklisted(accounts[9]) == False
