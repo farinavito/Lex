@@ -394,6 +394,14 @@ def test_confirmAgreement_terminated_notify_user(deploy):
 
 #here we are contacting sendPayment prior terminating the agreement (it should be the same otherwise)
 
+def test_terminateContract_check_notBlacklisted_fails(deploy):
+    '''Check if the modifier notBlacklisted works as expected'''
+    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
+    deploy.addToBlacklist(accounts[signee], {'from': accounts[0]})
+    with brownie.reverts("Your address is blacklisted"):
+        deploy.terminateContract(agreements_number, {'from': accounts[signee]})
+
 def test_terminateContract_emit_Terminated_initial_status_activated_already_terminated(deploy):
     '''checking if the event Terminated has been emitted as "This agreement has been terminated" when you want to terminate a contract'''
     deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})

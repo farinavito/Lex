@@ -314,7 +314,7 @@ contract AgreementBetweenSubjects {
   }
 
   /// @notice Terminating the agreement by the signee
-  function terminateContract(uint256 _id) external {
+  function terminateContract(uint256 _id) external notBlacklisted{
     if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Terminated"))){
 		  emit NotifyUser("The agreement is already terminated");
 	  } else if (exactAgreement[_id].howLong + exactAgreement[_id].agreementStartDate< block.timestamp){
