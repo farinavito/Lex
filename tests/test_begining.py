@@ -71,6 +71,16 @@ def new_agreement_2(deploy, module_isolation):
 
 
 
+def test_createAgreement_notBlacklisted_fails(deploy):
+    '''Check if the modifier notBlacklisted works as expected'''
+    chain = Chain()
+    now = chain.time()
+    startAgreement = now + 4
+    deploy.addToBlacklist(accounts[5], {'from': accounts[0]})
+    with brownie.reverts("Your address is blacklisted"):
+        deploy.createAgreement(accounts[receiver_2], amount_sent_2, every_period_2, agreement_duration_2, startAgreement, {'from': accounts[5], 'value': amount_sent_2})
+    
+
 def test_owner(deploy):
     '''check if the owner is the right one'''
     assert deploy.owner() ==accounts[0]

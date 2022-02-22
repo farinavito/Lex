@@ -247,7 +247,7 @@ contract AgreementBetweenSubjects {
     uint256 _everyTimeUnit,
     uint256 _howLong,
     uint256 _startOfTheAgreement
-    ) external payable {
+    ) external payable notBlacklisted{
         require(_amount > 0 && _everyTimeUnit > 0 && _howLong > 0, "All input data must be larger than 0");
         require(_howLong > _everyTimeUnit, "The period of the payment is greater than the duration of the contract");
         require(msg.value >= _amount, "Deposit has to be at least the size of the amount");
