@@ -35,32 +35,32 @@ contract AgreementBetweenSubjects {
   }
 
   
-  /// @dev Storing the owner's address
+  /// @notice Storing the owner's address
   address public owner;
 
-  /// @dev Using against re-entrancy
+  /// @notice Using against re-entrancy
   uint16 internal locked = 1;
 
-  /// @dev The commission we charge
+  /// @notice The commission we charge
   uint256 public commission = 1;
 
-  /// @dev The commission collected
+  /// @notice The commission collected
   uint256 public withdrawal_amount_owner;
 
-  /// @dev Used to increase the id of the agreements in the "createAgreements" function
+  /// @notice Used to increase the id of the agreements in the "createAgreements" function
   uint numAgreement;
   
 	constructor (){
 		owner = msg.sender;
 	}
   
-  /// @dev Allows only the owner
+  /// @notice Allows only the owner
 	modifier onlyOwner(){
 		require(msg.sender == owner, "You are not the owner");
 		_;
 	}
 
-  /// @dev Doesn't allow reentrance attack
+  /// @notice Doesn't allow reentrance attack
   modifier noReentrant() {
     require(locked == 1, "No re-entrancy");
     locked = 2;
@@ -68,13 +68,13 @@ contract AgreementBetweenSubjects {
     locked = 1;
   }
 
-  /// @dev Allows only the whitelisted addresses
+  /// @notice Allows only the whitelisted addresses
   modifier onlyWhitelisted() {
     require(isWhitelisted(msg.sender), "You aren't whitelisted");
     _;
   }
   
-  /// @dev Rejects blacklisted addresses
+  /// @notice Rejects blacklisted addresses
   modifier notBlacklisted() {
     require(!isBlacklisted(msg.sender), "Your address is blacklisted");
     _;
@@ -82,25 +82,25 @@ contract AgreementBetweenSubjects {
 
   
 
-   /// @dev Saving the money sent for the signee to withdraw it
+  /// @notice Saving the money sent for the signee to withdraw it
   mapping(address => uint256) private withdraw_signee;
 
-  /// @dev Saving the money sent for the receiver to withdraw it
+  /// @notice Saving the money sent for the receiver to withdraw it
   mapping(address => uint256) private withdraw_receiver;
 
-  /// @dev A unique identifier of the agreement. The same as the id.
+  /// @notice A unique identifier of the agreement. The same as the id.
   mapping(uint256 => Agreement) public exactAgreement;
 
-  /// @dev Storing the id's of the agreements that the signee has created
+  /// @notice Storing the id's of the agreements that the signee has created
   mapping(address => uint[]) public mySenderAgreements;
 
-  /// @dev Storing the id's of the agreements of the same receiver address
+  /// @notice Storing the id's of the agreements of the same receiver address
   mapping(address => uint[]) public myReceiverAgreements;
 
-  /// @dev Whitelisted accounts that can access withdrawal_amount_owner
+  /// @notice Whitelisted accounts that can access withdrawal_amount_owner
   mapping(address => bool) private whitelist;
   
-  /// @dev Blacklisted accounts that can't access the smart contract
+  /// @notice Blacklisted accounts that can't access the smart contract
   mapping(address => bool) private blacklist;
 
 
