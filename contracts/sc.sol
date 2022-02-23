@@ -3,19 +3,20 @@ pragma solidity 0.8.11;
 
 /// @title Implementing a legal contract: Person A commits sending X amount to person B every Y time period for the duration of Z time starting at Q
 /// @author Farina Vito
+
 contract AgreementBetweenSubjects {
 
   /// @notice Defining the agreement 
   /// @param id A unique identifier of the agreement
-  /// @param signee The person who commits sending the the money to the receiver 
+  /// @param signee The person who commits sending the money to the receiver 
   /// @param receiver The person receiving the money
   /// @param amount The quantity of money that the signee commits sending to the receiver
   /// @param transactionCreated Unix timestamp when transaction was sent
-  /// @param deposit The agreed amount of the deposit by both sides for the contract. Initial state will be zero
+  /// @param deposit The first transaction sent to the agreement. Initial state will be zero
   /// @param status Representation of different stages in the agreement: Created, Activated, Terminated
-  /// @param approved Confirmation of the agreedDeposit by the receiver. Stages: Not Confirmed, Confirmed
-  /// @param agreementStartDateThe unix timestamp of the agreement's creation. FRONTEND
-  /// @param everyTimeUnit The number of days till when the signee's transaction has to be created. First calculated by agreementStartDate+ everyTimeUnit. Later just adding everyTimeUnit
+  /// @param approved Confirmation of the agreedDeposit by the receiver: Not Confirmed, Confirmed
+  /// @param agreementStartDateThe Unix timestamp of the agreement's starting date 
+  /// @param everyTimeUnit The number of days till when the signee's transaction has to be created. First calculated by agreementStartDate + everyTimeUnit. Later just adding everyTimeUnit
   /// @param positionPeriod A pointer to the current everyTimeUnit parameter
   /// @param howLong The number of days till the agreement expires
   struct Agreement{
