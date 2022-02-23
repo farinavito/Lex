@@ -1590,34 +1590,37 @@ def test_withdrawAsTheOwner_check_require_statement_2(deploy):
         assert e.message[50:] == "There aren't any funds to withdraw"
 
 def test_withdrawAsTheOwner_check_commission_sent(deploy):
-    '''Check if the commission is sent to account 9'''
+    '''Check if the commission is sent to account 8'''
     deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
-    deploy.addToWhitelist(accounts[9], {'from': accounts[0]})
-    deploy.withdrawAsTheOwner({'from': accounts[9]})
-    assert accounts[9].balance() == 10**20 + commission
+    deploy.addToWhitelist(accounts[8], {'from': accounts[0]})
+    balance_receiver = accounts[8].balance()
+    deploy.withdrawAsTheOwner({'from': accounts[8]})
+    assert accounts[8].balance() == balance_receiver + commission
 
 def test_withdrawAsTheOwner_check_commission_sent_2(deploy):
-    '''Check if the commission is sent to account 9'''
+    '''Check if the commission is sent to account 8'''
     deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
-    deploy.addToWhitelist(accounts[9], {'from': accounts[0]})
-    deploy.withdrawAsTheOwner({'from': accounts[9]})
-    assert accounts[9].balance() == 10**20 + 2*commission
+    deploy.addToWhitelist(accounts[8], {'from': accounts[0]})
+    balance_receiver = accounts[8].balance()
+    deploy.withdrawAsTheOwner({'from': accounts[8]})
+    assert accounts[8].balance() == balance_receiver + 2*commission
 
 def test_withdrawAsTheOwner_check_commission_sent_3(deploy):
-    '''Check if the commission is sent to account 9'''
+    '''Check if the commission is sent to account 8'''
     deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
-    deploy.addToWhitelist(accounts[9], {'from': accounts[0]})
-    deploy.withdrawAsTheOwner({'from': accounts[9]})
+    deploy.addToWhitelist(accounts[8], {'from': accounts[0]})
+    balance_receiver = accounts[8].balance()
+    deploy.withdrawAsTheOwner({'from': accounts[8]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
-    deploy.withdrawAsTheOwner({'from': accounts[9]})
-    assert accounts[9].balance() == 10**20 + 2*commission
+    deploy.withdrawAsTheOwner({'from': accounts[8]})
+    assert accounts[8].balance() == balance_receiver + 2*commission
 
 def test_withdrawAsTheOwner_check_event_emitted(deploy):
     '''Check if the event NotifyUser is emitted'''

@@ -88,7 +88,7 @@ contract AgreementBetweenSubjects {
   /// @dev Saving the money sent for the receiver to withdraw it
   mapping(address => uint256) private withdraw_receiver;
 
-  /// @dev A unique identifier of theagreement. The same as the id.
+  /// @dev A unique identifier of the agreement. The same as the id.
   mapping(uint256 => Agreement) public exactAgreement;
 
   /// @dev Storing the id's of the agreements that the signee has created
