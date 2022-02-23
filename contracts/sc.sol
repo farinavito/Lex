@@ -15,7 +15,7 @@ contract AgreementBetweenSubjects {
   /// @param deposit The first transaction sent to the agreement. Initial state will be zero
   /// @param status Representation of different stages in the agreement: Created, Activated, Terminated
   /// @param approved Confirmation of the agreedDeposit by the receiver: Not Confirmed, Confirmed
-  /// @param agreementStartDateThe Unix timestamp of the agreement's starting date 
+  /// @param agreementStartDate Unix timestamp of the agreement's starting date 
   /// @param everyTimeUnit The number of days till when the signee's transaction has to be created. First calculated by agreementStartDate + everyTimeUnit. Later just adding everyTimeUnit
   /// @param positionPeriod A pointer to the current everyTimeUnit parameter
   /// @param howLong The number of days till the agreement expires
@@ -126,7 +126,7 @@ contract AgreementBetweenSubjects {
 
   /// @notice Initializing the position from where the everyTimeUnit is added
   function initializingPositionPeriod(uint256 _id) private {
-      exactAgreement[_id].positionPeriod = exactAgreement[_id].agreementStartDate+ (exactAgreement[_id].everyTimeUnit);
+      exactAgreement[_id].positionPeriod = exactAgreement[_id].agreementStartDate + (exactAgreement[_id].everyTimeUnit);
     }
 
   /// @notice Verifying that the transaction created was sooner than its deadline 
@@ -357,7 +357,7 @@ contract AgreementBetweenSubjects {
         emit Terminated("The agreement has been terminated");
       } 
     }else if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Created"))){
-      if(exactAgreement[_id].agreementStartDate+ (6*60*60*24) > block.timestamp){
+      if(exactAgreement[_id].agreementStartDate + (6*60*60*24) > block.timestamp){
         emit NotifyUser("The agreement wasn't breached");
       } else {
         //receiver has to wait 7 days after the breached date to withdraw the deposit
