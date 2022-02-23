@@ -754,8 +754,9 @@ def test_timeNotBreached_value_larger_amount_withdrawal_amount_owner(deploy, val
     '''check if withdrawal_amount_owner is correctly initialized'''
     deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
-    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent}) 
-    assert deploy.withdrawal_amount_owner() == commission
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
+    deploy.addToWhitelist(accounts[7], {'from': accounts[0]}) 
+    assert deploy.getWithdrawalOwner({'from': accounts[7]}) == commission
 
 @pytest.mark.parametrize("value_sent",  [more_than_amount_sent[0], more_than_amount_sent[1], more_than_amount_sent[2]])
 def test_timeNotBreached_value_larger_amount_withdrawal_amount_owner_increased(deploy, value_sent):
@@ -764,7 +765,8 @@ def test_timeNotBreached_value_larger_amount_withdrawal_amount_owner_increased(d
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent}) 
-    assert deploy.withdrawal_amount_owner() == 2*commission
+    deploy.addToWhitelist(accounts[7], {'from': accounts[0]}) 
+    assert deploy.getWithdrawalOwner({'from': accounts[7]}) == 2*commission
 
 @pytest.mark.parametrize("value_sent",  [more_than_amount_sent[0], more_than_amount_sent[1], more_than_amount_sent[2]])
 def test_timeNotBreached_value_large_amount_send_value_check_signee(deploy, value_sent):
