@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.11;
 
-/// @title Implementing a legal contract: Person A commits sending X amount of ether to person B every Y days for Z days
+/// @title Implementing a legal contract: Person A commits sending X amount to person B every Y time period for the duration of Z time starting at Q
 /// @author Farina Vito
 contract AgreementBetweenSubjects {
 
