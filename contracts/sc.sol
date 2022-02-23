@@ -45,7 +45,7 @@ contract AgreementBetweenSubjects {
   uint256 public commission = 1;
 
   /// @notice The commission collected
-  uint256 public withdrawal_amount_owner;
+  uint256 private withdrawal_amount_owner;
 
   /// @notice Used to increase the id of the agreements in the "createAgreements" function
   uint numAgreement;
@@ -396,6 +396,11 @@ contract AgreementBetweenSubjects {
   /// @notice Return the withdrawal amount of the agreement's receiver
   function getWithdrawalReceiver(uint256 _id) external view returns(uint256){
     require(exactAgreement[_id].receiver == msg.sender, "Your logged in address isn't the same as the agreement's receiver");
+    return withdraw_receiver[exactAgreement[_id].receiver];
+  }
+
+  /// @notice Return the withdrawal amount of the owner
+  function getWithdrawalOwner(uint256 _id) external view onlyOwner returns(uint256){
     return withdraw_receiver[exactAgreement[_id].receiver];
   }
   
