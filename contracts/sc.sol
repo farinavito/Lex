@@ -34,8 +34,20 @@ contract AgreementBetweenSubjects {
     uint256 howLong;
   }
   
-  //storing the owner's address
+  /// @dev storing the owner's address
   address public owner;
+
+  /// @dev using against re-entrancy
+  uint16 internal locked = 1;
+
+  /// @dev The commission we charge
+  uint256 public commission = 1;
+
+  /// @dev The commission collected
+  uint256 public withdrawal_amount_owner;
+
+  /// @dev Used to increase the id of the agreements in the "createAgreements" function
+  uint numAgreement;
   
 	constructor (){
 		owner = msg.sender;
@@ -47,8 +59,6 @@ contract AgreementBetweenSubjects {
 		_;
 	}
 
-  uint16 internal locked = 1;
-
   //doesn't allow reentrance attack
   modifier noReentrant() {
     require(locked == 1, "No re-entrancy");
@@ -56,7 +66,7 @@ contract AgreementBetweenSubjects {
     _;
     locked = 1;
   }
-
+  //
   modifier onlyWhitelisted() {
     require(isWhitelisted(msg.sender), "You aren't whitelisted");
     _;
@@ -67,11 +77,7 @@ contract AgreementBetweenSubjects {
     _;
   }
 
-  /// @dev The commission we charge
-  uint256 public commission = 1;
-
-  /// @dev The commission collected
-  uint256 public withdrawal_amount_owner;
+  
 
    /// @dev Saving the money sent for the signee to withdraw it
   mapping(address => uint256) private withdraw_signee;
@@ -81,8 +87,6 @@ contract AgreementBetweenSubjects {
 
   /// @dev A unique identifier of theagreement. The same as the id.
   mapping(uint256 => Agreement) public exactAgreement;
-  /// @dev Used to increase the id of the agreements in the "createAgreements" function
-  uint numAgreement;
 
   /// @dev Storing the id's of the agreements that the signee has created
   mapping(address => uint[]) public mySenderAgreements;
