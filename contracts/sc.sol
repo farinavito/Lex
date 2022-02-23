@@ -309,7 +309,7 @@ contract AgreementBetweenSubjects {
           ); 
   }
 
-  //function for the receiver - wether he agrees with the terms or not, approves the contract or not. If he does, we are able to activate it, otherwise we can't
+  /// @notice Confirming the agreement by the receiver, thus enabling it to receive funds
   function confirmAgreement(uint256 _id) external notBlacklisted{
     if (keccak256(bytes(exactAgreement[_id].approved)) == keccak256(bytes("Confirmed"))){
 		  emit NotifyUser("The agreement is already confirmed");
