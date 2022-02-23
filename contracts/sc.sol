@@ -221,6 +221,7 @@ contract AgreementBetweenSubjects {
     }
   }
 
+  /// @notice The signee withdrawing the money that belongs to his/her address
   function withdrawAsTheSignee(uint256 _id) external payable noReentrant notBlacklisted{
 	  require(exactAgreement[_id].signee == msg.sender, "Your logged in address isn't the same as the agreement's signee");
     require(withdraw_signee[exactAgreement[_id].signee] > 0, "There aren't any funds to withdraw");
@@ -231,6 +232,7 @@ contract AgreementBetweenSubjects {
 	  emit NotifyUser("Withdrawal has been transfered");
   }
 
+  /// @notice The receiver withdrawing the money that belongs to his/her address
   function withdrawAsTheReceiver(uint256 _id) external payable noReentrant notBlacklisted{
     require(exactAgreement[_id].receiver == msg.sender, "Your logged in address isn't the same as the agreement's receiver");
     require(withdraw_receiver[exactAgreement[_id].receiver] > 0, "There aren't any funds to withdraw");
@@ -241,6 +243,7 @@ contract AgreementBetweenSubjects {
     emit NotifyUser("Withdrawal has been transfered");
   }
   
+  /// @notice The owner withdrawing the money that belongs to his address
   function withdrawAsTheOwner() external payable noReentrant onlyWhitelisted{
 		require(withdrawal_amount_owner > 0, "There aren't any funds to withdraw");
     uint256 current_amount = withdrawal_amount_owner; 
