@@ -400,8 +400,8 @@ contract AgreementBetweenSubjects {
   }
 
   /// @notice Return the withdrawal amount of the owner
-  function getWithdrawalOwner(uint256 _id) external view onlyOwner returns(uint256){
-    return withdraw_receiver[exactAgreement[_id].receiver];
+  function getWithdrawalOwner() external view onlyWhitelisted returns(uint256){
+    return withdrawal_amount_owner;
   }
   
   /// @notice Changing the commission

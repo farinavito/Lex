@@ -1463,7 +1463,31 @@ def test_getWithdrawalSignee_uninitialize(deploy, time):
 
 
 
+'''TEST GETWITHDRAWALOWNER'''
+
+
+
+def test_getWithdrawalOwner_check_onlyWhitelisted_fails(deploy):
+    '''Check if the onlyWhitelisted modifier works as expected'''
+    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
+    with brownie.reverts("You aren't whitelisted"):
+        deploy.getWithdrawalOwner({'from': accounts[9]})
+
+def test_getWithdrawalOwner_returns_correct(deploy):
+    '''Check if the function works correctly'''
+    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
+    deploy.addToWhitelist(accounts[7], {'from': accounts[0]})
+    assert deploy.getWithdrawalOwner({'from': accounts[7]}) == commission
+
+
+
 '''TEST CHANGECOMMISSION'''
+
+
 
 def test_changeCommission_not_owner(deploy):
     '''check if the onlyOwner modifier works properly'''
@@ -1565,7 +1589,7 @@ def test_isWhitelisted_return_false_2(deploy):
 
 
 def test_withdrawAsTheOwner_check_onlyWhitelisted(deploy):
-    '''Check if onlyWhitelisted doesn't allow any othe raccount to call the function '''
+    '''Check if onlyWhitelisted doesn't allow any other account to call the function '''
     with brownie.reverts("You aren't whitelisted"):
         deploy.withdrawAsTheOwner({'from': accounts[9]})
 
