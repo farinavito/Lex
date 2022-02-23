@@ -34,10 +34,11 @@ contract AgreementBetweenSubjects {
     uint256 howLong;
   }
   
-  /// @dev storing the owner's address
+  
+  /// @dev Storing the owner's address
   address public owner;
 
-  /// @dev using against re-entrancy
+  /// @dev Using against re-entrancy
   uint16 internal locked = 1;
 
   /// @dev The commission we charge
@@ -53,25 +54,27 @@ contract AgreementBetweenSubjects {
 		owner = msg.sender;
 	}
   
-  //allows only the owner
+  /// @dev Allows only the owner
 	modifier onlyOwner(){
 		require(msg.sender == owner, "You are not the owner");
 		_;
 	}
 
-  //doesn't allow reentrance attack
+  /// @dev Doesn't allow reentrance attack
   modifier noReentrant() {
     require(locked == 1, "No re-entrancy");
     locked = 2;
     _;
     locked = 1;
   }
-  //
+
+  /// @dev Allows only the whitelisted addresses
   modifier onlyWhitelisted() {
     require(isWhitelisted(msg.sender), "You aren't whitelisted");
     _;
   }
   
+  /// @dev Rejects blacklisted addresses
   modifier notBlacklisted() {
     require(!isBlacklisted(msg.sender), "Your address is blacklisted");
     _;
@@ -100,6 +103,7 @@ contract AgreementBetweenSubjects {
   /// @dev Blacklisted accounts that can't access the smart contract
   mapping(address => bool) private blacklist;
 
+
   /// @notice Emitting agreement's info 
   event AgreementInfo(
     uint256 agreementId,
@@ -127,6 +131,7 @@ contract AgreementBetweenSubjects {
  
   /// @notice When an account is removed from white- or blacklist
   event RemovedFromTheList(address account);
+
 
   /// @notice Initializing the position from where the everyTimeUnit is added
   function initializingPositionPeriod(uint256 _id) private {
