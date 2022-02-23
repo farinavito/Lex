@@ -33,7 +33,7 @@ contract AgreementBetweenSubjects {
     uint256 positionPeriod;
     uint256 howLong;
   }
-  
+
   
   /// @dev Storing the owner's address
   address public owner;
@@ -384,46 +384,55 @@ contract AgreementBetweenSubjects {
     }
   } 
 
+  /// @notice Return the withdrawal amount of the agreement's signee
   function getWithdrawalSignee(uint256 _id) external view returns(uint256){
     require(exactAgreement[_id].signee == msg.sender, "Your logged in address isn't the same as the agreement's signee");
     return withdraw_signee[exactAgreement[_id].signee];
   }
 
+  /// @notice Return the withdrawal amount of the agreement's receiver
   function getWithdrawalReceiver(uint256 _id) external view returns(uint256){
     require(exactAgreement[_id].receiver == msg.sender, "Your logged in address isn't the same as the agreement's receiver");
     return withdraw_receiver[exactAgreement[_id].receiver];
   }
   
+  /// @notice Changing the commission
   function changeCommission(uint256 _newCommission) external onlyOwner{
 		require(_newCommission > 0 && _newCommission < 10*15 + 1, "Commission doesn't follow the rules");
 		commission = _newCommission;
 		emit NotifyUser("Commission changed");
 	}
- 
+  
+  /// @notice Adding address to the whitelist
   function addToWhitelist(address _address) external onlyOwner {
     whitelist[_address] = true;
     emit AddedToTheList(_address);
   }
   
+  /// @notice Removing address from the whitelist
   function removedFromWhitelist(address _address) external onlyOwner {
     whitelist[_address] = false;
     emit RemovedFromTheList(_address);
   }
   
+  /// @notice Checking if the address is whitelisted
   function isWhitelisted(address _address) public view returns(bool) {
     return whitelist[_address];
   }
   
+  /// @notice Adding address to the blacklist
   function addToBlacklist(address _address) external onlyOwner {
     blacklist[_address] = true;
     emit AddedToTheList(_address);
   }
   
+  /// @notice Removing address from the blacklist
   function removedFromBlacklist(address _address) external onlyOwner {
     blacklist[_address] = false;
     emit RemovedFromTheList(_address);
   }
   
+  /// @notice Checking if the address is blacklisted
   function isBlacklisted(address _address) public view returns(bool) {
     return blacklist[_address];
   }
