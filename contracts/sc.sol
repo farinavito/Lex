@@ -135,7 +135,7 @@ contract AgreementBetweenSubjects {
 
   /// @notice Initializing the position from where the everyTimeUnit is added
   function initializingPositionPeriod(uint256 _id) private {
-      exactAgreement[_id].positionPeriod = exactAgreement[_id].agreementStartDate + (exactAgreement[_id].everyTimeUnit);
+      exactAgreement[_id].positionPeriod = exactAgreement[_id].agreementStartDate + exactAgreement[_id].everyTimeUnit;
     }
 
   /// @notice Verifying that the transaction created was sooner than its deadline 
@@ -205,8 +205,8 @@ contract AgreementBetweenSubjects {
         emit Terminated("The agreement was terminated due to late payment");
       }
     } else if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Created"))){
-        require(exactAgreement[_id].agreementStartDate<= block.timestamp, "The agreement hasn't started yet");
-        require(exactAgreement[_id].howLong + exactAgreement[_id].agreementStartDate> block.timestamp, "The agreement's deadline has ended");
+        require(exactAgreement[_id].agreementStartDate <= block.timestamp, "The agreement hasn't started yet");
+        require(exactAgreement[_id].howLong + exactAgreement[_id].agreementStartDate > block.timestamp, "The agreement's deadline has ended");
         require(exactAgreement[_id].amount <= msg.value, "The deposit is not the same as agreed in the terms");
         exactAgreement[_id].status = "Activated";
         //set the position period
@@ -313,12 +313,12 @@ contract AgreementBetweenSubjects {
   function confirmAgreement(uint256 _id) external notBlacklisted{
     if (keccak256(bytes(exactAgreement[_id].approved)) == keccak256(bytes("Confirmed"))){
 		  emit NotifyUser("The agreement is already confirmed");
-	  }else if(keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Terminated"))){
+	  } else if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Terminated"))){
       emit NotifyUser("The agreement is already terminated");
-    }else{
+    } else {
       require(exactAgreement[_id].receiver == msg.sender, "Only the receiver can confirm the agreement");
       //cannot confirm an agreement that ends in the past
-      require(exactAgreement[_id].howLong + exactAgreement[_id].agreementStartDate>= block.timestamp, "The agreement's deadline has ended");
+      require(exactAgreement[_id].howLong + exactAgreement[_id].agreementStartDate >= block.timestamp, "The agreement's deadline has ended");
       //confirm the agreement
       exactAgreement[_id].approved = "Confirmed";
       //emit that the agreement was confirmed
@@ -355,7 +355,7 @@ contract AgreementBetweenSubjects {
     //checking if the agreement was Activated
     if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Activated"))){
       //checking if the deadline was breached
-      if(timeWasntBreached(_id)){
+      if (timeWasntBreached(_id)){
         emit NotifyUser("The agreement wasn't breached");
       } else {
         //receiver has to wait 7 days after the breached date to withdraw the deposit
@@ -368,8 +368,8 @@ contract AgreementBetweenSubjects {
         exactAgreement[_id].deposit = 0;
         emit Terminated("The agreement has been terminated");
       } 
-    }else if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Created"))){
-      if(exactAgreement[_id].agreementStartDate + (6*60*60*24) > block.timestamp){
+    } else if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Created"))){
+      if (exactAgreement[_id].agreementStartDate + (6*60*60*24) > block.timestamp){
         emit NotifyUser("The agreement wasn't breached");
       } else {
         //receiver has to wait 7 days after the breached date to withdraw the deposit
