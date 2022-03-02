@@ -43,6 +43,6 @@ The purpose of this smart contract is to check if the subject who commited sendi
 	4) The receiver can check if the agreement was breached. He/She will received the deposit in the case of a breach.
 	5) The sender can at any time terminate the agreement, however if the agreement hasn't finished, he/she will loose the deposit.
 	6) The sender has to terminates the agreement, when the agreement has ended to get the deposit back
-	7) The receiver can withdraw the money that belongs to them by calling a withdraw function.
+	7) The sender and receiver can withdraw the money that belongs to them by calling a withdraw function.
 
 
