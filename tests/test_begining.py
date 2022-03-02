@@ -392,8 +392,6 @@ def test_confirmAgreement_terminated_notify_user(deploy):
 
 
 
-#here we are contacting sendPayment prior terminating the agreement (it should be the same otherwise)
-
 def test_terminateContract_check_notBlacklisted_fails(deploy):
     '''Check if the modifier notBlacklisted works as expected'''
     deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
@@ -513,8 +511,6 @@ def test_terminateContract_emit_Terminated_initial_status_activated(deploy):
     message = function_enabled.events[0][0]['message']
     assert message == 'The agreement has been terminated'
 
-#here we aren't contacting sendPayments prior terminating the contract
-
 @pytest.mark.parametrize("accounts_number", [without_signee[0], without_signee[1], without_signee[2]])
 def test_terminateContract_fails_require_wrong_address_initial_status_activated_without_sendPayments(deploy, accounts_number):
     '''check if the function terminateContract fails, because require(exactAgreement[_id].signee == msg.sender in the require statement'''
@@ -564,11 +560,6 @@ def test_terminateContract_emit_Terminated_initial_status_activated_without_send
 
 
 '''TESTING SENDPAYMENT, INITIALIZINGPOSITIONPERIOD AND TIMENOTBREACHED FUNCTIONS'''
-
-
-#can we check the require, revert
-#What happens if the unix timestamp is larger or equal to 19th Jan 2038?
-#what happens if teh transaction cannot be sent?
 
 #Checking the require statements 
 
