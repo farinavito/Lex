@@ -1096,30 +1096,6 @@ def test_wasContractBreached_timeNotBreached_true_emit_NotifyUser(deploy):
     function_initialize = deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
     assert function_initialize.events[0][0]['message'] == "The agreement wasn't breached"
 
-#check 3 parts of the if statement in timeWasntBreached
-
-#if timeNotBreached is False
-@pytest.mark.skip(reason='doesn not work correctly')
-#seconds_sleep must be more then agreement_duration, but less then agreement_duration + 7 days
-@pytest.mark.parametrize("seconds_sleep",  [2629761, 3000000, 3234542, 3234543, 9999999])
-def test_wasContractBreached_received_on_time_false(deploy, seconds_sleep):
-    '''check if the wasContractBreached returns false, when transaction received wasn't on time, but doesn't wait 7 days for withdraw'''
-    try:
-        deploy.confirmAgreement(1, {'from': accounts[receiver_2]})
-        deploy.sendPayment(1, {'from': accounts[signee_2], 'value': amount_sent})
-        chain = Chain()
-        chain.sleep(seconds_sleep)
-        deploy.wasContractBreached(1, {'from': accounts[receiver_2]})
-    #deploy.sendPayment(1, {'from': signee, 'value': amount_sent})
-    #deploy.wasContractBreached(1, {'from': receiver})
-
-    #function_initialize = deploy.wasContractBreached(1, {'from': receiver})
-    #assert function_initialize.events[0][0]['message'] == "The agreement wasn't breached"
-
-    #assert deploy.exactAgreement(1)[6] == "Terminated"
-    except Exception as e:        
-        assert e.message[50:] == "You have to wait at least 7 days after breached deadline to withdraw the deposit"
-
 @pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]])
 def test_wasContractBreached_timeNotBreached_false_status_Terminated(deploy, seconds_sleep):
     '''check if the wasContractBreached function when timeNotBreached is false, changes status to Terminated'''
