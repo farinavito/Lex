@@ -73,14 +73,6 @@ contract AgreementBetweenSubjects {
     require(isWhitelisted(msg.sender), "You aren't whitelisted");
     _;
   }
-  
-  /// @notice Rejects blacklisted addresses
-  modifier notBlacklisted() {
-    require(!isBlacklisted(msg.sender), "Your address is blacklisted");
-    _;
-  }
-
-  
 
   /// @notice Saving the money sent for the signee to withdraw it
   mapping(address => uint256) private withdraw_signee;
@@ -164,7 +156,7 @@ contract AgreementBetweenSubjects {
     }
 
   /// @notice Sending the payment based on the status of the agreement
-  function sendPayment(uint256 _id) external payable notBlacklisted{
+  function sendPayment(uint256 _id) external payable {
     require(exactAgreement[_id].signee == msg.sender, "Only the owner can pay the agreement's terms");
     //the agreement has to be confirmed from the receiver of the agreement
     require(keccak256(bytes(exactAgreement[_id].approved)) == keccak256(bytes("Confirmed")), "The receiver has to confirm the contract");
@@ -222,7 +214,7 @@ contract AgreementBetweenSubjects {
   }
 
   /// @notice The signee withdrawing the money that belongs to his/her address
-  function withdrawAsTheSignee(uint256 _id) external payable noReentrant notBlacklisted{
+  function withdrawAsTheSignee(uint256 _id) external payable noReentrant {
 	  require(exactAgreement[_id].signee == msg.sender, "Your logged in address isn't the same as the agreement's signee");
     require(withdraw_signee[exactAgreement[_id].signee] > 0, "There aren't any funds to withdraw");
 	  uint256 current_amount = withdraw_signee[exactAgreement[_id].signee];
@@ -233,7 +225,7 @@ contract AgreementBetweenSubjects {
   }
 
   /// @notice The receiver withdrawing the money that belongs to his/her address
-  function withdrawAsTheReceiver(uint256 _id) external payable noReentrant notBlacklisted{
+  function withdrawAsTheReceiver(uint256 _id) external payable noReentrant {
     require(exactAgreement[_id].receiver == msg.sender, "Your logged in address isn't the same as the agreement's receiver");
     require(withdraw_receiver[exactAgreement[_id].receiver] > 0, "There aren't any funds to withdraw");
     uint256 current_amount = withdraw_receiver[exactAgreement[_id].receiver];
@@ -260,7 +252,7 @@ contract AgreementBetweenSubjects {
     uint256 _everyTimeUnit,
     uint256 _howLong,
     uint256 _startOfTheAgreement
-    ) external payable notBlacklisted{
+    ) external payable {
         require(_amount > 0 && _everyTimeUnit > 0 && _howLong > 0, "All input data must be larger than 0");
         require(_howLong > _everyTimeUnit, "The period of the payment is greater than the duration of the contract");
         require(msg.value >= _amount, "Deposit has to be at least the size of the amount");
@@ -310,7 +302,7 @@ contract AgreementBetweenSubjects {
   }
 
   /// @notice Confirming the agreement by the receiver, thus enabling it to receive funds
-  function confirmAgreement(uint256 _id) external notBlacklisted{
+  function confirmAgreement(uint256 _id) external {
     if (keccak256(bytes(exactAgreement[_id].approved)) == keccak256(bytes("Confirmed"))){
 		  emit NotifyUser("The agreement is already confirmed");
 	  } else if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Terminated"))){
@@ -327,7 +319,7 @@ contract AgreementBetweenSubjects {
   }
 
   /// @notice Terminating the agreement by the signee
-  function terminateContract(uint256 _id) external notBlacklisted{
+  function terminateContract(uint256 _id) external {
     if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Terminated"))){
 		  emit NotifyUser("The agreement is already terminated");
 	  } else if (exactAgreement[_id].howLong + exactAgreement[_id].agreementStartDate< block.timestamp){
@@ -350,7 +342,7 @@ contract AgreementBetweenSubjects {
   }
 
   /// @notice Receiver checking if the contract has been breached
-  function wasContractBreached(uint256 _id) external notBlacklisted{
+  function wasContractBreached(uint256 _id) external {
     require(exactAgreement[_id].receiver == msg.sender, "Your logged in address isn't the same as the agreement's receiver");
     //checking if the agreement was Activated
     if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Activated"))){
