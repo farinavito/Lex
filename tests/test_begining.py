@@ -68,17 +68,6 @@ def new_agreement_2(deploy, module_isolation):
 
 
 '''TESTING CREATEAGREEMENT FUNCTION AGREEMENT 1'''
-
-
-
-def test_createAgreement_notBlacklisted_fails(deploy):
-    '''Check if the modifier notBlacklisted works as expected'''
-    chain = Chain()
-    now = chain.time()
-    startAgreement = now + 4
-    deploy.addToBlacklist(accounts[5], {'from': accounts[0]})
-    with brownie.reverts("Your address is blacklisted"):
-        deploy.createAgreement(accounts[receiver_2], amount_sent_2, every_period_2, agreement_duration_2, startAgreement, {'from': accounts[5], 'value': amount_sent_2})
     
 
 def test_owner(deploy):
@@ -323,12 +312,6 @@ def test_myReceiverAgreements_emits_correct_id_agreement_2(deploy):
 
 
 
-def test_confirmAgreement_check_notBlacklisted_fails(deploy):
-    '''Check if the modifier notBlacklisted works as exected'''
-    deploy.addToBlacklist(accounts[receiver], {'from': accounts[0]})
-    with brownie.reverts("Your address is blacklisted"):
-        deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
-
 def test_confirmAgreement_agreement_already_confirmed(deploy):
     '''check if the confirmAgreement checks if the agreement is already confirmed'''
     deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
@@ -391,14 +374,6 @@ def test_confirmAgreement_terminated_notify_user(deploy):
 '''TESTING TERMINATE CONTRACT'''
 
 
-
-def test_terminateContract_check_notBlacklisted_fails(deploy):
-    '''Check if the modifier notBlacklisted works as expected'''
-    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
-    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
-    deploy.addToBlacklist(accounts[signee], {'from': accounts[0]})
-    with brownie.reverts("Your address is blacklisted"):
-        deploy.terminateContract(agreements_number, {'from': accounts[signee]})
 
 def test_terminateContract_emit_Terminated_initial_status_activated_already_terminated(deploy):
     '''checking if the event Terminated has been emitted as "This agreement has been terminated" when you want to terminate a contract'''
@@ -591,13 +566,6 @@ def test_sendPayments_fails_require_not_confirmed(deploy):
     except Exception as e:
         assert e.message[50:] == "The receiver has to confirm the contract"
 
-def test_sendPayments_check_notBlacklisted_fails(deploy):
-    '''Check if the notBlacklisted modifier works as expected'''
-    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
-    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
-    deploy.addToBlacklist(accounts[signee], {'from': accounts[0]})
-    with brownie.reverts("Your address is blacklisted"):
-        deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
 
 #Checking when the agreement's status is "Created"
 
@@ -1040,14 +1008,6 @@ def test_terminateContract_emit_Terminated_initial_status_terminated(deploy):
 
 
 
-def test_wasContractBreached_check_notBlacklisted_fails(deploy):
-    '''Check if the modifier notBlacklisted works as expected'''
-    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
-    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
-    deploy.addToBlacklist(accounts[receiver], {'from': accounts[0]})
-    with brownie.reverts("Your address is blacklisted"):
-        deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
-
 @pytest.mark.parametrize("wrong_accounts",  [without_receiver[0], without_receiver[1], without_receiver[2]])
 def test_wasContractBreached_require_receiver_equals_msg_sender(deploy, wrong_accounts):
     '''check if the wasContractBreached fails, because exactAgreement[_id].receiver == msg.sender is the require statement'''
@@ -1230,15 +1190,6 @@ def test_wasContractBreached_status_created_false_emit_Terminated(deploy, second
 
 
 
-def test_withdrawAsTheReceiver_check_notBlacklisted_fails(deploy):
-    '''Check if the modifier notBlacklisted works as expected'''
-    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
-    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
-    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
-    deploy.addToBlacklist(accounts[receiver], {'from': accounts[0]})
-    with brownie.reverts("Your address is blacklisted"):
-        deploy.withdrawAsTheReceiver(agreements_number, {'from': accounts[receiver]})
-
 @pytest.mark.parametrize("wrong_account", [without_receiver[0], without_receiver[1], without_receiver[2]])
 def test_withdrawAsTheReceiver_first_reguire_fails(deploy, wrong_account):
     '''require statement exactAgreement[_id].receiver == msg.sender fails'''
@@ -1297,15 +1248,6 @@ def test_withdrawAsTheReceiver_withdrawal_sent_2(deploy):
 '''TEST WITHDRAWASTHESIGNEE'''
 
 
-
-def test_withdrawAsTheSignee_check_notBlacklisted_fails(deploy):
-    '''Check if modifier notBlacklisted works as expected'''
-    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
-    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
-    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
-    deploy.addToBlacklist(accounts[signee], {'from': accounts[0]})
-    with brownie.reverts("Your address is blacklisted"):
-        deploy.withdrawAsTheSignee(agreements_number, {'from': accounts[signee]})
 
 @pytest.mark.parametrize("wrong_account", [without_signee[0], without_signee[1], without_signee[2]])
 def test_withdrawAsTheSignee_first_reguire_fails(deploy, wrong_account):
