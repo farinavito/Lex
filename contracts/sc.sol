@@ -92,8 +92,6 @@ contract AgreementBetweenSubjects {
   /// @notice Whitelisted accounts that can access withdrawal_amount_owner
   mapping(address => bool) private whitelist;
   
-  /// @notice Blacklisted accounts that can't access the smart contract
-  mapping(address => bool) private blacklist;
 
 
   /// @notice Emitting agreement's info 
@@ -420,22 +418,6 @@ contract AgreementBetweenSubjects {
     return whitelist[_address];
   }
   
-  /// @notice Adding address to the blacklist
-  function addToBlacklist(address _address) external onlyOwner {
-    blacklist[_address] = true;
-    emit AddedToTheList(_address);
-  }
-  
-  /// @notice Removing address from the blacklist
-  function removedFromBlacklist(address _address) external onlyOwner {
-    blacklist[_address] = false;
-    emit RemovedFromTheList(_address);
-  }
-  
-  /// @notice Checking if the address is blacklisted
-  function isBlacklisted(address _address) public view returns(bool) {
-    return blacklist[_address];
-  }
 
   fallback() external {}
   receive() external payable {}
