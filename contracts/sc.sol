@@ -5,6 +5,14 @@ pragma solidity 0.8.11;
 /// @author Farina Vito
 
 contract AgreementBetweenSubjects {
+  //1. Returning any access ethers sent to the sender when ether sent on time
+  //2. if the transaction was on time, but it wasn't enough -> return the msg.value to the signee and thats it
+  //3. Remove confirmAgreement
+  //4. Remove terminateAgreement -> signee can wait until the deadline expires, not send any transaction and then call terminateAgreement -> if you say you will commit to something, you commit
+  //5. if the last transaction in sentPayment is ok, return the deposit to the signee
+  //6. Change the withdrawassignee, -receiver, -owner
+  //7. change commission from onlyOwner to onlywhitelisted
+  //8. Change isWhitelisted to internal
 
   /// @notice Defining the agreement 
   /// @param id A unique identifier of the agreement
@@ -175,7 +183,7 @@ contract AgreementBetweenSubjects {
         //if the transaction was on time, but it wasn't enough
         } else {
             exactAgreement[_id].status = "Terminated"; 
-            //sending the deposit to the receiver
+            //sending the deposit to the signee
             withdraw_signee[exactAgreement[_id].signee] += exactAgreement[_id].deposit;
             //ensure that the deposit is reduced to 0
             exactAgreement[_id].deposit = 0;
