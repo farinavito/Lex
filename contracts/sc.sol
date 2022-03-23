@@ -183,14 +183,9 @@ contract AgreementBetweenSubjects {
           emit NotifyUser("Transaction was sent to the receiver");
         //if the transaction was on time, but it wasn't enough
         } else {
-            exactAgreement[_id].status = "Terminated"; 
-            //sending the deposit to the signee
-            withdraw_signee[exactAgreement[_id].signee] += exactAgreement[_id].deposit;
-            //ensure that the deposit is reduced to 0
-            exactAgreement[_id].deposit = 0;
             //return the transaction to the signee
             withdraw_signee[exactAgreement[_id].signee] += msg.value;
-            emit Terminated("The agreement was terminated due to different amount sent than in the terms");      
+            emit NotifyUser("The amount sent is lower than in the agreement");      
         }
       //if the transaction wasn't sent on time
       } else {
