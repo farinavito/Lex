@@ -5,7 +5,6 @@ pragma solidity 0.8.11;
 /// @author Farina Vito
 
 contract AgreementBetweenSubjects {
-  //1. Returning any access ethers sent to the sender when ether sent on time
   //2. if the transaction was on time, but it wasn't enough -> return the msg.value to the signee and thats it
   //3. Remove confirmAgreement
   //4. Remove terminateAgreement -> signee can wait until the deadline expires, not send any transaction and then call terminateAgreement -> if you say you will commit to something, you commit
@@ -179,7 +178,7 @@ contract AgreementBetweenSubjects {
           withdrawal_amount_owner += commission;
           //send the transaction to the receiver
           withdraw_receiver[exactAgreement[_id].receiver] += changedAmount;
-          //returning any access ethers sent to the sender
+          //returning any access ethers sent to the receiver
           withdraw_signee[exactAgreement[_id].signee] += msg.value - exactAgreement[_id].amount;
           emit NotifyUser("Transaction was sent to the receiver");
         //if the transaction was on time, but it wasn't enough
