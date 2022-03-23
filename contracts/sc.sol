@@ -5,7 +5,6 @@ pragma solidity 0.8.11;
 /// @author Farina Vito
 
 contract AgreementBetweenSubjects {
-  //2. if the transaction was on time, but it wasn't enough -> return the msg.value to the signee and thats it
   //3. Remove confirmAgreement
   //4. Remove terminateAgreement -> signee can wait until the deadline expires, not send any transaction and then call terminateAgreement -> if you say you will commit to something, you commit
   //5. if the last transaction in sentPayment is ok, return the deposit to the signee
