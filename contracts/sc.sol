@@ -4,7 +4,9 @@ pragma solidity 0.8.11;
 /// @title Implementing a legal contract: Person A commits sending X amount to person B every Y time period for the duration of Z time starting at Q
 /// @author Farina Vito
 
-contract AgreementBetweenSubjects {
+//import "https://github.com/farinavito/ProtectSmartContracts/blob/main/project/ProtectorWhitelisted/contracts/protector3.sol";
+
+contract AgreementBetweenSubjects is ProtectorWhitelisted(){
   //5. if the last transaction in sentPayment is ok, return the deposit to the signee
 
   /// @notice Defining the agreement 
