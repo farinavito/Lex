@@ -51,15 +51,6 @@ contract AgreementBetweenSubjects is ProtectorWhitelisted(){
   /// @notice Used to increase the id of the agreements in the "createAgreements" function
   uint numAgreement;
   
-	constructor (){
-		owner = msg.sender;
-	}
-  
-  /// @notice Allows only the owner
-	modifier onlyOwner(){
-		require(msg.sender == owner, "You are not the owner");
-		_;
-	}
 
   /// @notice Doesn't allow reentrance attack
   modifier noReentrant() {
@@ -67,12 +58,6 @@ contract AgreementBetweenSubjects is ProtectorWhitelisted(){
     locked = 2;
     _;
     locked = 1;
-  }
-
-  /// @notice Allows only the whitelisted addresses
-  modifier onlyWhitelisted() {
-    require(isWhitelisted(msg.sender), "You aren't whitelisted");
-    _;
   }
 
   /// @notice Saving the money sent for the signee to withdraw it
@@ -88,11 +73,7 @@ contract AgreementBetweenSubjects is ProtectorWhitelisted(){
   mapping(address => uint[]) public mySenderAgreements;
 
   /// @notice Storing the id's of the agreements of the same receiver address
-  mapping(address => uint[]) public myReceiverAgreements;
-
-  /// @notice Whitelisted accounts that can access withdrawal_amount_owner
-  mapping(address => bool) private whitelist;
-  
+  mapping(address => uint[]) public myReceiverAgreements;  
 
 
   /// @notice Emitting agreement's info 
@@ -115,13 +96,6 @@ contract AgreementBetweenSubjects is ProtectorWhitelisted(){
 
   /// @notice After other event than Terminated happens, emit it and send a message
   event NotifyUser(string message);
- 
-  /// @notice When an account is white- or blacklisted
-  event AddedToTheList(address account);
- 
-  /// @notice When an account is removed from white- or blacklist
-  event RemovedFromTheList(address account);
-
 
   /// @notice Initializing the position from where the everyTimeUnit is added
   function initializingPositionPeriod(uint256 _id) private {
@@ -349,24 +323,7 @@ contract AgreementBetweenSubjects is ProtectorWhitelisted(){
 		commission = _newCommission;
 		emit NotifyUser("Commission changed");
 	}
-  
-  /// @notice Adding address to the whitelist
-  function addToWhitelist(address _address) external onlyOwner {
-    whitelist[_address] = true;
-    emit AddedToTheList(_address);
-  }
-  
-  /// @notice Removing address from the whitelist
-  function removedFromWhitelist(address _address) external onlyOwner {
-    whitelist[_address] = false;
-    emit RemovedFromTheList(_address);
-  }
-  
-  /// @notice Checking if the address is whitelisted
-  function isWhitelisted(address _address) public view returns(bool) {
-    return whitelist[_address];
-  }
-  
+   
 
   fallback() external {}
   receive() external payable {}
