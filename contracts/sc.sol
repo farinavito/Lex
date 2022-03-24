@@ -6,7 +6,6 @@ pragma solidity 0.8.11;
 
 contract AgreementBetweenSubjects {
   //5. if the last transaction in sentPayment is ok, return the deposit to the signee
-  //6. Change the withdrawassignee, -receiver, -owner
   //7. change commission from onlyOwner to onlywhitelisted
   //8. Change isWhitelisted to internal
 
