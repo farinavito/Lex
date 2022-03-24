@@ -19,7 +19,6 @@ contract AgreementBetweenSubjects {
   /// @param transactionCreated Unix timestamp when transaction was sent
   /// @param deposit The first transaction sent to the agreement. Initial state will be zero
   /// @param status Representation of different stages in the agreement: Created, Activated, Terminated
-  /// @param approved Confirmation of the agreedDeposit by the receiver: Not Confirmed, Confirmed
   /// @param agreementStartDate Unix timestamp of the agreement's starting date 
   /// @param everyTimeUnit The number of days till when the signee's transaction has to be created. First calculated by agreementStartDate + everyTimeUnit. Later just adding everyTimeUnit
   /// @param positionPeriod A pointer to the current everyTimeUnit parameter
@@ -32,7 +31,6 @@ contract AgreementBetweenSubjects {
     uint256 transactionCreated;
     uint256 deposit;
     string status;
-    string approved;
     uint256 agreementStartDate;
     uint256 everyTimeUnit;
     uint256 positionPeriod;
@@ -108,7 +106,6 @@ contract AgreementBetweenSubjects {
     uint256 agreementTransactionCreated,
     uint256 agreementDeposit,
     string agreementStatus,
-    string agreementApproved,
     uint256 agreementStartDate,
     uint256 agreementTimePeriods,
     uint256 agreementPositionPeriod,
@@ -161,8 +158,6 @@ contract AgreementBetweenSubjects {
   /// @notice Sending the payment based on the status of the agreement
   function sendPayment(uint256 _id) external payable {
     require(exactAgreement[_id].signee == msg.sender, "Only the owner can pay the agreement's terms");
-    //the agreement has to be confirmed from the receiver of the agreement
-    require(keccak256(bytes(exactAgreement[_id].approved)) == keccak256(bytes("Confirmed")), "The receiver has to confirm the contract");
     if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Activated"))){
       //save the time of calling this function
       exactAgreement[_id].transactionCreated = block.timestamp;
@@ -270,8 +265,6 @@ contract AgreementBetweenSubjects {
         newAgreement.deposit = msg.value;
         //the status of the agreement when its created
         newAgreement.status = "Created";
-        //initialize the approved term
-        newAgreement.approved = "Not Confirmed";
         //when was the agreement created
         newAgreement.agreementStartDate= _startOfTheAgreement;
         //period of the payment
@@ -293,31 +286,12 @@ contract AgreementBetweenSubjects {
           newAgreement.transactionCreated,
           newAgreement.deposit, 
           newAgreement.status,
-          newAgreement.approved,
           newAgreement.agreementStartDate, 
           newAgreement.everyTimeUnit, 
           newAgreement.positionPeriod, 
           newAgreement.howLong
           ); 
   }
-
-  /// @notice Confirming the agreement by the receiver, thus enabling it to receive funds
-  function confirmAgreement(uint256 _id) external {
-    if (keccak256(bytes(exactAgreement[_id].approved)) == keccak256(bytes("Confirmed"))){
-		  emit NotifyUser("The agreement is already confirmed");
-	  } else if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Terminated"))){
-      emit NotifyUser("The agreement is already terminated");
-    } else {
-      require(exactAgreement[_id].receiver == msg.sender, "Only the receiver can confirm the agreement");
-      //cannot confirm an agreement that ends in the past
-      require(exactAgreement[_id].howLong + exactAgreement[_id].agreementStartDate >= block.timestamp, "The agreement's deadline has ended");
-      //confirm the agreement
-      exactAgreement[_id].approved = "Confirmed";
-      //emit that the agreement was confirmed
-      emit NotifyUser("The agreement was confirmed");
-	  }
-  }
-
 
   /// @notice Receiver checking if the contract has been breached
   function wasContractBreached(uint256 _id) external {
