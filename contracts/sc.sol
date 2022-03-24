@@ -48,9 +48,15 @@ contract AgreementBetweenSubjects is ProtectorWhitelisted(){
   /// @notice The commission collected
   uint256 private withdrawal_amount_owner;
 
+  /// @notice Returning the total amount of ether that was commited
+  uint256 public totalEtherCommited;
+
+  /// @notice Returning the total amount of deposit that was sent to the receiver
+  uint256 public totalDepositSent; 
+
   /// @notice Used to increase the id of the agreements in the "createAgreements" function
   uint numAgreement;
-  
+
 
   /// @notice Doesn't allow reentrance attack
   modifier noReentrant() {
@@ -135,6 +141,7 @@ contract AgreementBetweenSubjects is ProtectorWhitelisted(){
       exactAgreement[_id].transactionCreated = block.timestamp;
       //if the transaction sent was on time and transaction was sent before the agreement's deadline
       if (timeNotBreached(_id)){
+        //if the transaction was on time and it was enough
         if (exactAgreement[_id].amount <= msg.value){
           //storing the amount sent subtracted by commission
           uint256 changedAmount;
@@ -143,6 +150,8 @@ contract AgreementBetweenSubjects is ProtectorWhitelisted(){
           withdrawal_amount_owner += commission;
           //send the transaction to the receiver
           withdraw_receiver[exactAgreement[_id].receiver] += changedAmount;
+          //change the total amount of ether sent
+          totalEtherCommited += changedAmount;
           //returning any access ethers sent to the receiver
           withdraw_signee[exactAgreement[_id].signee] += msg.value - exactAgreement[_id].amount;
           emit NotifyUser("Transaction was sent to the receiver");
@@ -157,6 +166,8 @@ contract AgreementBetweenSubjects is ProtectorWhitelisted(){
         exactAgreement[_id].status = "Terminated";
         //sending the deposit to the receiver
         withdraw_receiver[exactAgreement[_id].receiver] += exactAgreement[_id].deposit;
+        //change the total amount of deposit sent to the receiver
+        totalDepositSent += exactAgreement[_id].deposit;
         //ensure that the deposit is reduced to 0
         exactAgreement[_id].deposit = 0;
         //return the transaction to the signee
@@ -279,6 +290,8 @@ contract AgreementBetweenSubjects is ProtectorWhitelisted(){
         withdraw_receiver[exactAgreement[_id].receiver] += exactAgreement[_id].deposit;
         //ensure that the deposit is reduced to 0
         exactAgreement[_id].deposit = 0;
+        //change the total amount of deposit sent to the receiver
+        totalDepositSent += exactAgreement[_id].deposit;
         emit Terminated("The agreement has been terminated");
       } 
     } else if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Created"))){
@@ -293,6 +306,8 @@ contract AgreementBetweenSubjects is ProtectorWhitelisted(){
         withdraw_receiver[exactAgreement[_id].receiver] += exactAgreement[_id].deposit;
         //ensure that the deposit is reduced to 0
         exactAgreement[_id].deposit = 0;
+        //change the total amount of deposit sent to the receiver
+        totalDepositSent += exactAgreement[_id].deposit;
         emit Terminated("The agreement has been terminated");
       }
     } else {
