@@ -230,10 +230,9 @@ contract AgreementBetweenSubjects {
   /// @notice The owner withdrawing the money that belongs to his address
   function withdrawAsTheOwner() external payable noReentrant onlyWhitelisted{
 		require(withdrawal_amount_owner > 0, "There aren't any funds to withdraw");
-    uint256 current_amount = withdrawal_amount_owner; 
-    withdrawal_amount_owner = 0;
-    (bool sent, ) = msg.sender.call{value: current_amount}("");
+    (bool sent, ) = msg.sender.call{value: withdrawal_amount_owner}("");
     require(sent, "Failed to send Ether");
+    withdrawal_amount_owner = 0;
     emit NotifyUser("Withdrawal has been transfered");
 }
 
