@@ -289,7 +289,7 @@ def test_myReceiverAgreements_emits_correct_id_agreement_1(deploy):
 def test_myReceiverAgreements_emits_correct_id_agreement_2(deploy):
     '''check if the mapping myReceiverAgreements is returning correctly the ids'''
     assert deploy.myReceiverAgreements(accounts[receiver], 1) == '1'
-    
+
 
 
 '''TESTING SENDPAYMENT, INITIALIZINGPOSITIONPERIOD AND TIMENOTBREACHED FUNCTIONS'''
@@ -300,7 +300,7 @@ def test_myReceiverAgreements_emits_correct_id_agreement_2(deploy):
 def test_sendPayments_fails_require_wrong_address(deploy, accounts_number):
     '''check if the sendPayments fails, because exactAgreement[_id].signee == msg.sender in the require statement'''
     try:
-        deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+        #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
         #wrong signer's address
         deploy.sendPayment(agreements_number, {'from': accounts[accounts_number], 'value': amount_sent})
     except Exception as e:
@@ -310,7 +310,7 @@ def test_sendPayments_fails_require_wrong_address(deploy, accounts_number):
 def test_sendPayments_fails_require_wrong_address_pair(deploy, accounts_number):
     '''check if the sendPayments fails, because exactAgreement[_id].signee == msg.sender in the require statement'''
     try:
-        deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+        #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
         #wrong signer's address
         deploy.sendPayment(agreements_number, {'from': accounts[accounts_number], 'value': amount_sent})
     except Exception as e:
@@ -335,8 +335,8 @@ def test_sendPayments_require_statement_fails_agreement_not_started(deploy):
         _startAgreement = now + 10
         
         deploy.createAgreement(accounts[receiver], amount_sent, every_period, agreement_duration, _startAgreement, {'from': accounts[signee], 'value': amount_sent})
-        assert deploy.exactAgreement(2)[8] == _startAgreement
-        deploy.confirmAgreement(2, {'from': accounts[receiver]})
+        #assert deploy.exactAgreement(2)[8] == _startAgreement
+        #deploy.confirmAgreement(2, {'from': accounts[receiver]})
         deploy.sendPayment(2, {'from': accounts[signee], 'value': amount_sent})
     except Exception as e:
         assert e.message[50:] == "The agreement hasn't started yet"
@@ -345,7 +345,7 @@ def test_sendPayments_require_statement_fails_agreement_not_started(deploy):
 def test_sendPayments_require_statement_fails_agreement_not_ended(deploy, seconds_sleep):
     '''check if the require statement fails when the agreement's deadline has ended'''
     try:
-        deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+        #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
         chain = Chain()
         chain.sleep(seconds_sleep)
         #now = chain.time()
@@ -357,7 +357,7 @@ def test_sendPayments_require_statement_fails_agreement_not_ended(deploy, second
 @pytest.mark.parametrize("seconds_sleep",  [less_than_agreement_duration[0], less_than_agreement_duration[1], less_than_agreement_duration[2]])
 def test_sendPayments_require_statement_fails_agreement_not_ended_pair(deploy, seconds_sleep):
     '''check if the require statement works fine when the agreement's deadline has not ended'''
-    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     chain = Chain()
     chain.sleep(seconds_sleep)
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
@@ -367,7 +367,7 @@ def test_sendPayments_require_statement_fails_agreement_not_ended_pair(deploy, s
 def test_sendPayments_fails_require_smaller_deposit_initial_status_created(deploy, value_sent):
     '''check if the sendPayments fails, because exactAgreement[_id].amount <= msg.value in the require statement'''
     try:
-        deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+        #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
         #'value' is smaller than it should be
         deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
     except Exception as e:
@@ -376,19 +376,19 @@ def test_sendPayments_fails_require_smaller_deposit_initial_status_created(deplo
 @pytest.mark.parametrize("value_sent",  [more_than_amount_sent[0], more_than_amount_sent[1], more_than_amount_sent[2]])
 def test_sendPayments_fails_require_smaller_deposit_initial_status_created_pair(deploy, value_sent):
     '''checking if the status is changed to "Activated" when msg.value is larger or equal to agreedDeposit'''
-    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
     assert deploy.exactAgreement(agreements_number)[6] == 'Activated'
 
 def test_sendPayments_change_initializePeriod_initial_status_created(deploy):
     '''checking if the InitializedPeriod is initialize (sum of agreementStartDate and everyTimeUnit) when msg.value is larger or equal to agreedDeposit'''
-    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
-    assert deploy.exactAgreement(agreements_number)[10] == deploy.exactAgreement(0)[8] + deploy.exactAgreement(0)[9]
+    assert deploy.exactAgreement(agreements_number)[9] == deploy.exactAgreement(0)[7] + deploy.exactAgreement(0)[8]
 
 def test_sendPayments_emit_NotifyUser_initial_status_created(deploy):
     '''checking if the event has been emitted as "We have activate the agreement" when msg.value is larger or equal to agreedDeposit'''
-    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     function_enabled = deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     message = function_enabled.events[0][0]['message']
     assert message == 'The agreement has been activated'
@@ -400,23 +400,23 @@ def test_sendPayments_emit_NotifyUser_initial_status_created(deploy):
 
 def test_timeNotBreached(deploy):
     '''check if the timeNotBreached function correctly increments positionPeriod. This is for checking inside sendPayments function'''
-    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
-    new_agreement_position = deploy.exactAgreement(0)[10]
+    new_agreement_position = deploy.exactAgreement(0)[9]
     #the contract has been activated, now send the the money again
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})    
-    assert deploy.exactAgreement(agreements_number)[10] == new_agreement_position + deploy.exactAgreement(0)[9]
+    assert deploy.exactAgreement(agreements_number)[9] == new_agreement_position + deploy.exactAgreement(0)[8]
 
 def test_transactionCreated_updated(deploy):
     '''check if the time of the call to function sendPayment is stored'''
-    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     assert deploy.exactAgreement(agreements_number)[4] != '0'
 
 def test_transactionCreated_updated_once_again(deploy):
     '''check if the time of the call to function sendPayment changes after another call to this function'''
-    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     chain = Chain()  
@@ -433,7 +433,7 @@ def test_timeNotBreached_fail_if_statement(deploy, seconds_sleep):
     try:
         chain = Chain()
         chain.sleep(seconds_sleep)
-        deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+        #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
         deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     except Exception as e:        
         assert e.message[50:] == "The agreement's deadline has ended"
@@ -443,91 +443,93 @@ def test_timeNotBreached_fail_if_statement_pair(deploy, seconds_sleep):
     '''check if the timeNotBreached works fine when confirmAgreement check is passed'''
     chain = Chain()
     chain.sleep(seconds_sleep)
-    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     assert deploy.exactAgreement(agreements_number)[6] == 'Activated'
 
 @pytest.mark.parametrize("value_sent",  [more_than_amount_sent[0], more_than_amount_sent[1], more_than_amount_sent[2]])
 def test_timeNotBreached_value_large_amount_send_value(deploy, value_sent):
     '''check if the msg.value is sent when amount <= msg.value in the timeNotBreached'''
-    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
     balance_receiver = accounts[receiver].balance() 
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
     deploy.withdrawAsTheReceiver(agreements_number, {'from': accounts[receiver]})
     assert accounts[receiver].balance() == balance_receiver + value_sent - commission
-
+'''
 @pytest.mark.parametrize("value_sent",  [amount_sent])
 @pytest.mark.parametrize("value_decreased",  [less_than_amount_sent[0], less_than_amount_sent[1], less_than_amount_sent[2]])
 def test_timeNotBreached_value_large_amount_send_value_pair(deploy, value_sent, value_decreased):
-    '''check if the msg.value is not sent when amount <= msg.value in the timeNotBreached, the contract terminates'''
-    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    check if the msg.value is not sent when amount <= msg.value in the timeNotBreached, the contract terminates
+    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent - value_decreased}) 
     assert deploy.exactAgreement(agreements_number)[6] == 'Terminated'
-
+'''
+'''
 @pytest.mark.parametrize("value_sent",  [more_than_amount_sent[0], more_than_amount_sent[1], more_than_amount_sent[2]])
 def test_timeNotBreached_value_larger_amount_withdrawal_amount_owner(deploy, value_sent):
-    '''check if withdrawal_amount_owner is correctly initialized'''
-    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    check if withdrawal_amount_owner is correctly initialized
+    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
     deploy.addToWhitelist(accounts[7], {'from': accounts[0]}) 
     assert deploy.getWithdrawalOwner({'from': accounts[7]}) == commission
-
+'''
+'''
 @pytest.mark.parametrize("value_sent",  [more_than_amount_sent[0], more_than_amount_sent[1], more_than_amount_sent[2]])
 def test_timeNotBreached_value_larger_amount_withdrawal_amount_owner_increased(deploy, value_sent):
-    '''check if withdrawal_amount_owner is correctly increased'''
-    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    check if withdrawal_amount_owner is correctly increased
+    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent}) 
     deploy.addToWhitelist(accounts[7], {'from': accounts[0]}) 
     assert deploy.getWithdrawalOwner({'from': accounts[7]}) == 2*commission
-
+'''
 @pytest.mark.parametrize("value_sent",  [more_than_amount_sent[0], more_than_amount_sent[1], more_than_amount_sent[2]])
 def test_timeNotBreached_value_large_amount_send_value_check_signee(deploy, value_sent):
     '''check if the balance of the signee is changed when amount <= msg.value in the timeNotBreached'''
-    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
     balance_signee = accounts[signee].balance() 
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent}) 
     assert accounts[signee].balance() == balance_signee - value_sent
-
+'''
 @pytest.mark.parametrize("value_sent",  [amount_sent])
 @pytest.mark.parametrize("value_decreased",  [less_than_amount_sent[0], less_than_amount_sent[1], less_than_amount_sent[2]])
 def test_timeNotBreached_value_large_amount_send_value_check_signee_pair(deploy, value_sent, value_decreased):
-    '''check if the balance of the signee is the same when amount > msg.value in the timeNotBreached'''
-    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    check if the balance of the signee is the same when amount > msg.value in the timeNotBreached
+    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
     balance_signee = accounts[signee].balance() 
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent - value_decreased}) 
     deploy.withdrawAsTheSignee(agreements_number, {'from': accounts[signee]})
     assert accounts[signee].balance() == balance_signee + value_sent
-   
+'''  
 def test_timeNotBreached_value_large_amount_emit_NotifyUser(deploy):
     '''check if the event NotifyUser is emitted when amount <= msg.value in the timeNotBreached'''
-    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     #the contract has been activated, now send the money again
     function_initialize = deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     assert function_initialize.events[0][0]['message'] == "Transaction was sent to the receiver"
 
     #if the amount > msg.value
-
+'''
 @pytest.mark.parametrize("value_sent",  [0, less_than_amount_sent[0], less_than_amount_sent[1], less_than_amount_sent[2]])
 def test_timeNotBreached_value_smaller_amount_status(deploy, value_sent):
-    '''check if the status is changed when amount > msg.value in the timeNotBreached'''
-    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    check if the status is changed when amount > msg.value in the timeNotBreached
+    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     #the contract has been activated, now send the smaller quantity of money again
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
     assert deploy.exactAgreement(agreements_number)[6] == "Terminated"
-
+'''
 @pytest.mark.parametrize("value_sent",  [more_than_amount_sent[0], more_than_amount_sent[1], more_than_amount_sent[2]])
 def test_timeNotBreached_value_smaller_amount_status_pair(deploy, value_sent):
     '''check if the status stays the same when amount < msg.value in the timeNotBreached'''
-    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
     assert deploy.exactAgreement(agreements_number)[6] == "Activated"
@@ -536,7 +538,7 @@ def test_timeNotBreached_value_smaller_amount_status_pair(deploy, value_sent):
 def test_timeNotBreached_value_smaller_amount_send_deposit(deploy, value_sent):
     '''check if the deposit is sent to the receiver when amount > msg.value in the timeNotBreached'''
     try:
-        deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+        #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
         deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
         deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent}) 
         deploy.withdrawAsTheReceiver(agreements_number, {'from': accounts[receiver]})
@@ -546,61 +548,61 @@ def test_timeNotBreached_value_smaller_amount_send_deposit(deploy, value_sent):
 @pytest.mark.parametrize("value_sent",  [more_than_amount_sent[0], more_than_amount_sent[1], more_than_amount_sent[2]])
 def test_timeNotBreached_value_smaller_amount_send_deposit_pair(deploy, value_sent):
     '''check if the deposit isn't sent (but the sending value) to the receiver when amount < msg.value in the timeNotBreached'''
-    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     balance_receiver = accounts[receiver].balance() 
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
     deploy.withdrawAsTheReceiver(agreements_number, {'from': accounts[receiver]}) 
     assert accounts[receiver].balance() == balance_receiver + value_sent - commission
-
+'''
 @pytest.mark.parametrize("value_sent",  [0, less_than_amount_sent[0], less_than_amount_sent[1], less_than_amount_sent[2]])
 def test_timeNotBreached_value_smaller_amount_deposit_equals_zero(deploy, value_sent):
-    '''check if the deposit is back on zero when amount > msg.value in the timeNotBreached'''
-    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    check if the deposit is back on zero when amount > msg.value in the timeNotBreached
+    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent}) 
     assert deploy.exactAgreement(agreements_number)[5] == "0"
-
+'''
 @pytest.mark.parametrize("value_sent",  [more_than_amount_sent[0], more_than_amount_sent[1], more_than_amount_sent[2]])
 def test_timeNotBreached_value_smaller_amount_deposit_equals_zero_pair(deploy, value_sent):
     '''check if the deposit is not sent back on zero when amount < msg.value in the timeNotBreached'''
-    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent}) 
     assert deploy.exactAgreement(agreements_number)[5] != "0"
-
+'''
 @pytest.mark.parametrize("value_sent",  [0, less_than_amount_sent[0], less_than_amount_sent[1], less_than_amount_sent[2]])
 def test_timeNotBreached_value_smaller_amount_return_transaction(deploy, value_sent):
-    '''check if the transaction is sent back to the signee when amount > msg.value in the timeNotBreached'''
-    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    check if the transaction is sent back to the signee when amount > msg.value in the timeNotBreached
+    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})  
     balance_signee = accounts[signee].balance() 
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent}) 
     deploy.withdrawAsTheSignee(agreements_number, {'from': accounts[signee]})
     assert accounts[signee].balance() == balance_signee + amount_sent
-
+'''
 @pytest.mark.parametrize("value_sent",  [more_than_amount_sent[0], more_than_amount_sent[1], more_than_amount_sent[2]])
 def test_timeNotBreached_value_smaller_amount_return_transaction_pair(deploy, value_sent):
     '''check if the transaction is reduced from the signee when amount < msg.value in the timeNotBreached'''
-    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})  
     balance_signee = accounts[signee].balance() 
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent}) 
     assert accounts[signee].balance() == balance_signee - value_sent
-
+'''
 @pytest.mark.parametrize("value_sent",  [0, less_than_amount_sent[0], less_than_amount_sent[1], less_than_amount_sent[2]])    
 def test_timeNotBreached_value_smaller_amount_emit_Terminated(deploy, value_sent):
-    '''check if the event Terminated is emitted when amount > msg.value in the timeNotBreached'''
-    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    check if the event Terminated is emitted when amount > msg.value in the timeNotBreached
+    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     #the contract has been activated, now send the smaller quantity of money again
     function_initialize = deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
     assert function_initialize.events[0][0]['message'] == "The agreement was terminated due to different amount sent than in the terms"
-
+'''
 @pytest.mark.parametrize("value_sent",  [more_than_amount_sent[0], more_than_amount_sent[1], more_than_amount_sent[2]]) 
 def test_timeNotBreached_value_smaller_amount_emit_Terminated_pair(deploy, value_sent):
     '''check if the event NotifyUser is emitted when amount < msg.value in the timeNotBreached'''
-    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     function_initialize = deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
     assert function_initialize.events[0][0]['message'] == "Transaction was sent to the receiver"
@@ -612,7 +614,7 @@ def test_timeNotBreached_value_smaller_amount_emit_Terminated_pair(deploy, value
 @pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]])
 def test_timeNotBreached_received_on_time_false_1st_part_if_statement(deploy, seconds_sleep):
     '''check if the timeNotBreached returns false, when transactionCreated > positionPeriod'''
-    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     chain = Chain()
     chain.sleep(seconds_sleep)
@@ -622,7 +624,7 @@ def test_timeNotBreached_received_on_time_false_1st_part_if_statement(deploy, se
 @pytest.mark.parametrize("seconds_sleep",  [60*60*24*8, 60*60*24*9, 60*60*24*10])
 def test_timeNotBreached_received_on_time_false_2nd_part_if_statement(deploy, seconds_sleep):
     '''check if the timeNotBreached returns false, when transaction received wasn't on time'''
-    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     chain = Chain()
     chain.sleep(seconds_sleep)
@@ -633,7 +635,7 @@ def test_timeNotBreached_received_on_time_false_2nd_part_if_statement(deploy, se
 def test_timeNotBreached_breached_on_time_false_3rd_part_if_statement(deploy, seconds_sleep):
     '''check if the timeNotBreached returns false, when the deadline of the agreement has ended'''
     chain = Chain()
-    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     
     for _ in range(3):
@@ -646,7 +648,7 @@ def test_timeNotBreached_breached_on_time_false_3rd_part_if_statement(deploy, se
 @pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]])
 def test_timeNotBreached_breached_on_time_false_status(deploy, seconds_sleep):
     '''check if the status is changed to Terminated when timeNotBreached is breached in the timeNotBreached'''
-    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     chain = Chain()
     chain.sleep(seconds_sleep)
@@ -656,7 +658,7 @@ def test_timeNotBreached_breached_on_time_false_status(deploy, seconds_sleep):
 @pytest.mark.parametrize("seconds_sleep",  [0, less_than_every_period[0], less_than_every_period[1], less_than_every_period[2]])
 def test_timeNotBreached_breached_on_time_false_status_pair(deploy, seconds_sleep):
     '''check if the status is not changed to Terminated when timeNotBreached is not breached in the timeNotBreached'''
-    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     chain = Chain()
     chain.sleep(seconds_sleep)
@@ -666,7 +668,7 @@ def test_timeNotBreached_breached_on_time_false_status_pair(deploy, seconds_slee
 @pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]])
 def test_timeNotBreached_breached_on_time_false_send_deposit(deploy, seconds_sleep):
     '''check if the deposit is sent to the receiver when timeNotBreached is breached in the timeNotBreached'''
-    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     balance_receiver = accounts[receiver].balance() 
     chain = Chain()
@@ -678,7 +680,7 @@ def test_timeNotBreached_breached_on_time_false_send_deposit(deploy, seconds_sle
 @pytest.mark.parametrize("seconds_sleep",  [0, less_than_every_period[0], less_than_every_period[1], less_than_every_period[2]])
 def test_timeNotBreached_breached_on_time_false_send_deposit_pair(deploy, seconds_sleep):
     '''check if the deposit isn't sent to the receiver (but the value is) when timeNotBreached is not breached in the timeNotBreached'''
-    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     balance_receiver = accounts[receiver].balance() 
     chain = Chain()
@@ -690,7 +692,7 @@ def test_timeNotBreached_breached_on_time_false_send_deposit_pair(deploy, second
 @pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]])
 def test_timeNotBreached_breached_on_time_false_deposit_equals_zero(deploy, seconds_sleep):
     '''check if the deposit is equal zero when timeNotBreached is breached in the timeNotBreached'''
-    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     chain = Chain()
     chain.sleep(seconds_sleep)
@@ -700,7 +702,7 @@ def test_timeNotBreached_breached_on_time_false_deposit_equals_zero(deploy, seco
 @pytest.mark.parametrize("seconds_sleep",  [0, less_than_every_period[0], less_than_every_period[1], less_than_every_period[2]])
 def test_timeNotBreached_breached_on_time_false_deposit_equals_zero_pair(deploy, seconds_sleep):
     '''check if the deposit is not equal zero when timeNotBreached is not breached in the timeNotBreached'''
-    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     chain = Chain()
     chain.sleep(seconds_sleep)
@@ -710,7 +712,7 @@ def test_timeNotBreached_breached_on_time_false_deposit_equals_zero_pair(deploy,
 @pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]])
 def test_timeNotBreached_breached_on_time_false_return_transaction(deploy, seconds_sleep):
     '''check if the transaction is sent back to the signee when timeNotBreached is breached in the timeNotBreached'''
-    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})  
     balance_signee = accounts[signee].balance() 
     chain = Chain()
@@ -722,7 +724,7 @@ def test_timeNotBreached_breached_on_time_false_return_transaction(deploy, secon
 @pytest.mark.parametrize("seconds_sleep",  [0, less_than_every_period[0], less_than_every_period[1], less_than_every_period[2]])
 def test_timeNotBreached_breached_on_time_false_return_transaction_pair(deploy, seconds_sleep):
     '''check if the transaction is not sent back to the signee (it's sent to the receiver) when timeNotBreached is not breached in the timeNotBreached'''
-    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})  
     balance_signee = accounts[signee].balance() 
     chain = Chain()
@@ -733,7 +735,7 @@ def test_timeNotBreached_breached_on_time_false_return_transaction_pair(deploy, 
 @pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]])
 def test_timeNotBreached_breached_on_time_false_emit_Terminated(deploy, seconds_sleep):
     '''check if the event Terminated is emitted when timeNotBreached is breached in the timeNotBreached'''
-    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     chain = Chain()
     chain.sleep(seconds_sleep)
@@ -743,7 +745,7 @@ def test_timeNotBreached_breached_on_time_false_emit_Terminated(deploy, seconds_
 @pytest.mark.parametrize("seconds_sleep",  [0, less_than_every_period[0], less_than_every_period[1], less_than_every_period[2]])
 def test_timeNotBreached_breached_on_time_false_emit_Terminated_pair(deploy, seconds_sleep):
     '''check if the event Terminated is not emitted when timeNotBreached is not breached in the timeNotBreached'''
-    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     chain = Chain()
     chain.sleep(seconds_sleep)
@@ -754,7 +756,7 @@ def test_timeNotBreached_breached_on_time_false_emit_Terminated_pair(deploy, sec
 
 def test_terminateContract_emit_Terminated_initial_status_terminated(deploy):
     '''check if the sendPayments emits correctly the message when the status is "Terminated"'''
-    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     deploy.terminateContract(agreements_number, {'from': accounts[signee]})
     with brownie.reverts("The agreement is already terminated"):
