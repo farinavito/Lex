@@ -98,25 +98,21 @@ def test_exactAgreement_status(deploy):
     '''check if the initial status is equal to "Created"'''
     assert deploy.exactAgreement(agreements_number)[6] == 'Created'
 
-def test_exactAgreement_approved(deploy):
-    '''check if the initial approve "Not Confirmed"'''
-    assert deploy.exactAgreement(agreements_number)[7] == 'Not Confirmed'
-
 def test_exactAgreement_time_creation(deploy):
     '''check if the initial time creation is startAgreement'''
-    assert deploy.exactAgreement(agreements_number)[8] == deploy.exactAgreement(0)[8]
+    assert deploy.exactAgreement(agreements_number)[7] == deploy.exactAgreement(0)[7]
 
 def test_exactAgreement_every_time_unit(deploy):
     '''check if the initial every time unit is every_period'''
-    assert deploy.exactAgreement(agreements_number)[9] >= seconds_in_day * initial_every_time_unit
+    assert deploy.exactAgreement(agreements_number)[8] >= seconds_in_day * initial_every_time_unit
 
 def test_exactAgreement_position_period(deploy):
     '''check if the initial position period is 0'''
-    assert deploy.exactAgreement(agreements_number)[10] == '0'
+    assert deploy.exactAgreement(agreements_number)[9] == '0'
 
 def test_exactAgreement_how_long(deploy):
     '''check if the initial how long is agreement_duration'''
-    assert deploy.exactAgreement(agreements_number)[11] >= seconds_in_day * initial_howLong
+    assert deploy.exactAgreement(agreements_number)[10] >= seconds_in_day * initial_howLong
 
 def test_new_agreement_fails_require(deploy):
     '''check if the new agreement fails, because howLong > _everyTimeUnit in the require statement'''
