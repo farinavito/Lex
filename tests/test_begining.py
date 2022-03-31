@@ -189,25 +189,21 @@ def test_exactAgreement_status_2(deploy):
     '''check if the initial status is equal to "Created"'''
     assert deploy.exactAgreement(agreements_number_2)[6] == 'Created'
 
-def test_exactAgreement_approved_2(deploy):
-    '''check if the initial approve "Not Confirmed"'''
-    assert deploy.exactAgreement(agreements_number_2)[7] == 'Not Confirmed'
-
 def test_exactAgreement_time_creation_2(deploy):
     '''check if the initial time creation is block.timestamp'''
-    assert deploy.exactAgreement(agreements_number_2)[8] == deploy.exactAgreement(1)[8]
+    assert deploy.exactAgreement(agreements_number_2)[7] == deploy.exactAgreement(1)[7]
 
 def test_exactAgreement_every_time_unit_2(deploy):
     '''check if the initial every time unit is every_period'''
-    assert deploy.exactAgreement(agreements_number_2)[9] >= seconds_in_day * initial_every_time_unit_2
+    assert deploy.exactAgreement(agreements_number_2)[8] >= seconds_in_day * initial_every_time_unit_2
 
 def test_exactAgreement_position_period_2(deploy):
     '''check if the initial position period is 0'''
-    assert deploy.exactAgreement(agreements_number_2)[10] == '0'
+    assert deploy.exactAgreement(agreements_number_2)[9] == '0'
 
 def test_exactAgreement_how_long_2(deploy):
     '''check if the initial how long is agreement_duration'''
-    assert deploy.exactAgreement(agreements_number_2)[11] >= seconds_in_day * initial_howLong_2
+    assert deploy.exactAgreement(agreements_number_2)[10] >= seconds_in_day * initial_howLong_2
 
 
 '''TESTING EVENT AGREEMENTINFO INSIDE CREATEAGREEMENT FUNCTION'''
@@ -242,25 +238,21 @@ def test_event_AgreementInfo_agreementStatus(deploy, new_agreement):
     '''check if the event AgreementInfo emits correctly agreementStatus'''
     assert new_agreement.events[0]["agreementStatus"] == deploy.exactAgreement(agreements_number)[6]
 
-def test_event_AgreementInfo_agreementApproved(deploy, new_agreement):
-    '''check if the event AgreementInfo emits correctly agreementApproved'''
-    assert new_agreement.events[0]["agreementApproved"] == deploy.exactAgreement(agreements_number)[7]
-
 def test_event_AgreementInfo_agreementStartDate(deploy, new_agreement):
     '''check if the event AgreementInfo emits correctly agreementStartDate'''
-    assert new_agreement.events[0]["agreementStartDate"] == deploy.exactAgreement(agreements_number)[8]
+    assert new_agreement.events[0]["agreementStartDate"] == deploy.exactAgreement(agreements_number)[7]
 
 def test_event_AgreementInfo_agreementTimePeriods(deploy, new_agreement):
     '''check if the event AgreementInfo emits correctly agreementTimePeriods in seconds'''
-    assert new_agreement.events[0]["agreementTimePeriods"] == deploy.exactAgreement(agreements_number)[9]
+    assert new_agreement.events[0]["agreementTimePeriods"] == deploy.exactAgreement(agreements_number)[8]
 
 def test_event_AgreementInfo_agreementPositionPeriod(deploy, new_agreement):
     '''check if the event AgreementInfo emits correctly agreementPositionPeriod in days'''
-    assert new_agreement.events[0]["agreementPositionPeriod"] == deploy.exactAgreement(agreements_number)[10]
+    assert new_agreement.events[0]["agreementPositionPeriod"] == deploy.exactAgreement(agreements_number)[9]
 
 def test_event_AgreementInfo_agreementTimeDuration(deploy, new_agreement):
     '''check if the event AgreementInfo emits correctly agreementTimeDuration in seconds'''
-    assert new_agreement.events[0]["agreementTimeDuration"] == deploy.exactAgreement(agreements_number)[11]
+    assert new_agreement.events[0]["agreementTimeDuration"] == deploy.exactAgreement(agreements_number)[10]
 
 def test_event_AgreementInfo_equals_Agreement(deploy, new_agreement):
     '''check if the length of the AgreementInfo elements is the same as in exactAgreements'''
