@@ -70,10 +70,6 @@ def new_agreement_2(deploy, module_isolation):
 '''TESTING CREATEAGREEMENT FUNCTION AGREEMENT 1'''
     
 
-def test_owner(deploy):
-    '''check if the owner is the right one'''
-    assert deploy.owner() == accounts[0]
-
 def test_exactAgreement_id(deploy):
     '''check if the first id of the agreement is zero'''
     assert deploy.exactAgreement(agreements_number)[0] == str(agreements_number)
