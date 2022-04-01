@@ -328,21 +328,24 @@ def test_sendPayments_require_statement_fails_agreement_not_started(deploy):
         _startAgreement = now + 10
         
         deploy.createAgreement(accounts[receiver], amount_sent, every_period, agreement_duration, _startAgreement, {'from': accounts[signee], 'value': amount_sent})
-        #assert deploy.exactAgreement(2)[8] == _startAgreement
-        #deploy.confirmAgreement(2, {'from': accounts[receiver]})
         deploy.sendPayment(2, {'from': accounts[signee], 'value': amount_sent})
     except Exception as e:
         assert e.message[50:] == "The agreement hasn't started yet"
+
+def test_sendPayments_require_statement_fails_agreement_not_started_pair(deploy):
+    '''check if the require statement does not fail when the agreement has started'''
+    chain = Chain()
+    _now = chain.time()
+    deploy.createAgreement(accounts[receiver], amount_sent, every_period, agreement_duration, _now, {'from': accounts[signee], 'value': amount_sent})
+    deploy.sendPayment(2, {'from': accounts[signee], 'value': amount_sent})
+    assert deploy.exactAgreement(2)[6] == 'Activated'
 
 @pytest.mark.parametrize("seconds_sleep",  [more_than_agreement_duration[0], more_than_agreement_duration[1], more_than_agreement_duration[2]])
 def test_sendPayments_require_statement_fails_agreement_not_ended(deploy, seconds_sleep):
     '''check if the require statement fails when the agreement's deadline has ended'''
     try:
-        #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
         chain = Chain()
         chain.sleep(seconds_sleep)
-        #now = chain.time()
-        #assert deploy.exactAgreement(agreements_number)[8] >= now
         deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})      
     except Exception as e:
         assert e.message[50:] == "The agreement's deadline has ended"
@@ -350,18 +353,15 @@ def test_sendPayments_require_statement_fails_agreement_not_ended(deploy, second
 @pytest.mark.parametrize("seconds_sleep",  [less_than_agreement_duration[0], less_than_agreement_duration[1], less_than_agreement_duration[2]])
 def test_sendPayments_require_statement_fails_agreement_not_ended_pair(deploy, seconds_sleep):
     '''check if the require statement works fine when the agreement's deadline has not ended'''
-    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     chain = Chain()
     chain.sleep(seconds_sleep)
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     assert deploy.exactAgreement(agreements_number)[6] == 'Activated'      
-  
+ 
 @pytest.mark.parametrize("value_sent",  [0, less_than_amount_sent[0], less_than_amount_sent[1], less_than_amount_sent[2]])
 def test_sendPayments_fails_require_smaller_deposit_initial_status_created(deploy, value_sent):
     '''check if the sendPayments fails, because exactAgreement[_id].amount <= msg.value in the require statement'''
     try:
-        #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
-        #'value' is smaller than it should be
         deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
     except Exception as e:
         assert e.message[50:] == "The deposit is not the same as agreed in the terms"
@@ -369,19 +369,16 @@ def test_sendPayments_fails_require_smaller_deposit_initial_status_created(deplo
 @pytest.mark.parametrize("value_sent",  [more_than_amount_sent[0], more_than_amount_sent[1], more_than_amount_sent[2]])
 def test_sendPayments_fails_require_smaller_deposit_initial_status_created_pair(deploy, value_sent):
     '''checking if the status is changed to "Activated" when msg.value is larger or equal to agreedDeposit'''
-    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
     assert deploy.exactAgreement(agreements_number)[6] == 'Activated'
 
 def test_sendPayments_change_initializePeriod_initial_status_created(deploy):
     '''checking if the InitializedPeriod is initialize (sum of agreementStartDate and everyTimeUnit) when msg.value is larger or equal to agreedDeposit'''
-    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     assert deploy.exactAgreement(agreements_number)[9] == deploy.exactAgreement(0)[7] + deploy.exactAgreement(0)[8]
 
 def test_sendPayments_emit_NotifyUser_initial_status_created(deploy):
-    '''checking if the event has been emitted as "We have activate the agreement" when msg.value is larger or equal to agreedDeposit'''
-    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    '''checking if the event has been emitted as "The agreement has been activated" when msg.value is larger or equal to agreedDeposit'''
     function_enabled = deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     message = function_enabled.events[0][0]['message']
     assert message == 'The agreement has been activated'
