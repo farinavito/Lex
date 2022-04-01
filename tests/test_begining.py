@@ -412,27 +412,26 @@ def test_transactionCreated_updated_once_again(deploy):
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     assert deploy.exactAgreement(agreements_number)[4] != first_call
 
-    #if the amount <= msg.value
- 
 @pytest.mark.parametrize("seconds_sleep",  [more_than_agreement_duration[0], more_than_agreement_duration[1], more_than_agreement_duration[2]])
 def test_timeNotBreached_fail_if_statement(deploy, seconds_sleep):
     '''check if the timeNotBreached fails because transaction was sent after the agreement's deadline - it fails because of the check in the confirmAgreement function'''
-    try:
-        chain = Chain()
-        chain.sleep(seconds_sleep)
-        #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
-        deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
-    except Exception as e:        
-        assert e.message[50:] == "The agreement's deadline has ended"
+    chain = Chain()
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
+    chain.sleep(seconds_sleep)
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
+    assert deploy.exactAgreement(agreements_number)[6] == 'Terminated'
 
+'''
 @pytest.mark.parametrize("seconds_sleep",  [less_than_agreement_duration[0], less_than_agreement_duration[1], less_than_agreement_duration[2]])
 def test_timeNotBreached_fail_if_statement_pair(deploy, seconds_sleep):
-    '''check if the timeNotBreached works fine when confirmAgreement check is passed'''
+    check if the timeNotBreached works fine
     chain = Chain()
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     chain.sleep(seconds_sleep)
-    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     assert deploy.exactAgreement(agreements_number)[6] == 'Activated'
+'''
+    #if the amount <= msg.value
 
 @pytest.mark.parametrize("value_sent",  [more_than_amount_sent[0], more_than_amount_sent[1], more_than_amount_sent[2]])
 def test_timeNotBreached_value_large_amount_send_value(deploy, value_sent):
