@@ -1250,71 +1250,71 @@ def test_whitelist_protectors_return_false(deploy, protector):
 '''TEST WITHDRAWASTHEOWNER '''
 
 
-
+@pytest.mark.aaa
 def test_withdrawAsTheOwner_check_onlyWhitelisted(deploy):
     '''Check if onlyWhitelisted doesn't allow any other account to call the function '''
     with brownie.reverts("You aren't whitelisted"):
         deploy.withdrawAsTheOwner({'from': accounts[9]})
-
+@pytest.mark.aaa
 def test_withdrawAsTheOwner_check_require_statement(deploy):
     '''Check if the function is reverted, because there aren't any funds to withdraw '''
     try:
-        deploy.addToWhitelist(accounts[9], {'from': accounts[0]})
+        deploy.addToWhitelist(accounts[9], {'from': accounts[1]})
         deploy.withdrawAsTheOwner({'from': accounts[9]})
     except Exception as e:
         assert e.message[50:] == "There aren't any funds to withdraw"
-
+@pytest.mark.aaa
 def test_withdrawAsTheOwner_check_require_statement_2(deploy):
     '''Check if the function is reverted, because there aren't any funds to withdraw '''
     try:
-        deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+        #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
         deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
         deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
-        deploy.addToWhitelist(accounts[9], {'from': accounts[0]})
+        deploy.addToWhitelist(accounts[9], {'from': accounts[1]})
         deploy.withdrawAsTheOwner({'from': accounts[9]})
         deploy.withdrawAsTheOwner({'from': accounts[9]})
     except Exception as e:
         assert e.message[50:] == "There aren't any funds to withdraw"
-
+@pytest.mark.aaa
 def test_withdrawAsTheOwner_check_commission_sent(deploy):
     '''Check if the commission is sent to account 8'''
-    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
-    deploy.addToWhitelist(accounts[8], {'from': accounts[0]})
+    deploy.addToWhitelist(accounts[8], {'from': accounts[1]})
     balance_receiver = accounts[8].balance()
     deploy.withdrawAsTheOwner({'from': accounts[8]})
     assert accounts[8].balance() == balance_receiver + commission
-
+@pytest.mark.aaa
 def test_withdrawAsTheOwner_check_commission_sent_2(deploy):
     '''Check if the commission is sent to account 8'''
-    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
-    deploy.addToWhitelist(accounts[8], {'from': accounts[0]})
+    deploy.addToWhitelist(accounts[8], {'from': accounts[1]})
     balance_receiver = accounts[8].balance()
     deploy.withdrawAsTheOwner({'from': accounts[8]})
     assert accounts[8].balance() == balance_receiver + 2*commission
-
+@pytest.mark.aaa
 def test_withdrawAsTheOwner_check_commission_sent_3(deploy):
     '''Check if the commission is sent to account 8'''
-    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
-    deploy.addToWhitelist(accounts[8], {'from': accounts[0]})
+    deploy.addToWhitelist(accounts[8], {'from': accounts[1]})
     balance_receiver = accounts[8].balance()
     deploy.withdrawAsTheOwner({'from': accounts[8]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
     deploy.withdrawAsTheOwner({'from': accounts[8]})
     assert accounts[8].balance() == balance_receiver + 2*commission
-
+@pytest.mark.aaa
 def test_withdrawAsTheOwner_check_event_emitted(deploy):
     '''Check if the event NotifyUser is emitted'''
-    deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
-    deploy.addToWhitelist(accounts[9], {'from': accounts[0]})
+    deploy.addToWhitelist(accounts[9], {'from': accounts[1]})
     function_initialize = deploy.withdrawAsTheOwner({'from': accounts[9]})
     assert function_initialize.events[0][0]['message'] == "Withdrawal has been transfered"  
 
