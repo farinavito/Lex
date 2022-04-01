@@ -484,6 +484,15 @@ def test_timeNotBreached_value_large_amount_send_value_check_signee(deploy, valu
     balance_signee = accounts[signee].balance() 
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent}) 
     assert accounts[signee].balance() == balance_signee - value_sent
+@pytest.mark.aaa
+@pytest.mark.parametrize("value_sent",  [more_than_amount_sent[0], more_than_amount_sent[1], more_than_amount_sent[2]])
+def test_timeNotBreached_value_large_amount_send_value_check_signee_returned_excess(deploy, value_sent):
+    '''check if the excess money is returned to the signee when he sends more than he should'''
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
+    balance_signee = accounts[signee].balance() 
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
+    deploy.withdrawAsTheSignee(agreements_number, {'from': accounts[signee]}) 
+    assert accounts[signee].balance() == balance_signee - value_sent + (value_sent - deploy.exactAgreement(agreements_number)[3])
 
 def test_timeNotBreached_value_large_amount_emit_NotifyUser(deploy):
     '''check if the event NotifyUser is emitted when amount <= msg.value in the timeNotBreached'''
