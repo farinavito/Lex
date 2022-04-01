@@ -1250,12 +1250,12 @@ def test_whitelist_protectors_return_false(deploy, protector):
 '''TEST WITHDRAWASTHEOWNER '''
 
 
-@pytest.mark.aaa
+
 def test_withdrawAsTheOwner_check_onlyWhitelisted(deploy):
     '''Check if onlyWhitelisted doesn't allow any other account to call the function '''
     with brownie.reverts("You aren't whitelisted"):
         deploy.withdrawAsTheOwner({'from': accounts[9]})
-@pytest.mark.aaa
+
 def test_withdrawAsTheOwner_check_require_statement(deploy):
     '''Check if the function is reverted, because there aren't any funds to withdraw '''
     try:
@@ -1263,7 +1263,7 @@ def test_withdrawAsTheOwner_check_require_statement(deploy):
         deploy.withdrawAsTheOwner({'from': accounts[9]})
     except Exception as e:
         assert e.message[50:] == "There aren't any funds to withdraw"
-@pytest.mark.aaa
+
 def test_withdrawAsTheOwner_check_require_statement_2(deploy):
     '''Check if the function is reverted, because there aren't any funds to withdraw '''
     try:
@@ -1275,7 +1275,7 @@ def test_withdrawAsTheOwner_check_require_statement_2(deploy):
         deploy.withdrawAsTheOwner({'from': accounts[9]})
     except Exception as e:
         assert e.message[50:] == "There aren't any funds to withdraw"
-@pytest.mark.aaa
+
 def test_withdrawAsTheOwner_check_commission_sent(deploy):
     '''Check if the commission is sent to account 8'''
     #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
@@ -1285,7 +1285,7 @@ def test_withdrawAsTheOwner_check_commission_sent(deploy):
     balance_receiver = accounts[8].balance()
     deploy.withdrawAsTheOwner({'from': accounts[8]})
     assert accounts[8].balance() == balance_receiver + commission
-@pytest.mark.aaa
+
 def test_withdrawAsTheOwner_check_commission_sent_2(deploy):
     '''Check if the commission is sent to account 8'''
     #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
@@ -1296,7 +1296,7 @@ def test_withdrawAsTheOwner_check_commission_sent_2(deploy):
     balance_receiver = accounts[8].balance()
     deploy.withdrawAsTheOwner({'from': accounts[8]})
     assert accounts[8].balance() == balance_receiver + 2*commission
-@pytest.mark.aaa
+
 def test_withdrawAsTheOwner_check_commission_sent_3(deploy):
     '''Check if the commission is sent to account 8'''
     #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
@@ -1308,7 +1308,7 @@ def test_withdrawAsTheOwner_check_commission_sent_3(deploy):
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
     deploy.withdrawAsTheOwner({'from': accounts[8]})
     assert accounts[8].balance() == balance_receiver + 2*commission
-@pytest.mark.aaa
+
 def test_withdrawAsTheOwner_check_event_emitted(deploy):
     '''Check if the event NotifyUser is emitted'''
     #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
@@ -1320,63 +1320,3 @@ def test_withdrawAsTheOwner_check_event_emitted(deploy):
 
 
 
-'''TEST ADDTOBLACKLIST'''    
-
-
-
-def test_addToBlacklist_check_onlyOwner(deploy):
-    '''Check if the onlyOwner requirement works as planned'''
-    with brownie.reverts("You are not the owner"):
-        deploy.addToBlacklist(accounts[9], {'from': accounts[3]})
-
-def test_addToBlacklist_check_if_blacklisted(deploy):
-    '''Check if the account is blacklisted'''
-    deploy.addToBlacklist(accounts[9], {'from': accounts[0]})
-    assert deploy.isBlacklisted(accounts[9]) == True
-
-def test_addToBlacklist_emit_event(deploy):
-    '''Check if the event AddedToTheList is emitted'''
-    function_initialize = deploy.addToBlacklist(accounts[9], {'from': accounts[0]})
-    assert function_initialize.events[0][0]['account'] == accounts[9] 
-
-
-
-'''TEST REMOVEDFROMBLACKLIST'''
-
-
-def test_removedFromBlacklist_check_onlyOwner(deploy):
-    '''Check if the onlyOwner requirement works as planned'''
-    with brownie.reverts("You are not the owner"):
-        deploy.removedFromBlacklist(accounts[9], {'from': accounts[3]})
-
-def test_removedFromBlacklist_check_if_removed(deploy):
-    '''Check if the account is removed from the blacklist'''
-    deploy.addToBlacklist(accounts[9], {'from': accounts[0]})
-    deploy.removedFromBlacklist(accounts[9], {'from': accounts[0]})
-    assert deploy.isBlacklisted(accounts[9]) == False
-
-def test_removedFromBlacklist_emit_event(deploy):
-    '''Check if the event AddedToTheList is emitted'''
-    function_initialize = deploy.removedFromBlacklist(accounts[9], {'from': accounts[0]})
-    assert function_initialize.events[0][0]['account'] == accounts[9] 
-
-
-
-'''TEST ISBLACKLISTED'''
-
-
-
-def test_isBlacklisted_return_true(deploy):
-    '''Check if the account is added to the blacklist'''
-    deploy.addToBlacklist(accounts[9], {'from': accounts[0]})
-    assert deploy.isBlacklisted(accounts[9]) == True
-
-def test_isBlacklisted_return_false(deploy):
-    '''Check if the account is removed from the blacklist'''
-    deploy.addToBlacklist(accounts[9], {'from': accounts[0]})
-    deploy.removedFromBlacklist(accounts[9], {'from': accounts[0]})
-    assert deploy.isBlacklisted(accounts[9]) == False
-
-def test_isWhitelisted_return_false_2(deploy):
-    '''Check if the function isBlacklisted returns false when account isn't even added to whitelist'''
-    assert deploy.isBlacklisted(accounts[9]) == False
