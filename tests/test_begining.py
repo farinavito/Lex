@@ -436,22 +436,30 @@ def test_timeNotBreached_fail_if_statement_pair(deploy, seconds_sleep):
 @pytest.mark.parametrize("value_sent",  [more_than_amount_sent[0], more_than_amount_sent[1], more_than_amount_sent[2]])
 def test_timeNotBreached_value_large_amount_send_value(deploy, value_sent):
     '''check if the msg.value is sent when amount <= msg.value in the timeNotBreached'''
-    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
     balance_receiver = accounts[receiver].balance() 
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
     deploy.withdrawAsTheReceiver(agreements_number, {'from': accounts[receiver]})
     assert accounts[receiver].balance() == balance_receiver + value_sent - commission
-'''
+
 @pytest.mark.parametrize("value_sent",  [amount_sent])
 @pytest.mark.parametrize("value_decreased",  [less_than_amount_sent[0], less_than_amount_sent[1], less_than_amount_sent[2]])
-def test_timeNotBreached_value_large_amount_send_value_pair(deploy, value_sent, value_decreased):
-    check if the msg.value is not sent when amount <= msg.value in the timeNotBreached, the contract terminates
-    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+def test_timeNotBreached_value_large_amount_send_value_withdraw_signee(deploy, value_sent, value_decreased):
+    '''check if the msg.value is not sent when amount <= msg.value in the timeNotBreached, the funds are returned to the signee'''
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
-    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent - value_decreased}) 
-    assert deploy.exactAgreement(agreements_number)[6] == 'Terminated'
-'''
+    balance_signee = accounts[signee].balance() 
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent - value_decreased})
+    deploy.withdrawAsTheSignee(agreements_number, {'from': accounts[signee]}) 
+    assert accounts[signee].balance() == balance_signee 
+
+@pytest.mark.parametrize("value_sent",  [amount_sent])
+@pytest.mark.parametrize("value_decreased",  [less_than_amount_sent[0], less_than_amount_sent[1], less_than_amount_sent[2]])
+def test_timeNotBreached_value_large_amount_send_value_pair_event(deploy, value_sent, value_decreased):
+    '''check if the msg.value is not sent when amount <= msg.value in the timeNotBreached, the contract terminates'''
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
+    function_initialized = deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent - value_decreased}) 
+    assert function_initialized.events[0][0]['message'] == "The amount sent is lower than in the agreement"
+
 '''
 @pytest.mark.parametrize("value_sent",  [more_than_amount_sent[0], more_than_amount_sent[1], more_than_amount_sent[2]])
 def test_timeNotBreached_value_larger_amount_withdrawal_amount_owner(deploy, value_sent):
