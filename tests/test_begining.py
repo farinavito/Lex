@@ -1208,12 +1208,12 @@ def test_addToWhitelist_check_added_to_whitelist(deploy):
 '''TEST REMOVEDFROMWHITELIST '''
 
 
-@pytest.mark.aaa
+
 def test_removedFromWhitelist_check_onlyOwner(deploy):
     '''Check if onlyOwner modifier doesn't let other accounts to call this function'''
     with brownie.reverts("You are not the owner"):
         deploy.removedFromWhitelist(accounts[9], {'from': accounts[3]})
-@pytest.mark.aaa
+
 def test_removedFromWhitelist_check_added_to_whitelist(deploy):
     '''Check if the account is removed from the whitelist'''
     deploy.addToWhitelist(accounts[9], {'from': accounts[1]})
@@ -1226,21 +1226,25 @@ def test_removedFromWhitelist_check_added_to_whitelist(deploy):
 
 
 
-def test_isWhitelisted_return_true(deploy):
+def test_whitelist_return_true(deploy):
     '''Check if the account is added to the whitelist'''
-    deploy.addToWhitelist(accounts[9], {'from': accounts[0]})
-    assert deploy.isWhitelisted(accounts[9]) == True
+    deploy.addToWhitelist(accounts[9], {'from': accounts[1]})
+    assert deploy.whitelist(accounts[9]) == True
 
-def test_isWhitelisted_return_false(deploy):
+def test_whitelist_return_false(deploy):
     '''Check if the account is removed from the whitelist'''
-    deploy.addToWhitelist(accounts[9], {'from': accounts[0]})
-    deploy.removedFromWhitelist(accounts[9], {'from': accounts[0]})
-    assert deploy.isWhitelisted(accounts[9]) == False
+    deploy.addToWhitelist(accounts[9], {'from': accounts[1]})
+    deploy.removedFromWhitelist(accounts[9], {'from': accounts[1]})
+    assert deploy.whitelist(accounts[9]) == False
 
-def test_isWhitelisted_return_false_2(deploy):
-    '''Check if the function isWhitelisted returns false when account isn't even added to whitelist'''
-    assert deploy.isWhitelisted(accounts[9]) == False
+def test_whitelist_return_false_2(deploy):
+    '''Check if the mapping whitelist returns false when account isn't even added to whitelist'''
+    assert deploy.whitelist(accounts[9]) == False
 
+@pytest.mark.parametrize("protector", [3, 4, 5, 6, 7])
+def test_whitelist_protectors_return_false(deploy, protector):
+    '''Checking if the mapping whitelist returns false for all protectors'''
+    assert deploy.whitelist(accounts[protector]) == False
 
 
 '''TEST WITHDRAWASTHEOWNER '''
