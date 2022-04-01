@@ -1208,22 +1208,17 @@ def test_addToWhitelist_check_added_to_whitelist(deploy):
 '''TEST REMOVEDFROMWHITELIST '''
 
 
-
+@pytest.mark.aaa
 def test_removedFromWhitelist_check_onlyOwner(deploy):
     '''Check if onlyOwner modifier doesn't let other accounts to call this function'''
     with brownie.reverts("You are not the owner"):
         deploy.removedFromWhitelist(accounts[9], {'from': accounts[3]})
-
+@pytest.mark.aaa
 def test_removedFromWhitelist_check_added_to_whitelist(deploy):
     '''Check if the account is removed from the whitelist'''
-    deploy.addToWhitelist(accounts[9], {'from': accounts[0]})
-    deploy.removedFromWhitelist(accounts[9], {'from': accounts[0]})
-    assert deploy.isWhitelisted(accounts[9]) == False
-
-def test_removedFromWhitelist_emit_event(deploy):
-    '''Check if RemovedFromTheList event is emitted'''
-    function_initialize = deploy.addToWhitelist(accounts[9], {'from': accounts[0]})
-    assert function_initialize.events[0][0]['account'] == accounts[9]
+    deploy.addToWhitelist(accounts[9], {'from': accounts[1]})
+    deploy.removedFromWhitelist(accounts[9], {'from': accounts[1]})
+    assert deploy.whitelist(accounts[9]) == False
 
 
 
