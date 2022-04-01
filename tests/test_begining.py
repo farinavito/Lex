@@ -460,16 +460,14 @@ def test_timeNotBreached_value_large_amount_send_value_pair_event(deploy, value_
     function_initialized = deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent - value_decreased}) 
     assert function_initialized.events[0][0]['message'] == "The amount sent is lower than in the agreement"
 
-'''
 @pytest.mark.parametrize("value_sent",  [more_than_amount_sent[0], more_than_amount_sent[1], more_than_amount_sent[2]])
 def test_timeNotBreached_value_larger_amount_withdrawal_amount_owner(deploy, value_sent):
-    check if withdrawal_amount_owner is correctly initialized
-    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    '''check if withdrawal_amount_owner is correctly initialized'''
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
-    deploy.addToWhitelist(accounts[7], {'from': accounts[0]}) 
+    deploy.addToWhitelist(accounts[7], {'from': accounts[1]}) 
     assert deploy.getWithdrawalOwner({'from': accounts[7]}) == commission
-'''
+
 '''
 @pytest.mark.parametrize("value_sent",  [more_than_amount_sent[0], more_than_amount_sent[1], more_than_amount_sent[2]])
 def test_timeNotBreached_value_larger_amount_withdrawal_amount_owner_increased(deploy, value_sent):
