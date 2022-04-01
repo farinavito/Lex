@@ -134,7 +134,7 @@ contract AgreementBetweenSubjects is ProtectorWhitelisted{
 
   /// @notice Sending the payment based on the status of the agreement
   function sendPayment(uint256 _id) external payable {
-    require(exactAgreement[_id].signee == msg.sender, "Only the owner can pay the agreement's terms");
+    require(exactAgreement[_id].signee == msg.sender, "Only the signee can pay the agreement's terms");
     if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Activated"))){
       //save the time of calling this function
       exactAgreement[_id].transactionCreated = block.timestamp;
@@ -231,7 +231,7 @@ contract AgreementBetweenSubjects is ProtectorWhitelisted{
         require(_howLong > _everyTimeUnit, "The period of the payment is greater than the duration of the contract");
         require(msg.value >= _amount, "Deposit has to be at least the size of the amount");
         require(_startOfTheAgreement >= block.timestamp, "The agreement can't be created in the past");
-        
+
         uint256 agreementId = numAgreement++;
 
         //creating a new agreement

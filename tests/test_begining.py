@@ -303,29 +303,19 @@ def test_myReceiverAgreements_emits_correct_id_agreement_2(deploy):
 def test_sendPayments_fails_require_wrong_address(deploy, accounts_number):
     '''check if the sendPayments fails, because exactAgreement[_id].signee == msg.sender in the require statement'''
     try:
-        #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
         #wrong signer's address
         deploy.sendPayment(agreements_number, {'from': accounts[accounts_number], 'value': amount_sent})
     except Exception as e:
-        assert e.message[50:] == "Only the owner can pay the agreement's terms"
+        assert e.message[50:] == "Only the signee can pay the agreement's terms"
 
 @pytest.mark.parametrize("accounts_number", [signee])
 def test_sendPayments_fails_require_wrong_address_pair(deploy, accounts_number):
-    '''check if the sendPayments fails, because exactAgreement[_id].signee == msg.sender in the require statement'''
+    '''check if the sendPayments doesn't fail, because exactAgreement[_id].signee == msg.sender in the require statement'''
     try:
-        #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
-        #wrong signer's address
+        #right signer's address
         deploy.sendPayment(agreements_number, {'from': accounts[accounts_number], 'value': amount_sent})
     except Exception as e:
-        assert e.message[50:] != "Only the owner can pay the agreement's terms"
-
-def test_sendPayments_fails_require_not_confirmed(deploy):
-    '''check if the sendPayments fails, because exactAgreement[_id].approved)) == "Confirmed" in the require statement'''
-    try:
-        #no confirmation
-        deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent}) 
-    except Exception as e:
-        assert e.message[50:] == "The receiver has to confirm the contract"
+        assert e.message[50:] != "Only the signee can pay the agreement's terms"
 
 
 #Checking when the agreement's status is "Created"
