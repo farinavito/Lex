@@ -158,7 +158,10 @@ def test_new_agreement_fails_require_agreementStart_larger_than_block_timestamp(
     except Exception as e:
             assert e.message[50:] == "The agreement can't be created in the past"
 
+
+
 '''TESTING CREATEAGREEMENT FUNCTION AGREEMENT 2'''
+
 
 
 def test_exactAgreement_id_2(deploy):
