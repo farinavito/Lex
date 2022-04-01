@@ -1156,36 +1156,36 @@ def test_getWithdrawalOwner_returns_correct(deploy):
 '''TEST CHANGECOMMISSION'''
 
 
-
+'''
 def test_changeCommission_not_owner(deploy):
-    '''check if the onlyOwner modifier works properly'''
+    check if the onlyOwner modifier works properly
     with brownie.reverts("You are not the owner"):
         deploy.changeCommission(5, {'from': accounts[7]})
-    
+ 
 def test_changeCommission_require_1(deploy):
-    '''check if the commission > 0 works properly'''
+    check if the commission > 0 works properly
     try:
         deploy.changeCommission(0, {'from' : accounts[0]})
     except Exception as e:
         assert e.message[50:] == "Commission doesn't follow the rules"
 
 def test_changeCommission_require_2(deploy):
-    '''check if the commission < 10*15 + 1 works properly'''
+    check if the commission < 10*15 + 1 works properly
     try:
         deploy.changeCommission(10*15 + 1, {'from' : accounts[0]})
     except Exception as e:
         assert e.message[50:] == "Commission doesn't follow the rules"
 
 def test_changeCommission_change_commission(deploy):
-    '''check if the commission is changed'''
+    check if the commission is changed
     deploy.changeCommission(10*15, {'from' : accounts[0]})
     assert deploy.commission() == 10*15
 
 def test_changeCommission_emit_event(deploy):
-    '''check if the commission is changed'''
+    check if the commission is changed
     function_initialize = deploy.changeCommission(10*15, {'from' : accounts[0]})
     assert function_initialize.events[0][0]['message'] == "Commission changed"
-
+'''
 
 
 '''TEST ADDTOWHITELIST '''
