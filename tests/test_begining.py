@@ -477,6 +477,14 @@ def test_timeNotBreached_value_larger_amount_withdrawal_amount_owner_increased(d
     deploy.addToWhitelist(accounts[7], {'from': accounts[1]}) 
     assert deploy.getWithdrawalOwner({'from': accounts[7]}) == 2*commission
 
+@pytest.mark.parametrize("value_sent",  [amount_sent, more_than_amount_sent[0], more_than_amount_sent[1], more_than_amount_sent[2]])
+def test_timeNotBreached_value_larger_amount_send_value_totalEtherCommited_increased(deploy, value_sent):
+    '''check if totalEtherCommited increases'''
+    allEth = deploy.totalEtherCommited()
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
+    assert deploy.totalEtherCommited() == allEth + (value_sent - commission)
+
 @pytest.mark.parametrize("value_sent",  [more_than_amount_sent[0], more_than_amount_sent[1], more_than_amount_sent[2]])
 def test_timeNotBreached_value_large_amount_send_value_check_signee(deploy, value_sent):
     '''check if the balance of the signee is changed when amount <= msg.value in the timeNotBreached'''
@@ -484,7 +492,7 @@ def test_timeNotBreached_value_large_amount_send_value_check_signee(deploy, valu
     balance_signee = accounts[signee].balance() 
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent}) 
     assert accounts[signee].balance() == balance_signee - value_sent
-@pytest.mark.aaa
+
 @pytest.mark.parametrize("value_sent",  [more_than_amount_sent[0], more_than_amount_sent[1], more_than_amount_sent[2]])
 def test_timeNotBreached_value_large_amount_send_value_check_signee_returned_excess(deploy, value_sent):
     '''check if the excess money is returned to the signee when he sends more than he should'''
