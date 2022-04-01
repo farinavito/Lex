@@ -390,7 +390,6 @@ def test_sendPayments_emit_NotifyUser_initial_status_created(deploy):
 
 def test_timeNotBreached(deploy):
     '''check if the timeNotBreached function correctly increments positionPeriod. This is for checking inside sendPayments function'''
-    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     new_agreement_position = deploy.exactAgreement(0)[9]
     #the contract has been activated, now send the the money again
@@ -399,14 +398,12 @@ def test_timeNotBreached(deploy):
 
 def test_transactionCreated_updated(deploy):
     '''check if the time of the call to function sendPayment is stored'''
-    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     assert deploy.exactAgreement(agreements_number)[4] != '0'
 
 def test_transactionCreated_updated_once_again(deploy):
     '''check if the time of the call to function sendPayment changes after another call to this function'''
-    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     chain = Chain()  
