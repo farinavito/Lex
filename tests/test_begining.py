@@ -862,6 +862,15 @@ def test_wasContractBreached_status_created_deposit_zero(deploy, seconds_sleep):
     deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
     assert deploy.exactAgreement(agreements_number)[5] == '0'
 
+@pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]]) 
+def test_wasContractBreached_status_created_totalDepositsent(deploy, seconds_sleep):
+    '''check if the totalDepositSent is increased by the deposit'''
+    totalDepositBefore = deploy.totalDepositSent()
+    chain = Chain()
+    chain.sleep(seconds_sleep)
+    deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
+    assert deploy.totalDepositSent() == totalDepositBefore + deploy.exactAgreement(agreements_number)[5]
+
 @pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]])
 def test_wasContractBreached_status_created_false_emit_Terminated(deploy, seconds_sleep):
     '''check if the wasContractBreached function emits NotifyUser when exactAgreement[_id].agreementStartDate + (6*60*60*24) > block.timestamp fails'''
