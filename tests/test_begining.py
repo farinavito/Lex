@@ -1050,14 +1050,28 @@ def test_withdrawAsTheOwner_first_require_fails(deploy):
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     with brownie.reverts("There aren't any funds to withdraw"):
         deploy.withdrawAsTheOwner({'from': accounts[9]})
-@pytest.mark.aaa
-def test_withdrawAsTheOwner_first_reguire_fails_pair(deploy):
+
+def test_withdrawAsTheOwner_emit(deploy):
     '''require statement exactAgreement[_id].signee == msg.sender doesn't fail'''
     deploy.addToWhitelist(accounts[9], {'from': accounts[1]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     function_initialize = deploy.withdrawAsTheOwner({'from': accounts[9]})
     assert function_initialize.events[0][0]['message'] == "Withdrawal has been transfered"
+
+@pytest.mark.parametrize("time", [more_than_agreement_duration[0], more_than_agreement_duration[1], more_than_agreement_duration[2]])
+def test_withdrawAsTheOwner_withdrawal_sent_1(deploy, time):
+    '''Check if the withdrawal is sent'''
+    deploy.addToWhitelist(accounts[9], {'from': accounts[1]})
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
+    signee_balance = accounts[9].balance()
+    chain = Chain()
+    chain.sleep(time)
+    deploy.withdrawAsTheOwner({'from': accounts[9]})
+    assert accounts[9].balance() == signee_balance + deploy.commission()
+
+
 
 '''TEST GETWITHDRAWALRECEIVER'''
 
