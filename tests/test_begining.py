@@ -1193,11 +1193,11 @@ def test_getWithdrawalSignee_reguire_fails_pair(deploy, time):
 @pytest.mark.parametrize("time", [more_than_agreement_duration[0], more_than_agreement_duration[1], more_than_agreement_duration[2]])
 def test_getWithdrawalSignee_uninitialize(deploy, time):
     '''check if the withdraw_signee is not empty after only sending the deposit'''
+    function_initialize = deploy.getWithdrawalSignee(agreements_number, {'from': accounts[signee]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     chain = Chain()
     chain.sleep(time)
-    function_initialize = deploy.getWithdrawalSignee(agreements_number, {'from': accounts[signee]})
-    assert function_initialize == amount_sent
+    assert function_initialize + amount_sent == amount_sent
 
 
 
