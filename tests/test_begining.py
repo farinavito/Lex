@@ -421,16 +421,16 @@ def test_timeNotBreached_fail_if_statement(deploy, seconds_sleep):
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     assert deploy.exactAgreement(agreements_number)[6] == 'Terminated'
 
-'''
-@pytest.mark.parametrize("seconds_sleep",  [less_than_agreement_duration[0], less_than_agreement_duration[1], less_than_agreement_duration[2]])
+@pytest.mark.parametrize("seconds_sleep",  [less_than_every_period[0], less_than_every_period[1], less_than_every_period[2]])
 def test_timeNotBreached_fail_if_statement_pair(deploy, seconds_sleep):
-    check if the timeNotBreached works fine
-    chain = Chain()
+    '''check if the timeNotBreached works fine'''
+    
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
+    chain = Chain()
     chain.sleep(seconds_sleep)
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     assert deploy.exactAgreement(agreements_number)[6] == 'Activated'
-'''
+
     #if the amount <= msg.value
 
 @pytest.mark.parametrize("value_sent",  [more_than_amount_sent[0], more_than_amount_sent[1], more_than_amount_sent[2]])
