@@ -1227,7 +1227,7 @@ def test_getWithdrawalOwner_returns_correct(deploy):
 
 def test_changeCommission_not_owner(deploy):
     '''check if the onlyOwner modifier works properly'''
-    with brownie.reverts("You are not the owner"):
+    with brownie.reverts("You aren't whitelisted"):
         deploy.changeCommission(5, {'from': accounts[7]})
  
 def test_changeCommission_require_1(deploy):
