@@ -838,7 +838,7 @@ def test_wasContractBreached_status_created_notify_user(deploy):
 
 @pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]])    
 def test_wasContractBreached_status_created_status_terminated(deploy, seconds_sleep):
-    '''check if the wasContractBreached function emits NotifyUser when exactAgreement[_id].agreementStartDate + (6*60*60*24) > block.timestamp fails'''
+    '''check if the wasContractBreached function changes its status to "Terminated"'''
     chain = Chain()
     chain.sleep(seconds_sleep)
     deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
@@ -846,7 +846,7 @@ def test_wasContractBreached_status_created_status_terminated(deploy, seconds_sl
 
 @pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]])    
 def test_wasContractBreached_status_created_status_terminated(deploy, seconds_sleep):
-    '''check if the wasContractBreached function emits NotifyUser when exactAgreement[_id].agreementStartDate + (6*60*60*24) > block.timestamp fails'''
+    '''check if the wasContractBreached function returns deposit if the agreement was breached'''
     balance_receiver = accounts[receiver].balance()
     chain = Chain()
     chain.sleep(seconds_sleep)
@@ -856,7 +856,7 @@ def test_wasContractBreached_status_created_status_terminated(deploy, seconds_sl
 
 @pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]]) 
 def test_wasContractBreached_status_created_deposit_zero(deploy, seconds_sleep):
-    '''check if the wasContractBreached function emits NotifyUser when exactAgreement[_id].agreementStartDate + (6*60*60*24) > block.timestamp fails'''
+    '''check if the deposit of the breached agreement is equal 0'''
     chain = Chain()
     chain.sleep(seconds_sleep)
     deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
