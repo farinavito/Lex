@@ -336,7 +336,7 @@ def test_sendPayments_require_statement_fails_agreement_not_started_pair(deploy)
     '''check if the require statement does not fail when the agreement has started'''
     chain = Chain()
     _now = chain.time()
-    deploy.createAgreement(accounts[receiver], amount_sent, every_period, agreement_duration, _now, {'from': accounts[signee], 'value': amount_sent})
+    deploy.createAgreement(accounts[receiver], amount_sent, every_period, agreement_duration, _now + 1, {'from': accounts[signee], 'value': amount_sent})
     deploy.sendPayment(2, {'from': accounts[signee], 'value': amount_sent})
     assert deploy.exactAgreement(2)[6] == 'Activated'
 
