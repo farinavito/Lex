@@ -527,7 +527,7 @@ def test_timeNotBreached_value_smaller_amount_send_deposit(deploy, value_sent):
         deploy.withdrawAsTheReceiver(agreements_number, {'from': accounts[receiver]})
     except Exception as e :
         assert e.message[50:] == "There aren't any funds to withdraw"
-@pytest.mark.aaa
+
 @pytest.mark.parametrize("value_sent",  [0, less_than_amount_sent[0], less_than_amount_sent[1], less_than_amount_sent[2]])
 def test_timeNotBreached_value_smaller_amount_deposit_equals_zero(deploy, value_sent):
     '''check if the deposit isn't back on zero when amount > msg.value in the timeNotBreached'''
@@ -608,6 +608,17 @@ def test_timeNotBreached_breached_on_time_false_send_deposit_pair(deploy, second
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent}) 
     deploy.withdrawAsTheReceiver(agreements_number, {'from': accounts[receiver]})
     assert accounts[receiver].balance() == balance_receiver + 4*amount_sent - commission
+
+@pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]])
+def test_timeNotBreached_breached_on_time_false_totalDepositSent(deploy, seconds_sleep):
+    '''check if totalDepositSent increases by the deposit'''
+    depositsTogether = deploy.totalDepositSent()
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
+    agreementsdeposit = deploy.exactAgreement(agreements_number)[5]
+    chain = Chain()
+    chain.sleep(seconds_sleep)
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent}) 
+    assert deploy.totalDepositSent() == depositsTogether + agreementsdeposit
 
 @pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]])
 def test_timeNotBreached_breached_on_time_false_deposit_equals_zero(deploy, seconds_sleep):
