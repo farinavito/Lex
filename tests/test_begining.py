@@ -1214,9 +1214,10 @@ def test_getWithdrawalOwner_check_onlyWhitelisted_fails(deploy):
 
 def test_getWithdrawalOwner_returns_correct(deploy):
     '''Check if the function works correctly'''
+    deploy.addToWhitelist(accounts[9], {'from': accounts[1]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
-    assert deploy.getWithdrawalOwner({'from': accounts[7]}) == commission
+    assert deploy.getWithdrawalOwner({'from': accounts[9]}) == commission
 
 
 
