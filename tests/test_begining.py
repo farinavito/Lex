@@ -1043,15 +1043,21 @@ def test_withdrawAsTheOwner_onlyWhitelisted(deploy, wrong_account):
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     with brownie.reverts("You aren't whitelisted"):
         deploy.withdrawAsTheOwner({'from': accounts[wrong_account]})
-@pytest.mark.aaa
+
 def test_withdrawAsTheOwner_first_require_fails(deploy):
     '''require statement exactAgreement[_id].signee == msg.sender fails'''
     deploy.addToWhitelist(accounts[9], {'from': accounts[1]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     with brownie.reverts("There aren't any funds to withdraw"):
         deploy.withdrawAsTheOwner({'from': accounts[9]})
-
-
+@pytest.mark.aaa
+def test_withdrawAsTheOwner_first_reguire_fails_pair(deploy):
+    '''require statement exactAgreement[_id].signee == msg.sender doesn't fail'''
+    deploy.addToWhitelist(accounts[9], {'from': accounts[1]})
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
+    function_initialize = deploy.withdrawAsTheOwner({'from': accounts[9]})
+    assert function_initialize.events[0][0]['message'] == "Withdrawal has been transfered"
 
 '''TEST GETWITHDRAWALRECEIVER'''
 
