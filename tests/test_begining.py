@@ -1030,6 +1030,22 @@ def test_withdrawAsTheSignee_withdrawal_sent_3(deploy, time):
     deploy.withdrawAsTheSignee(agreements_number, {'from': accounts[signee]})
     assert accounts[signee].balance() == signee_balance 
 
+
+
+'''TEST WITHDRAWASTHEOWNER'''
+
+
+@pytest.mark.aaa
+@pytest.mark.parametrize("wrong_account", [without_signee[0], without_signee[1], without_signee[2]])
+def test_withdrawAsTheOwner_onlyWhitelisted(deploy, wrong_account):
+    '''require statement exactAgreement[_id].signee == msg.sender fails'''
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
+    with brownie.reverts("You aren't whitelisted"):
+        deploy.withdrawAsTheOwner({'from': accounts[wrong_account]})
+
+
+
 '''TEST GETWITHDRAWALRECEIVER'''
 
 
