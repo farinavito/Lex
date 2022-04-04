@@ -931,10 +931,10 @@ def test_withdrawAsTheReceiver_withdrawal_sent_2(deploy):
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     deploy.withdrawAsTheReceiver(agreements_number, {'from': accounts[receiver]})
     assert accounts[receiver].balance() == receiver_balance + amount_sent - commission
-@pytest.mark.aaa
+
 @pytest.mark.parametrize("time", [more_than_agreement_duration[0], more_than_agreement_duration[1], more_than_agreement_duration[2]])
 def test_withdrawAsTheReceiver_withdrawal_sent_3(deploy, time):
-    '''Check if th withdrawal ws sent to the receiver'''
+    '''Check if the withdrawal was sent to the receiver'''
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     receiver_balance = accounts[receiver].balance()
     agreementsDeposit = deploy.exactAgreement(agreements_number)[5]
@@ -943,6 +943,20 @@ def test_withdrawAsTheReceiver_withdrawal_sent_3(deploy, time):
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     deploy.withdrawAsTheReceiver(agreements_number, {'from': accounts[receiver]})
     assert accounts[receiver].balance() == receiver_balance + agreementsDeposit
+@pytest.mark.aaa
+@pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]])
+def test_wasContractBreached_withdrawal_sent_4(deploy, seconds_sleep):
+    '''Check if the withdrawal was sent to the receiver'''
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
+    balance_receiver = accounts[receiver].balance()
+    chain = Chain()
+    chain.sleep(seconds_sleep)
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
+    deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
+    deploy.withdrawAsTheReceiver(agreements_number, {'from': accounts[receiver]})
+    assert accounts[receiver].balance() == balance_receiver + amount_sent
+
+
 
 '''TEST WITHDRAWASTHESIGNEE'''
 
