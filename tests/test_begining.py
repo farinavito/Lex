@@ -943,7 +943,7 @@ def test_withdrawAsTheReceiver_withdrawal_sent_3(deploy, time):
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     deploy.withdrawAsTheReceiver(agreements_number, {'from': accounts[receiver]})
     assert accounts[receiver].balance() == receiver_balance + agreementsDeposit
-@pytest.mark.aaa
+
 @pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]])
 def test_wasContractBreached_withdrawal_sent_4(deploy, seconds_sleep):
     '''Check if the withdrawal was sent to the receiver'''
@@ -952,6 +952,16 @@ def test_wasContractBreached_withdrawal_sent_4(deploy, seconds_sleep):
     chain = Chain()
     chain.sleep(seconds_sleep)
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
+    deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
+    deploy.withdrawAsTheReceiver(agreements_number, {'from': accounts[receiver]})
+    assert accounts[receiver].balance() == balance_receiver + amount_sent
+
+@pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]])    
+def test_wasContractBreached_withdrawal_sent_5(deploy, seconds_sleep):
+    '''Check if the withdrawal was sent to the receiver'''
+    balance_receiver = accounts[receiver].balance()
+    chain = Chain()
+    chain.sleep(seconds_sleep)
     deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
     deploy.withdrawAsTheReceiver(agreements_number, {'from': accounts[receiver]})
     assert accounts[receiver].balance() == balance_receiver + amount_sent
