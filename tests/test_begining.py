@@ -35,11 +35,21 @@ more_than_agreement_duration = [agreement_duration + 10**5, agreement_duration +
 
 seconds_in_day = 60 * 60 * 24
 
+protectorOwnerAddress = 1
+protectorWaitingToBeOwnerAddress = 2
+addressProtector1 = 3
+addressProtector2 = 4
+addressProtector3 = 5
+addressProtector4 = 6
+addressProtector5 = 7
 
+@pytest.fixture()
+def deploy_addressProtector(AddressProtector, module_isolation):
+    return AddressProtector.deploy(accounts[protectorOwnerAddress], accounts[protectorWaitingToBeOwnerAddress], accounts[addressProtector1], accounts[addressProtector2], accounts[addressProtector3], accounts[addressProtector4], accounts[addressProtector5], {'from': accounts[0]})
 
 @pytest.fixture()
 def deploy(AgreementBetweenSubjects, module_isolation):
-    return AgreementBetweenSubjects.deploy({'from': accounts[0]})
+    return AgreementBetweenSubjects.deploy(deploy_addressProtector, {'from': accounts[0]})
 
 @pytest.fixture(autouse=True)
 def new_agreement(deploy, module_isolation):
@@ -1234,23 +1244,23 @@ def test_changeCommission_require_1(deploy):
         assert e.message[50:] == "Commission doesn't follow the rules"
 
 def test_changeCommission_require_2(deploy):
-    '''check if the commission < 10*15 + 1 works properly'''
+    '''check if the commission < 10**15 + 1 works properly'''
     try:
         deploy.addToWhitelist(accounts[9], {'from': accounts[1]})
-        deploy.changeCommission(10*15 + 1, {'from' : accounts[9]})
+        deploy.changeCommission(10**15 + 1, {'from' : accounts[9]})
     except Exception as e:
         assert e.message[50:] == "Commission doesn't follow the rules"
 
 def test_changeCommission_change_commission(deploy):
     '''check if the commission is changed'''
     deploy.addToWhitelist(accounts[9], {'from': accounts[1]})
-    deploy.changeCommission(10*15, {'from' : accounts[9]})
-    assert deploy.commission() == 10*15
+    deploy.changeCommission(10**15, {'from' : accounts[9]})
+    assert deploy.commission() == 10**15
 
 def test_changeCommission_emit_event(deploy):
     '''check if the commission is changed'''
     deploy.addToWhitelist(accounts[9], {'from': accounts[1]})
-    function_initialize = deploy.changeCommission(10*15, {'from' : accounts[9]})
+    function_initialize = deploy.changeCommission(10**15, {'from' : accounts[9]})
     assert function_initialize.events[0][0]['message'] == "Commission changed"
 
 

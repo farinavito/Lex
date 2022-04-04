@@ -5,9 +5,9 @@ pragma solidity 0.8.11;
 /// @author Farina Vito
 
 //import "https://github.com/farinavito/ProtectSmartContracts/blob/main/project/ProtectorWhitelisted/contracts/protector3.sol";
-import "farinavito/ProtectSmartContracts@1.0.0/project/ProtectorWhitelisted/contracts/protector3.sol";
+import "farinavito/ProtectSmartContracts@1.0.0/project/AddressProtector/contracts/protector.sol";
 
-contract AgreementBetweenSubjects is ProtectorWhitelisted{
+contract AgreementBetweenSubjects {
   //5. if the last transaction in sentPayment is ok, return the deposit to the signee
 
   /// @notice Defining the agreement 
@@ -344,7 +344,7 @@ contract AgreementBetweenSubjects is ProtectorWhitelisted{
   /// @notice Changing the commission
   function changeCommission(uint256 _newCommission) external {
     require(accessingProtectors.whitelist(msg.sender), "You aren't whitelisted");
-		require(_newCommission > 0 && _newCommission < 10*15 + 1, "Commission doesn't follow the rules");
+		require(_newCommission > 0 && _newCommission < 10**15 + 1, "Commission doesn't follow the rules");
 		commission = _newCommission;
 		emit NotifyUser("Commission changed");
 	}
