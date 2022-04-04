@@ -1052,7 +1052,6 @@ def test_withdrawAsTheOwner_check_require_statement(deploy):
 def test_withdrawAsTheOwner_check_require_statement_2(deploy):
     '''Check if the function is reverted, because there aren't any funds to withdraw '''
     try:
-        #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
         deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
         deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
         deploy.addToWhitelist(accounts[9], {'from': accounts[1]})
@@ -1063,7 +1062,6 @@ def test_withdrawAsTheOwner_check_require_statement_2(deploy):
 
 def test_withdrawAsTheOwner_check_commission_sent(deploy):
     '''Check if the commission is sent to account 8'''
-    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
     deploy.addToWhitelist(accounts[8], {'from': accounts[1]})
@@ -1073,7 +1071,6 @@ def test_withdrawAsTheOwner_check_commission_sent(deploy):
 
 def test_withdrawAsTheOwner_check_commission_sent_2(deploy):
     '''Check if the commission is sent to account 8'''
-    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
@@ -1084,7 +1081,6 @@ def test_withdrawAsTheOwner_check_commission_sent_2(deploy):
 
 def test_withdrawAsTheOwner_check_commission_sent_3(deploy):
     '''Check if the commission is sent to account 8'''
-    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
     deploy.addToWhitelist(accounts[8], {'from': accounts[1]})
@@ -1096,7 +1092,6 @@ def test_withdrawAsTheOwner_check_commission_sent_3(deploy):
 
 def test_withdrawAsTheOwner_check_event_emitted(deploy):
     '''Check if the event NotifyUser is emitted'''
-    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
     deploy.addToWhitelist(accounts[9], {'from': accounts[1]})
