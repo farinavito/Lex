@@ -678,7 +678,7 @@ def test_timeNotBreached_breached_on_time_false_emit_Terminated_pair(deploy, sec
     assert function_initialize.events[0][0]['message'] != "The agreement was terminated due to late payment"
 
 #Checking when the agreement's status is "Terminated"
-@pytest.mark.aaa
+
 @pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]])
 def test_terminateContract_emit_Terminated_initial_status_terminated(deploy, seconds_sleep):
     '''check if the sendPayments emits correctly the message when the status is "Terminated"'''
@@ -698,7 +698,6 @@ def test_terminateContract_emit_Terminated_initial_status_terminated(deploy, sec
 @pytest.mark.parametrize("wrong_accounts",  [without_receiver[0], without_receiver[1], without_receiver[2]])
 def test_wasContractBreached_require_receiver_equals_msg_sender(deploy, wrong_accounts):
     '''check if the wasContractBreached fails, because exactAgreement[_id].receiver == msg.sender is the require statement'''
-    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     with brownie.reverts("Your logged in address isn't the same as the agreement's receiver"):
         #wrong signee's address
@@ -708,7 +707,6 @@ def test_wasContractBreached_require_receiver_equals_msg_sender(deploy, wrong_ac
 def test_wasContractBreached_require_receiver_equals_msg_sender_pair(deploy, right_accounts):
     '''check if the wasContractBreached doesn't fail'''
     try:
-        #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
         deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
         deploy.wasContractBreached(agreements_number, {'from': accounts[right_accounts]})
     except Exception as e:        
@@ -717,7 +715,6 @@ def test_wasContractBreached_require_receiver_equals_msg_sender_pair(deploy, rig
 def test_wasContractBreached_fail_if_statement_in_timeNotBreached(deploy):
     '''check if the timeNotBreached fails because transaction was sent after the agreement's deadline - it fails because of the check in the confirmAgreement function'''
     try:
-        #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
         chain = Chain()
         chain.sleep(2629800)
         deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
@@ -729,7 +726,6 @@ def test_wasContractBreached_fail_if_statement_in_timeNotBreached(deploy):
 
 def test_wasContractBreached_timeNotBreached_true_emit_NotifyUser(deploy):
     '''check if the wasContractBreached function when timeNotBreached is true, emits NotifyUser'''
-    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     function_initialize = deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
     assert function_initialize.events[0][0]['message'] == "The agreement wasn't breached"
@@ -737,7 +733,6 @@ def test_wasContractBreached_timeNotBreached_true_emit_NotifyUser(deploy):
 @pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]])
 def test_wasContractBreached_timeNotBreached_false_status_Terminated(deploy, seconds_sleep):
     '''check if the wasContractBreached function when timeNotBreached is false, changes status to Terminated'''
-    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     chain = Chain()
     chain.sleep(seconds_sleep)
@@ -748,7 +743,6 @@ def test_wasContractBreached_timeNotBreached_false_status_Terminated(deploy, sec
 @pytest.mark.parametrize("seconds_sleep",  [0, less_than_every_period[0], less_than_every_period[1], less_than_every_period[2]])
 def test_wasContractBreached_timeNotBreached_false_status_Terminated_pair(deploy, seconds_sleep):
     '''check if the wasContractBreached function when timeNotBreached is true, doesn't change status to Terminated'''
-    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     chain = Chain()
     chain.sleep(seconds_sleep)
@@ -759,7 +753,6 @@ def test_wasContractBreached_timeNotBreached_false_status_Terminated_pair(deploy
 @pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]])
 def test_wasContractBreached_timeNotBreached_false_send_deposit(deploy, seconds_sleep):
     '''check if the wasContractBreached function when timeNotBreached is false, sends a deposit to the receiver'''
-    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     balance_receiver = accounts[receiver].balance()
     chain = Chain()
@@ -772,7 +765,6 @@ def test_wasContractBreached_timeNotBreached_false_send_deposit(deploy, seconds_
 @pytest.mark.parametrize("seconds_sleep",  [0, less_than_every_period[0], less_than_every_period[1], less_than_every_period[2]])
 def test_wasContractBreached_timeNotBreached_false_send_deposit_pair(deploy, seconds_sleep):
     '''check if the wasContractBreached function when timeNotBreached is true, doesn't send a deposit to the receiver'''
-    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     balance_receiver = accounts[receiver].balance()
     chain = Chain()
@@ -785,7 +777,6 @@ def test_wasContractBreached_timeNotBreached_false_send_deposit_pair(deploy, sec
 @pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]])
 def test_wasContractBreached_timeNotBreached_false_status_deposit_equals_zero_1(deploy, seconds_sleep):
     '''check if the wasContractBreached function when timeNotBreached is false, changes deposit to 0'''
-    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     chain = Chain()
     chain.sleep(seconds_sleep)
@@ -796,7 +787,6 @@ def test_wasContractBreached_timeNotBreached_false_status_deposit_equals_zero_1(
 @pytest.mark.parametrize("seconds_sleep",  [0, less_than_every_period[0], less_than_every_period[1], less_than_every_period[2]])
 def test_wasContractBreached_timeNotBreached_false_status_deposit_equals_zero_1_pair(deploy, seconds_sleep):
     '''check if the wasContractBreached function when timeNotBreached is true, doesn't change deposit to 0'''
-    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     chain = Chain()
     chain.sleep(seconds_sleep)
@@ -807,7 +797,6 @@ def test_wasContractBreached_timeNotBreached_false_status_deposit_equals_zero_1_
 @pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]])
 def test_wasContractBreached_timeNotBreached_false_emit_Terminated(deploy, seconds_sleep):
     '''check if the wasContractBreached function when timeNotBreached is false, emits NotifyUser'''
-    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     chain = Chain()
     chain.sleep(seconds_sleep)
@@ -818,7 +807,6 @@ def test_wasContractBreached_timeNotBreached_false_emit_Terminated(deploy, secon
 @pytest.mark.parametrize("seconds_sleep",  [0, less_than_every_period[0], less_than_every_period[1], less_than_every_period[2]])
 def test_wasContractBreached_timeNotBreached_false_emit_Terminated_pair(deploy, seconds_sleep):
     '''check if the wasContractBreached function when timeNotBreached is true, doesn't emit NotifyUser'''
-    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     chain = Chain()
     chain.sleep(seconds_sleep)
@@ -828,7 +816,6 @@ def test_wasContractBreached_timeNotBreached_false_emit_Terminated_pair(deploy, 
 
 def test_wasContractBreached_agreement_not_activated(deploy):
     '''check if the wasContractBreached function emits NotifyUser when timeNotBreached is false'''
-    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     function_initialize = deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
     assert function_initialize.events[0][0]['message'] == "The agreement wasn't breached"
 
