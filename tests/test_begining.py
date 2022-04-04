@@ -931,8 +931,18 @@ def test_withdrawAsTheReceiver_withdrawal_sent_2(deploy):
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     deploy.withdrawAsTheReceiver(agreements_number, {'from': accounts[receiver]})
     assert accounts[receiver].balance() == receiver_balance + amount_sent - commission
-
-
+@pytest.mark.aaa
+@pytest.mark.parametrize("time", [more_than_agreement_duration[0], more_than_agreement_duration[1], more_than_agreement_duration[2]])
+def test_withdrawAsTheReceiver_withdrawal_sent_3(deploy, time):
+    '''Check if th withdrawal ws sent to the receiver'''
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
+    receiver_balance = accounts[receiver].balance()
+    agreementsDeposit = deploy.exactAgreement(agreements_number)[5]
+    chain = Chain()
+    chain.sleep(time)
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
+    deploy.withdrawAsTheReceiver(agreements_number, {'from': accounts[receiver]})
+    assert accounts[receiver].balance() == receiver_balance + agreementsDeposit
 
 '''TEST WITHDRAWASTHESIGNEE'''
 
@@ -984,7 +994,7 @@ def test_withdrawAsTheSignee_withdrawal_sent_2(deploy, amount):
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount})
     deploy.withdrawAsTheSignee(agreements_number, {'from': accounts[signee]})
     assert accounts[signee].balance() == signee_balance
-@pytest.mark.aaa
+
 @pytest.mark.parametrize("time", [more_than_agreement_duration[0], more_than_agreement_duration[1], more_than_agreement_duration[2]])
 def test_withdrawAsTheSignee_withdrawal_sent_3(deploy, time):
     '''Check if the withdrawal is sent'''
