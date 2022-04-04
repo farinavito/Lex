@@ -1108,38 +1108,30 @@ def test_getWithdrawalReceiver_uninitialize(deploy):
 @pytest.mark.parametrize("wrong_account", [without_signee[0], without_signee[1], without_signee[2]])
 def test_getWithdrawalsignee_reguire_fails(deploy, wrong_account):
     '''require statement exactAgreement[_id].signee == msg.sender fails'''
-    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
-    #deploy.terminateContract(agreements_number, {'from': accounts[signee]})
     with brownie.reverts("Your logged in address isn't the same as the agreement's signee"):
         deploy.getWithdrawalSignee(agreements_number, {'from': accounts[wrong_account]})
 
-'''
 @pytest.mark.parametrize("time", [more_than_agreement_duration[0], more_than_agreement_duration[1], more_than_agreement_duration[2]])
 def test_getWithdrawalSignee_reguire_fails_pair(deploy, time):
-    require statement exactAgreement[_id].signee == msg.sender doesn't fail
-    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    '''require statement exactAgreement[_id].signee == msg.sender doesn't fail'''
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
     chain = Chain()
     chain.sleep(time)
-    #deploy.terminateContract(agreements_number, {'from': accounts[signee]})
     function_initialize = deploy.getWithdrawalSignee(agreements_number, {'from': accounts[signee]})
     assert function_initialize == amount_sent
-'''
-'''
+
 @pytest.mark.parametrize("time", [more_than_agreement_duration[0], more_than_agreement_duration[1], more_than_agreement_duration[2]])
 def test_getWithdrawalSignee_uninitialize(deploy, time):
-    check if the withdraw_signee is not empty after only sending the deposit
-    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+    '''check if the withdraw_signee is not empty after only sending the deposit'''
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     chain = Chain()
     chain.sleep(time)
-    #deploy.terminateContract(agreements_number, {'from': accounts[signee]})
     function_initialize = deploy.getWithdrawalSignee(agreements_number, {'from': accounts[signee]})
     assert function_initialize == amount_sent
-'''
+
 
 
 '''TEST GETWITHDRAWALOWNER'''
