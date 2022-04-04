@@ -678,15 +678,17 @@ def test_timeNotBreached_breached_on_time_false_emit_Terminated_pair(deploy, sec
     assert function_initialize.events[0][0]['message'] != "The agreement was terminated due to late payment"
 
 #Checking when the agreement's status is "Terminated"
-'''
-def test_terminateContract_emit_Terminated_initial_status_terminated(deploy):
-    check if the sendPayments emits correctly the message when the status is "Terminated"
-    #deploy.confirmAgreement(agreements_number, {'from': accounts[receiver]})
+@pytest.mark.aaa
+@pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]])
+def test_terminateContract_emit_Terminated_initial_status_terminated(deploy, seconds_sleep):
+    '''check if the sendPayments emits correctly the message when the status is "Terminated"'''
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
-    deploy.terminateContract(agreements_number, {'from': accounts[signee]})
+    chain = Chain()
+    chain.sleep(seconds_sleep)
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     with brownie.reverts("The agreement is already terminated"):
         deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
-'''
+
 
 
 ''' TESTING WASCONTRACTBREACHED FUNCTION '''
