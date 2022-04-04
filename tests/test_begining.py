@@ -795,6 +795,18 @@ def test_wasContractBreached_timeNotBreached_false_status_deposit_equals_zero_1_
     assert deploy.exactAgreement(agreements_number)[5] != '0'
 
 @pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]])
+def test_wasContractBreached_timeNotBreached_true_totalDepositSent(deploy, seconds_sleep):
+    '''check if the totalDepositSent() is incremented by the deposit'''
+    totalDepositBefore = deploy.totalDepositSent()
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
+    agreementsDeposit = deploy.exactAgreement(agreements_number)[5]
+    chain = Chain()
+    chain.sleep(seconds_sleep)
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
+    deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
+    assert deploy.totalDepositSent() == totalDepositBefore + agreementsDeposit
+
+@pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]])
 def test_wasContractBreached_timeNotBreached_false_emit_Terminated(deploy, seconds_sleep):
     '''check if the wasContractBreached function when timeNotBreached is false, emits NotifyUser'''
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
