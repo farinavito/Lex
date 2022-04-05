@@ -4,7 +4,7 @@ pragma solidity 0.8.11;
 /// @title Implementing a legal contract: Person A commits sending X amount to person B every Y time period for the duration of Z time starting at Q
 /// @author Farina Vito
 
-//import "https://github.com/farinavito/ProtectSmartContracts/blob/main/project/ProtectorWhitelisted/contracts/protector3.sol";
+//import "https://github.com/farinavito/ProtectSmartContracts/blob/main/project/AddressProtector/contracts/protector.sol";
 import "farinavito/ProtectSmartContracts@1.0.0/project/AddressProtector/contracts/protector.sol";
 
 contract AgreementBetweenSubjects {
@@ -35,8 +35,6 @@ contract AgreementBetweenSubjects {
     uint256 positionPeriod;
     uint256 howLong;
   }
-
-
 
   /// @notice Using against re-entrancy
   uint16 internal locked = 1;
@@ -225,7 +223,7 @@ contract AgreementBetweenSubjects {
     require(sent, "Failed to send Ether");
     withdrawal_amount_owner = 0;
     emit NotifyUser("Withdrawal has been transfered");
-}
+  }
 
   /// @notice Creating a new agreement
   function createAgreement(
