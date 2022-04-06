@@ -74,8 +74,16 @@ def new_agreement_2(deploy, module_isolation):
     now = chain.time()
     startAgreement = now + 4
     return deploy.createAgreement(accounts[receiver_2], amount_sent_2, every_period_2, agreement_duration_2, startAgreement, {'from': accounts[signee_2], 'value': amount_sent_2})
-    
 
+
+
+'''TESTING CONSTRUCTOR'''
+
+
+    
+def test_new_agreement_accessingProtectors_address(deploy, deploy_addressProtector):
+    '''check if the address of the deploy_addressProtector is the same as accessingProtectors'''
+    assert deploy_addressProtector == deploy.accessingProtectors()
 
 '''TESTING CREATEAGREEMENT FUNCTION AGREEMENT 1'''
     
