@@ -1234,7 +1234,7 @@ def test_changeCommission_not_owner(deploy):
     '''check if the onlyOwner modifier works properly'''
     with brownie.reverts("You aren't whitelisted"):
         deploy.changeCommission(5, {'from': accounts[7]})
-@pytest.mark.aaa
+
 def test_changeCommission_require_1(deploy, deploy_addressProtector):
     '''check if the commission > 0 works properly'''
     try:
@@ -1242,7 +1242,7 @@ def test_changeCommission_require_1(deploy, deploy_addressProtector):
         deploy.changeCommission(0, {'from' : accounts[9]})
     except Exception as e:
         assert e.message[50:] == "Commission doesn't follow the rules"
-@pytest.mark.aaa
+
 def test_changeCommission_require_2(deploy, deploy_addressProtector):
     '''check if the commission < 10**15 + 1 works properly'''
     try:
@@ -1250,13 +1250,13 @@ def test_changeCommission_require_2(deploy, deploy_addressProtector):
         deploy.changeCommission(10**15 + 1, {'from' : accounts[9]})
     except Exception as e:
         assert e.message[50:] == "Commission doesn't follow the rules"
-@pytest.mark.aaa
+
 def test_changeCommission_change_commission(deploy, deploy_addressProtector):
     '''check if the commission is changed'''
     deploy_addressProtector.addToWhitelist(accounts[9], {'from': accounts[1]})
     deploy.changeCommission(10**15, {'from' : accounts[9]})
     assert deploy.commission() == 10**15
-@pytest.mark.aaa
+
 def test_changeCommission_emit_event(deploy, deploy_addressProtector):
     '''check if the commission is changed'''
     deploy_addressProtector.addToWhitelist(accounts[9], {'from': accounts[1]})
@@ -1268,16 +1268,16 @@ def test_changeCommission_emit_event(deploy, deploy_addressProtector):
 '''TEST ADDTOWHITELIST '''
 
 
-
-def test_addToWhitelist_check_onlyOwner(deploy):
+@pytest.mark.aaa
+def test_addToWhitelist_check_onlyOwner(deploy_addressProtector):
     '''Check if onlyOwner modifier doesn't let other accounts to call this function'''
     with brownie.reverts("You are not the owner"):
-        deploy.addToWhitelist(accounts[9], {'from': accounts[3]})
-
-def test_addToWhitelist_check_added_to_whitelist(deploy):
+        deploy_addressProtector.addToWhitelist(accounts[9], {'from': accounts[3]})
+@pytest.mark.aaa
+def test_addToWhitelist_check_added_to_whitelist(deploy, deploy_addressProtector):
     '''Check if the account is added to the whitelist'''
-    deploy.addToWhitelist(accounts[9], {'from': accounts[1]})
-    assert deploy.whitelist(accounts[9]) == True
+    deploy_addressProtector.addToWhitelist(accounts[9], {'from': accounts[1]})
+    assert deploy_addressProtector.whitelist(accounts[9]) == True
 
 
 
