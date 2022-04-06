@@ -1216,7 +1216,7 @@ def test_getWithdrawalOwner_check_onlyWhitelisted_fails(deploy):
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
     with brownie.reverts("You aren't whitelisted"):
         deploy.getWithdrawalOwner({'from': accounts[9]})
-@pytest.mark.aaa
+
 def test_getWithdrawalOwner_returns_correct(deploy, deploy_addressProtector):
     '''Check if the function works correctly'''
     deploy_addressProtector.addToWhitelist(accounts[9], {'from': accounts[1]})
@@ -1234,32 +1234,32 @@ def test_changeCommission_not_owner(deploy):
     '''check if the onlyOwner modifier works properly'''
     with brownie.reverts("You aren't whitelisted"):
         deploy.changeCommission(5, {'from': accounts[7]})
-
-def test_changeCommission_require_1(deploy):
+@pytest.mark.aaa
+def test_changeCommission_require_1(deploy, deploy_addressProtector):
     '''check if the commission > 0 works properly'''
     try:
-        deploy.addToWhitelist(accounts[9], {'from': accounts[1]})
+        deploy_addressProtector.addToWhitelist(accounts[9], {'from': accounts[1]})
         deploy.changeCommission(0, {'from' : accounts[9]})
     except Exception as e:
         assert e.message[50:] == "Commission doesn't follow the rules"
-
-def test_changeCommission_require_2(deploy):
+@pytest.mark.aaa
+def test_changeCommission_require_2(deploy, deploy_addressProtector):
     '''check if the commission < 10**15 + 1 works properly'''
     try:
-        deploy.addToWhitelist(accounts[9], {'from': accounts[1]})
+        deploy_addressProtector.addToWhitelist(accounts[9], {'from': accounts[1]})
         deploy.changeCommission(10**15 + 1, {'from' : accounts[9]})
     except Exception as e:
         assert e.message[50:] == "Commission doesn't follow the rules"
-
-def test_changeCommission_change_commission(deploy):
+@pytest.mark.aaa
+def test_changeCommission_change_commission(deploy, deploy_addressProtector):
     '''check if the commission is changed'''
-    deploy.addToWhitelist(accounts[9], {'from': accounts[1]})
+    deploy_addressProtector.addToWhitelist(accounts[9], {'from': accounts[1]})
     deploy.changeCommission(10**15, {'from' : accounts[9]})
     assert deploy.commission() == 10**15
-
-def test_changeCommission_emit_event(deploy):
+@pytest.mark.aaa
+def test_changeCommission_emit_event(deploy, deploy_addressProtector):
     '''check if the commission is changed'''
-    deploy.addToWhitelist(accounts[9], {'from': accounts[1]})
+    deploy_addressProtector.addToWhitelist(accounts[9], {'from': accounts[1]})
     function_initialize = deploy.changeCommission(10**15, {'from' : accounts[9]})
     assert function_initialize.events[0][0]['message'] == "Commission changed"
 
