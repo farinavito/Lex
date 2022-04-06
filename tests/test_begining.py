@@ -1050,7 +1050,7 @@ def test_withdrawAsTheOwner_check_onlyWhitelisted(deploy):
     '''Check if onlyWhitelisted doesn't allow any other account to call the function '''
     with brownie.reverts("You aren't whitelisted"):
         deploy.withdrawAsTheOwner({'from': accounts[9]})
-@pytest.mark.aaa
+
 def test_withdrawAsTheOwner_check_require_statement(deploy, deploy_addressProtector):
     '''Check if the function is reverted, because there aren't any funds to withdraw '''
     try:
@@ -1058,13 +1058,13 @@ def test_withdrawAsTheOwner_check_require_statement(deploy, deploy_addressProtec
         deploy.withdrawAsTheOwner({'from': accounts[9]})
     except Exception as e:
         assert e.message[50:] == "There aren't any funds to withdraw"
-
-def test_withdrawAsTheOwner_check_require_statement_2(deploy):
+@pytest.mark.aaa
+def test_withdrawAsTheOwner_check_require_statement_2(deploy, deploy_addressProtector):
     '''Check if the function is reverted, because there aren't any funds to withdraw '''
     try:
         deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
         deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
-        deploy.addToWhitelist(accounts[9], {'from': accounts[1]})
+        deploy_addressProtector.addToWhitelist(accounts[9], {'from': accounts[1]})
         deploy.withdrawAsTheOwner({'from': accounts[9]})
         deploy.withdrawAsTheOwner({'from': accounts[9]})
     except Exception as e:
