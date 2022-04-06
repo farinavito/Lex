@@ -1268,13 +1268,13 @@ def test_changeCommission_emit_event(deploy, deploy_addressProtector):
 '''TEST ADDTOWHITELIST '''
 
 
-@pytest.mark.aaa
+
 def test_addToWhitelist_check_onlyOwner(deploy_addressProtector):
     '''Check if onlyOwner modifier doesn't let other accounts to call this function'''
     with brownie.reverts("You are not the owner"):
         deploy_addressProtector.addToWhitelist(accounts[9], {'from': accounts[3]})
-@pytest.mark.aaa
-def test_addToWhitelist_check_added_to_whitelist(deploy, deploy_addressProtector):
+
+def test_addToWhitelist_check_added_to_whitelist(deploy_addressProtector):
     '''Check if the account is added to the whitelist'''
     deploy_addressProtector.addToWhitelist(accounts[9], {'from': accounts[1]})
     assert deploy_addressProtector.whitelist(accounts[9]) == True
@@ -1286,16 +1286,16 @@ def test_addToWhitelist_check_added_to_whitelist(deploy, deploy_addressProtector
 
 
 
-def test_removedFromWhitelist_check_onlyOwner(deploy):
+def test_removedFromWhitelist_check_onlyOwner(deploy_addressProtector):
     '''Check if onlyOwner modifier doesn't let other accounts to call this function'''
     with brownie.reverts("You are not the owner"):
-        deploy.removedFromWhitelist(accounts[9], {'from': accounts[3]})
+        deploy_addressProtector.removedFromWhitelist(accounts[9], {'from': accounts[3]})
 
-def test_removedFromWhitelist_check_added_to_whitelist(deploy):
+def test_removedFromWhitelist_check_added_to_whitelist(deploy_addressProtector):
     '''Check if the account is removed from the whitelist'''
-    deploy.addToWhitelist(accounts[9], {'from': accounts[1]})
-    deploy.removedFromWhitelist(accounts[9], {'from': accounts[1]})
-    assert deploy.whitelist(accounts[9]) == False
+    deploy_addressProtector.addToWhitelist(accounts[9], {'from': accounts[1]})
+    deploy_addressProtector.removedFromWhitelist(accounts[9], {'from': accounts[1]})
+    assert deploy_addressProtector.whitelist(accounts[9]) == False
 
 
 
@@ -1303,25 +1303,25 @@ def test_removedFromWhitelist_check_added_to_whitelist(deploy):
 
 
 
-def test_whitelist_return_true(deploy):
+def test_whitelist_return_true(deploy_addressProtector):
     '''Check if the account is added to the whitelist'''
-    deploy.addToWhitelist(accounts[9], {'from': accounts[1]})
-    assert deploy.whitelist(accounts[9]) == True
+    deploy_addressProtector.addToWhitelist(accounts[9], {'from': accounts[1]})
+    assert deploy_addressProtector.whitelist(accounts[9]) == True
 
-def test_whitelist_return_false(deploy):
+def test_whitelist_return_false(deploy_addressProtector):
     '''Check if the account is removed from the whitelist'''
-    deploy.addToWhitelist(accounts[9], {'from': accounts[1]})
-    deploy.removedFromWhitelist(accounts[9], {'from': accounts[1]})
-    assert deploy.whitelist(accounts[9]) == False
+    deploy_addressProtector.addToWhitelist(accounts[9], {'from': accounts[1]})
+    deploy_addressProtector.removedFromWhitelist(accounts[9], {'from': accounts[1]})
+    assert deploy_addressProtector.whitelist(accounts[9]) == False
 
-def test_whitelist_return_false_2(deploy):
+def test_whitelist_return_false_2(deploy_addressProtector):
     '''Check if the mapping whitelist returns false when account isn't even added to whitelist'''
-    assert deploy.whitelist(accounts[9]) == False
+    assert deploy_addressProtector.whitelist(accounts[9]) == False
 
 @pytest.mark.parametrize("protector", [3, 4, 5, 6, 7])
-def test_whitelist_protectors_return_false(deploy, protector):
+def test_whitelist_protectors_return_false(protector, deploy_addressProtector):
     '''Checking if the mapping whitelist returns false for all protectors'''
-    assert deploy.whitelist(accounts[protector]) == False
+    assert deploy_addressProtector.whitelist(accounts[protector]) == False
 
 
 
