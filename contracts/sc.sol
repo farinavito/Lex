@@ -311,26 +311,7 @@ contract AgreementBetweenSubjects {
           //return the transaction to the signee
           revert("There is no agreement with this id");
     }
-  }
-/*
-  function bla() external view returns(address){
-    return accessingProtectors.smartcontractOwner();
-  }
-
-  function isIt() external view returns(address){
-    return accessingProtectors.allprotectorsaddresses(0);
-  }
-
-  function ccc(address _address) external {
-    AddressProtector bbb = AddressProtector(_address);
-    bbb.returnProtectors();
-  }
-
-  function changeIt(address _address2) external {
-    accessingProtectors.changeOwner(_address2);
-  }
-*/
-  
+  }  
 
   /// @notice The signee withdrawing the money that belongs to his/her address
   function withdrawAsTheSignee(uint256 _id) external payable noReentrant {
