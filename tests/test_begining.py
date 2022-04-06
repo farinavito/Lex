@@ -459,7 +459,7 @@ def test_timeNotBreached_value_larger_amount_withdrawal_amount_owner(deploy, dep
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
     deploy_addressProtector.addToWhitelist(accounts[7], {'from': accounts[1]}) 
     assert deploy.getWithdrawalOwner({'from': accounts[7]}) == commission
-@pytest.mark.aaa
+
 @pytest.mark.parametrize("value_sent",  [more_than_amount_sent[0], more_than_amount_sent[1], more_than_amount_sent[2]])
 def test_timeNotBreached_value_larger_amount_withdrawal_amount_owner_increased(deploy, deploy_addressProtector, value_sent):
     '''check if withdrawal_amount_owner is correctly increased'''
@@ -1050,11 +1050,11 @@ def test_withdrawAsTheOwner_check_onlyWhitelisted(deploy):
     '''Check if onlyWhitelisted doesn't allow any other account to call the function '''
     with brownie.reverts("You aren't whitelisted"):
         deploy.withdrawAsTheOwner({'from': accounts[9]})
-
-def test_withdrawAsTheOwner_check_require_statement(deploy):
+@pytest.mark.aaa
+def test_withdrawAsTheOwner_check_require_statement(deploy, deploy_addressProtector):
     '''Check if the function is reverted, because there aren't any funds to withdraw '''
     try:
-        deploy.addToWhitelist(accounts[9], {'from': accounts[1]})
+        deploy_addressProtector.addToWhitelist(accounts[9], {'from': accounts[1]})
         deploy.withdrawAsTheOwner({'from': accounts[9]})
     except Exception as e:
         assert e.message[50:] == "There aren't any funds to withdraw"
