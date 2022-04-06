@@ -1058,7 +1058,7 @@ def test_withdrawAsTheOwner_check_require_statement(deploy, deploy_addressProtec
         deploy.withdrawAsTheOwner({'from': accounts[9]})
     except Exception as e:
         assert e.message[50:] == "There aren't any funds to withdraw"
-@pytest.mark.aaa
+
 def test_withdrawAsTheOwner_check_require_statement_2(deploy, deploy_addressProtector):
     '''Check if the function is reverted, because there aren't any funds to withdraw '''
     try:
@@ -1069,12 +1069,12 @@ def test_withdrawAsTheOwner_check_require_statement_2(deploy, deploy_addressProt
         deploy.withdrawAsTheOwner({'from': accounts[9]})
     except Exception as e:
         assert e.message[50:] == "There aren't any funds to withdraw"
-
-def test_withdrawAsTheOwner_check_commission_sent(deploy):
+@pytest.mark.aaa
+def test_withdrawAsTheOwner_check_commission_sent(deploy, deploy_addressProtector):
     '''Check if the commission is sent to account 8'''
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
-    deploy.addToWhitelist(accounts[8], {'from': accounts[1]})
+    deploy_addressProtector.addToWhitelist(accounts[8], {'from': accounts[1]})
     balance_receiver = accounts[8].balance()
     deploy.withdrawAsTheOwner({'from': accounts[8]})
     assert accounts[8].balance() == balance_receiver + commission
