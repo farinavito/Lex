@@ -1,11 +1,129 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.11;
+pragma solidity ^0.8.11;
 
 /// @title Implementing a legal contract: Person A commits sending X amount to person B every Y time period for the duration of Z time starting at Q
 /// @author Farina Vito
 
 //import "https://github.com/farinavito/ProtectSmartContracts/blob/main/project/AddressProtector/contracts/protector.sol";
-import "farinavito/ProtectSmartContracts@1.0.0/project/AddressProtector/contracts/protector.sol";
+//import "farinavito/ProtectSmartContracts@1.0.0/project/AddressProtector/contracts/protector.sol";
+
+
+contract AddressProtector {
+
+    /// @notice Adding votes for candidates by protectors
+    mapping (address => mapping(address => bool)) public alreadyVoted;
+    
+    /// @notice Candidate for protectorWaitingToBeOwner
+    mapping (address => uint256) public candidatesVotes;
+
+    /// @notice Whitelisted accounts that can access withdrawal_amount_owner
+    mapping(address => bool) public whitelist;
+        
+    /// @notice Storing the owner's address
+    address public smartcontractOwner;
+
+    /// @notice Storing the next in line to be an owner
+    address public protectorWaitingToBeOwner;
+
+    ///@notice Storing all protectors
+    address[] internal allprotectorsaddresses;
+
+    /// @notice Emit all the addresses of the protectors
+    event showAllProtectors(address indexed _address);
+
+
+    constructor (
+        address _protectorOwner,
+        address _protectorWaitingToBeOwner, 
+        address _protector1, 
+        address _protector2, 
+        address _protector3, 
+        address _protector4, 
+        address _protector5 
+        ){
+        smartcontractOwner = _protectorOwner;
+        protectorWaitingToBeOwner = _protectorWaitingToBeOwner;
+
+        allprotectorsaddresses.push(_protector1);
+        allprotectorsaddresses.push(_protector2);
+        allprotectorsaddresses.push(_protector3);
+        allprotectorsaddresses.push(_protector4);
+        allprotectorsaddresses.push(_protector5);
+
+        //initialize the protectors
+        for (uint8 i = 1; i <= 5; i++){
+            candidatesVotes[protectorWaitingToBeOwner] += 1;
+            alreadyVoted[allprotectorsaddresses[i - 1]][protectorWaitingToBeOwner] = true;
+        }
+    }
+
+    /// @notice Checking if the input address is the protector
+    function checkWhichProtector(address _address) internal view returns(uint8 _i){
+        for (uint8 i = 0; i < 5; i++){
+            if (allprotectorsaddresses[i] == _address){
+                return i;
+            } else if (i != 4){
+                continue;
+            } else {
+                revert("You don't have permissions");
+            }
+        }
+    }
+
+    /// @notice Returning all addresses of protectors
+    function returnProtectors() public {
+        for (uint8 i = 0; i < 5; i++){
+            emit showAllProtectors(allprotectorsaddresses[i]);
+        }
+    }
+
+    /// @notice Changing the owner and the waitingToBeOwner
+    function changeOwner(address _nextInline) external {
+        require(protectorWaitingToBeOwner == msg.sender, "You don't have permissions");
+        require(candidatesVotes[_nextInline] >= 3, "Not all protectors agree with this address");
+        //reinitializing to 0
+        candidatesVotes[smartcontractOwner] = 0;
+        for (uint8 i = 0; i < 5; i++){
+            alreadyVoted[allprotectorsaddresses[i]][smartcontractOwner] = false;
+        }
+
+        smartcontractOwner = protectorWaitingToBeOwner;
+        protectorWaitingToBeOwner = _nextInline;
+    }
+    
+    /// @notice Voting for candidates by protectors
+    function voteCandidate(address _nextInLine) external {
+        checkWhichProtector(msg.sender);
+        require(alreadyVoted[msg.sender][_nextInLine] == false, "You have entered your vote");
+        alreadyVoted[msg.sender][_nextInLine] = true;
+        candidatesVotes[_nextInLine] += 1;
+    }
+
+    /// @notice remove vote by the protector from previously voted protectorWaitingToBeOwner
+    function removeVote(address _nextInLine) external {
+        checkWhichProtector(msg.sender);
+        require(alreadyVoted[msg.sender][_nextInLine] == true, "You haven't voted for this address");
+        alreadyVoted[msg.sender][_nextInLine] = false;
+        candidatesVotes[_nextInLine] -= 1;
+    }
+
+    /// @notice Only the protectorOwner can access
+    modifier onlyprotectorOwner(){
+        require(msg.sender == smartcontractOwner, "You are not the owner");
+        _;
+    }
+
+    /// @notice Adding address to the whitelist
+    function addToWhitelist(address _address) external onlyprotectorOwner {
+        whitelist[_address] = true;
+    }
+    
+    /// @notice Removing address from the whitelist
+    function removedFromWhitelist(address _address) external onlyprotectorOwner {
+        whitelist[_address] = false;
+    }
+    
+}
 
 contract AgreementBetweenSubjects {
   //5. if the last transaction in sentPayment is ok, return the deposit to the signee
@@ -109,33 +227,33 @@ contract AgreementBetweenSubjects {
 
   /// @notice Initializing the position from where the everyTimeUnit is added
   function initializingPositionPeriod(uint256 _id) private {
-      exactAgreement[_id].positionPeriod = exactAgreement[_id].agreementStartDate + exactAgreement[_id].everyTimeUnit;
-    }
+    exactAgreement[_id].positionPeriod = exactAgreement[_id].agreementStartDate + exactAgreement[_id].everyTimeUnit;
+  }
 
   /// @notice Verifying that the transaction created was sooner than its deadline 
   function timeNotBreached(uint256 _id) private returns(bool){
-      //period till when we have to receive the transaction
-      uint256 extendedPeriod = exactAgreement[_id].positionPeriod + (6*60*60*24);
-      //if the transaction sent was on time, transaction was received on time and transaction was sent before the agreement's deadline
-	    if (exactAgreement[_id].positionPeriod  >= exactAgreement[_id].transactionCreated && extendedPeriod >= block.timestamp && exactAgreement[_id].howLong + exactAgreement[_id].agreementStartDate>= block.timestamp){ 
-        exactAgreement[_id].positionPeriod += exactAgreement[_id].everyTimeUnit;
-		    return true;
-	    } else{
-		    return false;
-	    }
+    //period till when we have to receive the transaction
+    uint256 extendedPeriod = exactAgreement[_id].positionPeriod + (6*60*60*24);
+    //if the transaction sent was on time, transaction was received on time and transaction was sent before the agreement's deadline
+    if (exactAgreement[_id].positionPeriod  >= exactAgreement[_id].transactionCreated && extendedPeriod >= block.timestamp && exactAgreement[_id].howLong + exactAgreement[_id].agreementStartDate>= block.timestamp){ 
+      exactAgreement[_id].positionPeriod += exactAgreement[_id].everyTimeUnit;
+      return true;
+    } else{
+      return false;
     }
+  }
 
   /// @notice Verifying that the transaction created was sooner than its deadline without incrementing positionPeriod
   function timeWasntBreached(uint256 _id) private view returns(bool){
-      //period till when we have to receive the transaction
-      uint256 extendedPeriod = exactAgreement[_id].positionPeriod + (6*60*60*24);
-      //if the transaction sent was on time, transaction was received on time and transaction was sent before the agreement's deadline
-	    if (exactAgreement[_id].positionPeriod  >= exactAgreement[_id].transactionCreated && extendedPeriod >= block.timestamp && exactAgreement[_id].howLong + exactAgreement[_id].agreementStartDate>= block.timestamp){ 
-		    return true;
-	    } else{
-		    return false;
-	    }
+    //period till when we have to receive the transaction
+    uint256 extendedPeriod = exactAgreement[_id].positionPeriod + (6*60*60*24);
+    //if the transaction sent was on time, transaction was received on time and transaction was sent before the agreement's deadline
+    if (exactAgreement[_id].positionPeriod  >= exactAgreement[_id].transactionCreated && extendedPeriod >= block.timestamp && exactAgreement[_id].howLong + exactAgreement[_id].agreementStartDate>= block.timestamp){ 
+      return true;
+    } else{
+      return false;
     }
+  }
 
   /// @notice Sending the payment based on the status of the agreement
   function sendPayment(uint256 _id) external payable {
@@ -194,6 +312,25 @@ contract AgreementBetweenSubjects {
           revert("There is no agreement with this id");
     }
   }
+/*
+  function bla() external view returns(address){
+    return accessingProtectors.smartcontractOwner();
+  }
+
+  function isIt() external view returns(address){
+    return accessingProtectors.allprotectorsaddresses(0);
+  }
+
+  function ccc(address _address) external {
+    AddressProtector bbb = AddressProtector(_address);
+    bbb.returnProtectors();
+  }
+
+  function changeIt(address _address2) external {
+    accessingProtectors.changeOwner(_address2);
+  }
+*/
+  
 
   /// @notice The signee withdrawing the money that belongs to his/her address
   function withdrawAsTheSignee(uint256 _id) external payable noReentrant {
