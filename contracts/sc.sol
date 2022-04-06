@@ -7,7 +7,7 @@ pragma solidity ^0.8.11;
 //import "https://github.com/farinavito/ProtectSmartContracts/blob/main/project/AddressProtector/contracts/protector.sol";
 //import "farinavito/ProtectSmartContracts@1.0.0/project/AddressProtector/contracts/protector.sol";
 
-
+//this contract is added only for testing purposes of AgreementBetweenSubjectss
 contract AddressProtector {
 
     /// @notice Adding votes for candidates by protectors
