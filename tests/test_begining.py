@@ -451,7 +451,7 @@ def test_timeNotBreached_value_large_amount_send_value(deploy, value_sent):
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
     deploy.withdrawAsTheReceiver(agreements_number, {'from': accounts[receiver]})
     assert accounts[receiver].balance() == balance_receiver + value_sent - commission
-@pytest.mark.aaa
+
 @pytest.mark.parametrize("value_sent",  [more_than_amount_sent[0], more_than_amount_sent[1], more_than_amount_sent[2]])
 def test_timeNotBreached_value_larger_amount_withdrawal_amount_owner(deploy, deploy_addressProtector,value_sent):
     '''check if withdrawal_amount_owner is correctly initialized'''
@@ -459,14 +459,14 @@ def test_timeNotBreached_value_larger_amount_withdrawal_amount_owner(deploy, dep
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
     deploy_addressProtector.addToWhitelist(accounts[7], {'from': accounts[1]}) 
     assert deploy.getWithdrawalOwner({'from': accounts[7]}) == commission
-
+@pytest.mark.aaa
 @pytest.mark.parametrize("value_sent",  [more_than_amount_sent[0], more_than_amount_sent[1], more_than_amount_sent[2]])
-def test_timeNotBreached_value_larger_amount_withdrawal_amount_owner_increased(deploy, value_sent):
+def test_timeNotBreached_value_larger_amount_withdrawal_amount_owner_increased(deploy, deploy_addressProtector, value_sent):
     '''check if withdrawal_amount_owner is correctly increased'''
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent}) 
-    deploy.addToWhitelist(accounts[7], {'from': accounts[1]}) 
+    deploy_addressProtector.addToWhitelist(accounts[7], {'from': accounts[1]}) 
     assert deploy.getWithdrawalOwner({'from': accounts[7]}) == 2*commission
 
 @pytest.mark.parametrize("value_sent",  [amount_sent, more_than_amount_sent[0], more_than_amount_sent[1], more_than_amount_sent[2]])
