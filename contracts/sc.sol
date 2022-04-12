@@ -7,7 +7,7 @@ pragma solidity ^0.8.11;
 //import "https://github.com/farinavito/ProtectSmartContracts/blob/main/project/AddressProtector/contracts/protector.sol";
 //import "farinavito/ProtectSmartContracts@1.0.0/project/AddressProtector/contracts/protector.sol";
 
-//this contract is added only for testing purposes of AgreementBetweenSubjectss
+//this contract is added only for testing purposes of AgreementBetweenSubjects
 contract AddressProtector {
 
     /// @notice Adding votes for candidates by protectors
@@ -251,6 +251,15 @@ contract AgreementBetweenSubjects {
     if (exactAgreement[_id].positionPeriod  >= exactAgreement[_id].transactionCreated && extendedPeriod >= block.timestamp && exactAgreement[_id].howLong + exactAgreement[_id].agreementStartDate>= block.timestamp){ 
       return true;
     } else{
+      return false;
+    }
+  }
+
+  /// @notice Checking if the payment sent is the last payment of the agreement
+  function isLastPayment(uint256 _id) private view returns(bool){
+    if (exactAgreement[_id].howLong + exactAgreement[_id].agreementStartDate < exactAgreement[_id].positionPeriod){
+      return true;
+    } else {
       return false;
     }
   }

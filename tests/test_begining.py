@@ -85,6 +85,8 @@ def test_new_agreement_accessingProtectors_address(deploy, deploy_addressProtect
     '''check if the address of the deploy_addressProtector is the same as accessingProtectors'''
     assert deploy_addressProtector == deploy.accessingProtectors()
 
+
+
 '''TESTING CREATEAGREEMENT FUNCTION AGREEMENT 1'''
     
 
@@ -337,7 +339,6 @@ def test_sendPayments_fails_require_wrong_address_pair(deploy, accounts_number):
 
 
 #Checking when the agreement's status is "Created"
-
 def test_sendPayments_require_statement_fails_agreement_not_started(deploy):
     '''check if the require statement fails when the agreement hasn't started yet'''
     try:
