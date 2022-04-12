@@ -510,6 +510,22 @@ def test_timeNotBreached_value_large_amount_emit_NotifyUser(deploy):
     function_initialize = deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     assert function_initialize.events[0][0]['message'] == "Transaction was sent to the receiver"
 
+    #if the transaction sent was the last one
+@pytest.mark.aaa
+def test_timeNotBreached_breached_on_time_last_payment_deposit_signee(deploy):
+    '''check if the deposit is returned to the signee when isLastPayment returns true'''
+    chain = Chain()
+    balance_signee = accounts[signee].balance() 
+    deposit = deploy.exactAgreement(agreements_number)[5]
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
+    
+    for _ in range(3):
+        deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
+        chain.sleep(60400)
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
+    deploy.withdrawAsTheSignee(agreements_number, {'from': accounts[signee]}) 
+    assert accounts[signee].balance() == balance_signee  - 3*amount_sent - deposit
+
     #if the amount > msg.value
 
 @pytest.mark.parametrize("value_sent",  [amount_sent])
