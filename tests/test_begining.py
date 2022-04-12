@@ -526,6 +526,19 @@ def test_timeNotBreached_breached_on_time_last_payment_deposit_signee(deploy):
     deploy.withdrawAsTheSignee(agreements_number, {'from': accounts[signee]}) 
     assert accounts[signee].balance() == balance_signee  - 3*amount_sent - deposit
 @pytest.mark.aaa
+def test_timeNotBreached_breached_on_time_last_payment_totalDepositSent(deploy):
+    '''check if the totalDepositSent is increased  when isLastPayment returns true'''
+    chain = Chain()
+    depositsTogether = deploy.totalDepositSent()
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
+    agreementsdeposit = deploy.exactAgreement(agreements_number)[5]
+    
+    for _ in range(3):
+        deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
+        chain.sleep(60400)
+    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
+    assert deploy.totalDepositSent() == depositsTogether + agreementsdeposit
+
 def test_timeNotBreached_breached_on_time_last_payment_emit(deploy):
     '''check if the event is emited when isLastPayment returns true'''
     chain = Chain()
