@@ -126,7 +126,6 @@ contract AddressProtector {
 }
 
 contract AgreementBetweenSubjects {
-  //5. if the last transaction in sentPayment is ok, return the deposit to the signee
 
   /// @notice Defining the agreement 
   /// @param id A unique identifier of the agreement
