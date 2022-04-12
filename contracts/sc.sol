@@ -285,12 +285,25 @@ contract AgreementBetweenSubjects {
           totalEtherCommited += changedAmount;
           //returning any access ethers sent to the receiver
           withdraw_signee[exactAgreement[_id].signee] += msg.value - exactAgreement[_id].amount;
-          emit NotifyUser("Transaction was sent to the receiver");
+          //checking if this is the last payment
+          if (isLastPayment(_id)){
+            //sending deposit to the signee
+            withdraw_signee[exactAgreement[_id].signee] += exactAgreement[_id].deposit;
+            //increased the global counter of deposit sent
+            totalDepositSent += exactAgreement[_id].deposit;
+            //ensure that the deposit is reduced to 0
+            exactAgreement[_id].deposit = 0;
+            //terminate the contract
+            exactAgreement[_id].status = "Terminated";
+            emit NotifyUser("You have fullfilled all your obligations");
+          } else {
+            emit NotifyUser("Transaction was sent to the receiver");
+          }
         //if the transaction was on time, but it wasn't enough
         } else {
             //return the transaction to the signee
             withdraw_signee[exactAgreement[_id].signee] += msg.value;
-            emit NotifyUser("The amount sent is lower than in the agreement");      
+            emit NotifyUser("The amount sent is lower than in the agreement");     
         }
       //if the transaction wasn't sent on time
       } else {
