@@ -37,12 +37,12 @@ The purpose of this smart contract is to check if the subject who commited sendi
 	1) The sender creates an agreement where he/she defines the receiver's address, amount of money he/she will send each time period, time period of every transaction (every day, week, month, ...), for how long these agreement will last and from which date on this agreement begins. 
 	   Additionally, the sender will have to send the amount you have agreed upon when you create an agreement. This amount will be used as the deposit, which will be sent to the receiver if the agreement is breached.
 	   The sender will get back the deposit if he/she fulfills his/her obligations in the agreement.
-	2) The receiver has to confirm the terms in the agreement the sender has created. This is how the agreement will be activated. If the receiver doesn't agree with them, he/she could not confirmed the agreement, which won't activate the agreement. 
-	   Consequently, this agreement will be worthless (Imagine creating an agreement in real life, where two subjects need to sign it and one doesn't). If this happens, the sender can withdraw the deposit.
-	3) Now the agreement is activated. The sender needs to fulfill his/her obligations in the agreement by sending the right amount of money in the correct time periods. Otherwise, he/she will loose the deposit. 
-	4) The receiver can check if the agreement was breached. He/She will received the deposit in the case of a breach.
-	5) The sender can at any time terminate the agreement, however if the agreement hasn't finished, he/she will loose the deposit.
-	6) The sender has to terminates the agreement, when the agreement has ended to get the deposit back
-	7) The sender and receiver can withdraw the money that belongs to them by calling a withdraw function.
+	2) Now the agreement is activated. The sender needs to fulfill his/her obligations in the agreement by sending the right amount of money in the correct time periods. Otherwise, he/she will loose the deposit. 
+	3) The receiver can check if the agreement was breached by calling wasContractBreached function. He/She will received the deposit in the case of a breach.
+	4) once the sender sends the last deposit, the contract will be terminated and he/she will be able to retrieve his/her deposit.
+	5) The sender and receiver can withdraw the money that belongs to them by calling a withdraw function.
 
-
+------------------------------------------------------------------
+* Why are there 2 contracts in this repo?
+------------------------------------------------------------------
+This contract is attended to be deployed with AddressProtector smart contract, which provides more safety towards people who deploy smart contract. If you want to learn more, please check our ProtectSmartContracts repository
