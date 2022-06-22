@@ -15,7 +15,7 @@ every_period = 604800
 agreement_duration = 2629743
 initial_every_time_unit = 7
 initial_howLong = 30
-agreements_number = 0
+agreements_number = 1
 
 
 without_signee = [signee + 1, signee + 2, signee + 3]
@@ -411,7 +411,6 @@ def test_sendPayments_fails_require_wrong_address_pair(deploy, accounts_number):
     except Exception as e:
         assert e.message[50:] != "Only the signee can pay the agreement's terms"
 
-
 #Checking when the agreement's status is "Created"
 def test_sendPayments_require_statement_fails_agreement_not_started(deploy):
     '''check if the require statement fails when the agreement hasn't started yet'''
@@ -421,7 +420,7 @@ def test_sendPayments_require_statement_fails_agreement_not_started(deploy):
         _startAgreement = now + 10
         
         deploy.createAgreement(accounts[receiver], amount_sent, every_period, agreement_duration, _startAgreement, {'from': accounts[signee], 'value': amount_sent})
-        deploy.sendPayment(2, {'from': accounts[signee], 'value': amount_sent})
+        deploy.sendPayment(3, {'from': accounts[signee], 'value': amount_sent})
     except Exception as e:
         assert e.message[50:] == "The agreement hasn't started yet"
 
@@ -430,8 +429,8 @@ def test_sendPayments_require_statement_fails_agreement_not_started_pair(deploy)
     chain = Chain()
     _now = chain.time()
     deploy.createAgreement(accounts[receiver], amount_sent, every_period, agreement_duration, _now, {'from': accounts[signee], 'value': amount_sent})
-    deploy.sendPayment(2, {'from': accounts[signee], 'value': amount_sent})
-    assert deploy.exactAgreement(2)[6] == 'Activated'
+    deploy.sendPayment(3, {'from': accounts[signee], 'value': amount_sent})
+    assert deploy.exactAgreement(3)[6] == 'Activated'
 
 @pytest.mark.parametrize("seconds_sleep",  [more_than_agreement_duration[0], more_than_agreement_duration[1], more_than_agreement_duration[2]])
 def test_sendPayments_require_statement_fails_agreement_not_ended(deploy, seconds_sleep):
@@ -450,7 +449,7 @@ def test_sendPayments_require_statement_fails_agreement_not_ended_pair(deploy, s
     chain.sleep(seconds_sleep)
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     assert deploy.exactAgreement(agreements_number)[6] == 'Activated'      
- 
+
 @pytest.mark.parametrize("value_sent",  [0, less_than_amount_sent[0], less_than_amount_sent[1], less_than_amount_sent[2]])
 def test_sendPayments_fails_require_smaller_deposit_initial_status_created(deploy, value_sent):
     '''check if the sendPayments fails, because exactAgreement[_id].amount <= msg.value in the require statement'''
