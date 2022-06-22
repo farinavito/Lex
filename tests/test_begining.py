@@ -1087,20 +1087,12 @@ def test_withdrawAsTheSignee_withdrawal_sent_3(deploy, time):
 
 
 
-@pytest.mark.parametrize("wrong_account", [without_receiver[0], without_receiver[1], without_receiver[2]])
-def test_getWithdrawalReceiver_reguire_fails(deploy, wrong_account):
-    '''require statement exactAgreement[_id].receiver == msg.sender fails'''
-    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
-    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
-    with brownie.reverts("Your logged in address isn't the same as the agreement's receiver"):
-        deploy.getWithdrawalReceiver({'from': accounts[wrong_account]})
-
 def test_getWithdrawalReceiver_reguire_fails_pair(deploy):
     '''require statement exactAgreement[_id].receiver == msg.sender doesn't fail'''
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
     function_initialize = deploy.getWithdrawalReceiver({'from': accounts[receiver]})
-    assert function_initialize == 4*amount_sent - commission
+    assert function_initialize == 4*amount_sent
 
 def test_getWithdrawalReceiver_uninitialize(deploy):
     '''check if the withdraw_receiver is empty after only sending the deposit'''
@@ -1114,14 +1106,6 @@ def test_getWithdrawalReceiver_uninitialize(deploy):
 '''TEST GETWITHDRAWALSIGNEE'''
 
 
-
-@pytest.mark.parametrize("wrong_account", [without_signee[0], without_signee[1], without_signee[2]])
-def test_getWithdrawalsignee_reguire_fails(deploy, wrong_account):
-    '''require statement exactAgreement[_id].signee == msg.sender fails'''
-    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
-    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
-    with brownie.reverts("Your logged in address isn't the same as the agreement's signee"):
-        deploy.getWithdrawalSignee({'from': accounts[wrong_account]})
 
 @pytest.mark.parametrize("time", [more_than_agreement_duration[0], more_than_agreement_duration[1], more_than_agreement_duration[2]])
 def test_getWithdrawalSignee_reguire_fails_pair(deploy, time):
