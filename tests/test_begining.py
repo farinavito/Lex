@@ -164,7 +164,7 @@ def test_new_agreement_fails_require_agreementStart_larger_than_block_timestamp(
         deploy.createAgreement(accounts[receiver], amount_sent, every_period, agreement_duration, startAgreement, {'from': accounts[signee], 'value': amount_sent})
     except Exception as e:
             assert e.message[50:] == "The agreement can't be created in the past"
-@pytest.mark.aaa
+
 def test_event_id(deploy):
     '''check if the id in the emitted event is correct when a new agreement is created'''
     chain = Chain()
@@ -172,7 +172,7 @@ def test_event_id(deploy):
     startAgreement = now + 1
     function_initialize = deploy.createAgreement(accounts[receiver], amount_sent, every_period, agreement_duration, startAgreement, {'from': accounts[signee], 'value': amount_sent})
     assert function_initialize.events[0][0]['agreementId'] == 3
-@pytest.mark.aaa
+
 def test_event_signee(deploy):
     '''check if the signee in the emitted event is correct when a new agreement is created'''
     chain = Chain()
@@ -180,7 +180,7 @@ def test_event_signee(deploy):
     startAgreement = now + 1
     function_initialize = deploy.createAgreement(accounts[receiver], amount_sent, every_period, agreement_duration, startAgreement, {'from': accounts[5], 'value': amount_sent})
     assert function_initialize.events[0][0]['agreementSignee'] == accounts[5]
-@pytest.mark.aaa
+
 def test_event_receiver(deploy):
     '''check if the receiver in the emitted event is correct when a new agreement is created'''
     chain = Chain()
@@ -188,7 +188,7 @@ def test_event_receiver(deploy):
     startAgreement = now + 1
     function_initialize = deploy.createAgreement(accounts[7], amount_sent, every_period, agreement_duration, startAgreement, {'from': accounts[5], 'value': amount_sent})
     assert function_initialize.events[0][0]['agreementReceiver'] == accounts[7]
-@pytest.mark.aaa
+
 def test_event_amount(deploy):
     '''check if the amount in the emitted event is correct when a new agreement is created'''
     chain = Chain()
@@ -196,7 +196,7 @@ def test_event_amount(deploy):
     startAgreement = now + 1
     function_initialize = deploy.createAgreement(accounts[receiver], 15**10, every_period, agreement_duration, startAgreement, {'from': accounts[5], 'value': 18**10})
     assert function_initialize.events[0][0]['agreementAmount'] == 15**10
-@pytest.mark.aaa
+
 def test_event_TransactionCreated(deploy):
     '''check if the TransactionCreated in the emitted event is correct when a new agreement is created and msg.value is smaller than 1000'''
     chain = Chain()
@@ -204,7 +204,7 @@ def test_event_TransactionCreated(deploy):
     startAgreement = now + 1
     function_initialize = deploy.createAgreement(accounts[receiver], amount_sent, every_period, agreement_duration, startAgreement, {'from': accounts[5], 'value': 10**18})
     assert function_initialize.events[0][0]['agreementTransactionCreated'] == 0
-@pytest.mark.aaa
+
 def test_event_deposit(deploy):
     '''check if the deposit in the emitted event is correct when a new agreement is created and msg.value is smaller than 1000'''
     chain = Chain()
@@ -212,7 +212,7 @@ def test_event_deposit(deploy):
     startAgreement = now + 1
     function_initialize = deploy.createAgreement(accounts[receiver], amount_sent, every_period, agreement_duration, startAgreement, {'from': accounts[5], 'value': 10**18})
     assert function_initialize.events[0][0]['agreementDeposit'] == 10**18 
-@pytest.mark.aaa
+
 def test_event_status(deploy):
     '''check if the status in the emitted event is correct when a new agreement is created'''
     chain = Chain()
@@ -220,7 +220,7 @@ def test_event_status(deploy):
     startAgreement = now + 1
     function_initialize = deploy.createAgreement(accounts[receiver], amount_sent, every_period, agreement_duration, startAgreement, {'from': accounts[5], 'value': amount_sent})
     assert function_initialize.events[0][0]['agreementStatus'] == "Created"
-@pytest.mark.aaa
+
 def test_event_StartDate(deploy):
     '''check if the StartDate in the emitted event is correct when a new agreement is created'''
     chain = Chain()
@@ -228,7 +228,7 @@ def test_event_StartDate(deploy):
     startAgreement = now + 1
     function_initialize = deploy.createAgreement(accounts[receiver], amount_sent, every_period, agreement_duration, startAgreement, {'from': accounts[5], 'value': amount_sent})
     assert function_initialize.events[0][0]['agreementStartDate'] == startAgreement
-@pytest.mark.aaa
+
 def test_event_TimePeriods(deploy):
     '''check if the TimePeriods in the emitted event is correct when a new agreement is created'''
     chain = Chain()
@@ -236,7 +236,7 @@ def test_event_TimePeriods(deploy):
     startAgreement = now + 1
     function_initialize = deploy.createAgreement(accounts[receiver], amount_sent, every_period, agreement_duration, startAgreement, {'from': accounts[5], 'value': amount_sent})
     assert function_initialize.events[0][0]['agreementTimePeriods'] == every_period
-@pytest.mark.aaa
+
 def test_event_PositionPeriod(deploy):
     '''check if the PositionPeriod in the emitted event is correct when a new agreement is created'''
     chain = Chain()
@@ -244,7 +244,7 @@ def test_event_PositionPeriod(deploy):
     startAgreement = now + 1
     function_initialize = deploy.createAgreement(accounts[receiver], amount_sent, every_period, agreement_duration, startAgreement, {'from': accounts[5], 'value': amount_sent})
     assert function_initialize.events[0][0]['agreementPositionPeriod'] == "0"
-@pytest.mark.aaa
+
 def test_event_TimeDuration(deploy):
     '''check if the TimeDuration in the emitted event is correct when a new agreement is created'''
     chain = Chain()
