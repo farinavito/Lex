@@ -1144,24 +1144,6 @@ def test_getWithdrawalSignee_uninitialize(deploy, time):
 
 
 
-
-'''TEST REMOVEDFROMWHITELIST '''
-
-
-
-def test_removedFromWhitelist_check_onlyOwner(deploy_addressProtector):
-    '''Check if onlyOwner modifier doesn't let other accounts to call this function'''
-    with brownie.reverts("You are not the owner"):
-        deploy_addressProtector.removedFromWhitelist(accounts[9], {'from': accounts[3]})
-
-def test_removedFromWhitelist_check_added_to_whitelist(deploy_addressProtector):
-    '''Check if the account is removed from the whitelist'''
-    deploy_addressProtector.addToWhitelist(accounts[9], {'from': accounts[1]})
-    deploy_addressProtector.removedFromWhitelist(accounts[9], {'from': accounts[1]})
-    assert deploy_addressProtector.whitelist(accounts[9]) == False
-
-
-
 '''TEST ISWHITELISTED '''
 
 
