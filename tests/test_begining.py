@@ -658,7 +658,7 @@ def test_timeNotBreached_breached_on_time_false_send_deposit_pair(deploy, second
     chain.sleep(seconds_sleep)
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent}) 
     deploy.withdrawAsTheReceiver(agreements_number, {'from': accounts[receiver]})
-    assert accounts[receiver].balance() == balance_receiver + 4*amount_sent - commission
+    assert accounts[receiver].balance() == balance_receiver + 4*amount_sent
 
 @pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]])
 def test_timeNotBreached_breached_on_time_false_totalDepositSent(deploy, seconds_sleep):
@@ -823,7 +823,7 @@ def test_wasContractBreached_timeNotBreached_false_send_deposit_pair(deploy, sec
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
     deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
     deploy.withdrawAsTheReceiver(agreements_number, {'from': accounts[receiver]})
-    assert accounts[receiver].balance() == balance_receiver + 4*amount_sent - commission
+    assert accounts[receiver].balance() == balance_receiver + 4*amount_sent
 
 @pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]])
 def test_wasContractBreached_timeNotBreached_false_status_deposit_equals_zero_1(deploy, seconds_sleep):
@@ -971,7 +971,7 @@ def test_withdrawAsTheReceiver_withdrawal_sent(deploy):
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     deploy.withdrawAsTheReceiver(agreements_number, {'from': accounts[receiver]})
-    assert accounts[receiver].balance() == receiver_balance + amount_sent - commission
+    assert accounts[receiver].balance() == receiver_balance + amount_sent
 
 def test_withdrawAsTheReceiver_withdrawal_sent_2(deploy):
     '''Check if the withdrawal was sent to receiver'''
@@ -981,7 +981,7 @@ def test_withdrawAsTheReceiver_withdrawal_sent_2(deploy):
     receiver_balance = accounts[receiver].balance()
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     deploy.withdrawAsTheReceiver(agreements_number, {'from': accounts[receiver]})
-    assert accounts[receiver].balance() == receiver_balance + amount_sent - commission
+    assert accounts[receiver].balance() == receiver_balance + amount_sent
 
 @pytest.mark.parametrize("time", [more_than_agreement_duration[0], more_than_agreement_duration[1], more_than_agreement_duration[2]])
 def test_withdrawAsTheReceiver_withdrawal_sent_3(deploy, time):
