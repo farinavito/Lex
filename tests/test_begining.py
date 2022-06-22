@@ -104,10 +104,10 @@ def test_exactAgreement_deposit(deploy):
 def test_exactAgreement_status(deploy):
     '''check if the initial status is equal to "Created"'''
     assert deploy.exactAgreement(agreements_number)[6] == 'Created'
-
+@pytest.mark.aaa
 def test_exactAgreement_time_creation(deploy):
     '''check if the initial time creation is startAgreement'''
-    assert deploy.exactAgreement(agreements_number)[7] == deploy.exactAgreement(0)[7]
+    assert deploy.exactAgreement(agreements_number)[7] == deploy.exactAgreement(1)[7]
 
 def test_exactAgreement_every_time_unit(deploy):
     '''check if the initial every time unit is every_period'''
