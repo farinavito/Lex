@@ -288,7 +288,7 @@ def test_exactAgreement_status_2(deploy):
 
 def test_exactAgreement_time_creation_2(deploy):
     '''check if the initial time creation is block.timestamp'''
-    assert deploy.exactAgreement(agreements_number_2)[7] == deploy.exactAgreement(1)[7]
+    assert deploy.exactAgreement(agreements_number_2)[7] == deploy.exactAgreement(2)[7]
 
 def test_exactAgreement_every_time_unit_2(deploy):
     '''check if the initial every time unit is every_period'''
@@ -659,7 +659,7 @@ def test_timeNotBreached_value_smaller_amount_send_deposit(deploy, value_sent):
     try:
         deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
         deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': value_sent}) 
-        deploy.withdrawAsTheReceiver(agreements_number, {'from': accounts[receiver]})
+        deploy.withdrawAsTheReceiver({'from': accounts[receiver]})
     except Exception as e :
         assert e.message[50:] == "There aren't any funds to withdraw"
 
@@ -1020,14 +1020,6 @@ def test_wasContractBreached_status_created_false_emit_Terminated(deploy, second
 
 
 
-@pytest.mark.parametrize("wrong_account", [without_receiver[0], without_receiver[1], without_receiver[2]])
-def test_withdrawAsTheReceiver_first_reguire_fails(deploy, wrong_account):
-    '''require statement exactAgreement[_id].receiver == msg.sender fails'''
-    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
-    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
-    with brownie.reverts("Your logged in address isn't the same as the agreement's receiver"):
-        deploy.withdrawAsTheReceiver({'from': accounts[wrong_account]})
-
 def test_withdrawAsTheReceiver_first_reguire_fails_pair(deploy):
     '''require statement exactAgreement[_id].receiver == msg.sender doesn't fail'''
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
@@ -1106,14 +1098,6 @@ def test_wasContractBreached_withdrawal_sent_5(deploy, seconds_sleep):
 '''TEST WITHDRAWASTHESIGNEE'''
 
 
-
-@pytest.mark.parametrize("wrong_account", [without_signee[0], without_signee[1], without_signee[2]])
-def test_withdrawAsTheSignee_first_reguire_fails(deploy, wrong_account):
-    '''require statement exactAgreement[_id].signee == msg.sender fails'''
-    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
-    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
-    with brownie.reverts("Your logged in address isn't the same as the agreement's signee"):
-        deploy.withdrawAsTheSignee({'from': accounts[wrong_account]})
 
 @pytest.mark.parametrize("time", [more_than_agreement_duration[0], more_than_agreement_duration[1], more_than_agreement_duration[2]])
 def test_withdrawAsTheSignee_first_reguire_fails_pair(deploy, time):
