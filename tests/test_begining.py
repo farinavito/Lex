@@ -104,7 +104,7 @@ def test_exactAgreement_deposit(deploy):
 def test_exactAgreement_status(deploy):
     '''check if the initial status is equal to "Created"'''
     assert deploy.exactAgreement(agreements_number)[6] == 'Created'
-@pytest.mark.aaa
+
 def test_exactAgreement_time_creation(deploy):
     '''check if the initial time creation is startAgreement'''
     assert deploy.exactAgreement(agreements_number)[7] == deploy.exactAgreement(1)[7]
@@ -365,12 +365,11 @@ def test_event_AgreementInfo_equals_Agreement(deploy, new_agreement):
 
 def test_mySenderAgreements_emits_correct_id_accounts_1(deploy):
     '''check if the mapping mySenderAgreements emits correct agreementId for the first element in the mapping of address signee'''
-    assert deploy.mySenderAgreements(accounts[signee], 0) == '0'
+    assert deploy.mySenderAgreements(accounts[signee], 0) == '1'
 
 def test_mySenderAgreements_emits_correct_id_accounts_2(deploy):
     '''check if the mapping mySenderAgreements is returning correctly the ids'''
-    assert deploy.mySenderAgreements(accounts[signee], 1) == '1'
-
+    assert deploy.mySenderAgreements(accounts[signee], 1) == '2'
 
 
 
@@ -378,14 +377,13 @@ def test_mySenderAgreements_emits_correct_id_accounts_2(deploy):
 
 
 
-
 def test_myReceiverAgreements_emits_correct_id_agreement_1(deploy):
     '''check if the mapping myReceiverAgreements emits correct agreementId for the first element in the mapping of address 0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'''
-    assert deploy.myReceiverAgreements(accounts[receiver], 0) == '0'
+    assert deploy.myReceiverAgreements(accounts[receiver], 0) == '1'
 
 def test_myReceiverAgreements_emits_correct_id_agreement_2(deploy):
     '''check if the mapping myReceiverAgreements is returning correctly the ids'''
-    assert deploy.myReceiverAgreements(accounts[receiver], 1) == '1'
+    assert deploy.myReceiverAgreements(accounts[receiver], 1) == '2'
 
 
 
