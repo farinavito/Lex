@@ -1093,19 +1093,19 @@ def test_getWithdrawalReceiver_reguire_fails(deploy, wrong_account):
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
     with brownie.reverts("Your logged in address isn't the same as the agreement's receiver"):
-        deploy.getWithdrawalReceiver(agreements_number, {'from': accounts[wrong_account]})
+        deploy.getWithdrawalReceiver({'from': accounts[wrong_account]})
 
 def test_getWithdrawalReceiver_reguire_fails_pair(deploy):
     '''require statement exactAgreement[_id].receiver == msg.sender doesn't fail'''
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
-    function_initialize = deploy.getWithdrawalReceiver(agreements_number, {'from': accounts[receiver]})
+    function_initialize = deploy.getWithdrawalReceiver({'from': accounts[receiver]})
     assert function_initialize == 4*amount_sent - commission
 
 def test_getWithdrawalReceiver_uninitialize(deploy):
     '''check if the withdraw_receiver is empty after only sending the deposit'''
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
-    function_initialize = deploy.getWithdrawalReceiver(agreements_number, {'from': accounts[receiver]})
+    function_initialize = deploy.getWithdrawalReceiver({'from': accounts[receiver]})
     assert function_initialize == 0
 
 
