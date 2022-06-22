@@ -46,7 +46,7 @@ contract AgreementBetweenSubjects {
   uint256 public totalDepositSent; 
 
   /// @notice Used to increase the id of the agreements in the "createAgreements" function
-  uint numAgreement;
+  uint numAgreement = 1;
 
 
   /// @notice Doesn't allow reentrance attack
