@@ -1144,31 +1144,6 @@ def test_getWithdrawalSignee_uninitialize(deploy, time):
 
 
 
-'''TEST ISWHITELISTED '''
-
-
-
-def test_whitelist_return_true(deploy_addressProtector):
-    '''Check if the account is added to the whitelist'''
-    deploy_addressProtector.addToWhitelist(accounts[9], {'from': accounts[1]})
-    assert deploy_addressProtector.whitelist(accounts[9]) == True
-
-def test_whitelist_return_false(deploy_addressProtector):
-    '''Check if the account is removed from the whitelist'''
-    deploy_addressProtector.addToWhitelist(accounts[9], {'from': accounts[1]})
-    deploy_addressProtector.removedFromWhitelist(accounts[9], {'from': accounts[1]})
-    assert deploy_addressProtector.whitelist(accounts[9]) == False
-
-def test_whitelist_return_false_2(deploy_addressProtector):
-    '''Check if the mapping whitelist returns false when account isn't even added to whitelist'''
-    assert deploy_addressProtector.whitelist(accounts[9]) == False
-
-@pytest.mark.parametrize("protector", [3, 4, 5, 6, 7])
-def test_whitelist_protectors_return_false(protector, deploy_addressProtector):
-    '''Checking if the mapping whitelist returns false for all protectors'''
-    assert deploy_addressProtector.whitelist(accounts[protector]) == False
-
-
 
 
 
