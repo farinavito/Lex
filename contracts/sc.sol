@@ -210,12 +210,11 @@ contract AgreementBetweenSubjects {
   }
 
   /// @notice The receiver withdrawing the money that belongs to his/her address
-  function withdrawAsTheReceiver(uint256 _id) external payable noReentrant {
-    require(exactAgreement[_id].receiver == msg.sender, "Your logged in address isn't the same as the agreement's receiver");
-    require(withdraw_receiver[exactAgreement[_id].receiver] > 0, "There aren't any funds to withdraw");
-    (bool sent, ) = exactAgreement[_id].receiver.call{value: withdraw_receiver[exactAgreement[_id].receiver]}("");
+  function withdrawAsTheReceiver() external payable noReentrant {
+    require(withdraw_receiver[msg.sender] > 0, "There aren't any funds to withdraw");
+    (bool sent, ) = msg.sender.call{value: withdraw_receiver[msg.sender]}("");
     require(sent, "Failed to send Ether");
-    withdraw_receiver[exactAgreement[_id].receiver] = 0;
+    withdraw_receiver[msg.sender] = 0;
     emit NotifyUser("Withdrawal has been transfered");
   }
 
