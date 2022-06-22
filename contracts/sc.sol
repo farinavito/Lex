@@ -200,12 +200,11 @@ contract AgreementBetweenSubjects {
   }  
 
   /// @notice The signee withdrawing the money that belongs to his/her address
-  function withdrawAsTheSignee(uint256 _id) external payable noReentrant {
-	  require(exactAgreement[_id].signee == msg.sender, "Your logged in address isn't the same as the agreement's signee");
-    require(withdraw_signee[exactAgreement[_id].signee] > 0, "There aren't any funds to withdraw");
-	  (bool sent, ) = exactAgreement[_id].signee.call{value:  withdraw_signee[exactAgreement[_id].signee]}("");
+  function withdrawAsTheSignee() external payable noReentrant {
+    require(withdraw_signee[msg.sender] > 0, "There aren't any funds to withdraw");
+	  (bool sent, ) = msg.sender.call{value:  withdraw_signee[msg.sender]}("");
     require(sent, "Failed to send Ether");
-    withdraw_signee[exactAgreement[_id].signee] = 0;
+    withdraw_signee[msg.sender] = 0;
 	  emit NotifyUser("Withdrawal has been transfered");
   }
 
