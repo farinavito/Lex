@@ -62,7 +62,7 @@ every_period_2 = 2629743
 agreement_duration_2 = 31556926
 initial_every_time_unit_2 = 30
 initial_howLong_2 = 364
-agreements_number_2 = 1
+agreements_number_2 = 2
 
 @pytest.fixture(autouse=True)
 def new_agreement_2(deploy, module_isolation):
@@ -467,7 +467,7 @@ def test_sendPayments_fails_require_smaller_deposit_initial_status_created_pair(
 def test_sendPayments_change_initializePeriod_initial_status_created(deploy):
     '''checking if the InitializedPeriod is initialize (sum of agreementStartDate and everyTimeUnit) when msg.value is larger or equal to agreedDeposit'''
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
-    assert deploy.exactAgreement(agreements_number)[9] == deploy.exactAgreement(0)[7] + deploy.exactAgreement(0)[8]
+    assert deploy.exactAgreement(agreements_number)[9] == deploy.exactAgreement(1)[7] + deploy.exactAgreement(1)[8]
 
 def test_sendPayments_emit_NotifyUser_initial_status_created(deploy):
     '''checking if the event has been emitted as "The agreement has been activated" when msg.value is larger or equal to agreedDeposit'''
@@ -483,10 +483,10 @@ def test_sendPayments_emit_NotifyUser_initial_status_created(deploy):
 def test_timeNotBreached(deploy):
     '''check if the timeNotBreached function correctly increments positionPeriod. This is for checking inside sendPayments function'''
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
-    new_agreement_position = deploy.exactAgreement(0)[9]
+    new_agreement_position = deploy.exactAgreement(agreements_number)[9]
     #the contract has been activated, now send the the money again
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})    
-    assert deploy.exactAgreement(agreements_number)[9] == new_agreement_position + deploy.exactAgreement(0)[8]
+    assert deploy.exactAgreement(agreements_number)[9] == new_agreement_position + deploy.exactAgreement(agreements_number)[8]
 
 def test_transactionCreated_updated(deploy):
     '''check if the time of the call to function sendPayment is stored'''
