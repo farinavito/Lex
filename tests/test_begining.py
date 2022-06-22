@@ -1121,7 +1121,7 @@ def test_getWithdrawalsignee_reguire_fails(deploy, wrong_account):
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
     with brownie.reverts("Your logged in address isn't the same as the agreement's signee"):
-        deploy.getWithdrawalSignee(agreements_number, {'from': accounts[wrong_account]})
+        deploy.getWithdrawalSignee({'from': accounts[wrong_account]})
 
 @pytest.mark.parametrize("time", [more_than_agreement_duration[0], more_than_agreement_duration[1], more_than_agreement_duration[2]])
 def test_getWithdrawalSignee_reguire_fails_pair(deploy, time):
@@ -1130,13 +1130,13 @@ def test_getWithdrawalSignee_reguire_fails_pair(deploy, time):
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
     chain = Chain()
     chain.sleep(time)
-    function_initialize = deploy.getWithdrawalSignee(agreements_number, {'from': accounts[signee]})
+    function_initialize = deploy.getWithdrawalSignee({'from': accounts[signee]})
     assert function_initialize == 3*amount_sent
 
 @pytest.mark.parametrize("time", [more_than_agreement_duration[0], more_than_agreement_duration[1], more_than_agreement_duration[2]])
 def test_getWithdrawalSignee_uninitialize(deploy, time):
     '''check if the withdraw_signee is not empty after only sending the deposit'''
-    function_initialize = deploy.getWithdrawalSignee(agreements_number, {'from': accounts[signee]})
+    function_initialize = deploy.getWithdrawalSignee({'from': accounts[signee]})
     deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
     chain = Chain()
     chain.sleep(time)
