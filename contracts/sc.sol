@@ -39,12 +39,6 @@ contract AgreementBetweenSubjects {
   /// @notice Using against re-entrancy
   uint16 internal locked = 1;
 
-  /// @notice The commission we charge
-  uint256 public commission = 1;
-
-  /// @notice The commission collected
-  uint256 private withdrawal_amount_owner;
-
   /// @notice Returning the total amount of ether that was commited
   uint256 public totalEtherCommited;
 
@@ -100,13 +94,6 @@ contract AgreementBetweenSubjects {
   /// @notice After other event than Terminated happens, emit it and send a message
   event NotifyUser(string message);
 
-
-  AddressProtector public accessingProtectors;
-
-  constructor(address _address) {
-    accessingProtectors = AddressProtector(_address);
-  }
-
   /// @notice Initializing the position from where the everyTimeUnit is added
   function initializingPositionPeriod(uint256 _id) private {
     exactAgreement[_id].positionPeriod = exactAgreement[_id].agreementStartDate + exactAgreement[_id].everyTimeUnit;
@@ -156,15 +143,10 @@ contract AgreementBetweenSubjects {
       if (timeNotBreached(_id)){
         //if the transaction was on time and it was enough
         if (exactAgreement[_id].amount <= msg.value){
-          //storing the amount sent subtracted by commission
-          uint256 changedAmount;
-          changedAmount = msg.value - commission;
-          //adding the commission to a owner's withdrawal
-          withdrawal_amount_owner += commission;
           //send the transaction to the receiver
-          withdraw_receiver[exactAgreement[_id].receiver] += changedAmount;
+          withdraw_receiver[exactAgreement[_id].receiver] += msg.value;
           //change the total amount of ether sent
-          totalEtherCommited += changedAmount;
+          totalEtherCommited += msg.value;
           //returning any access ethers sent to the receiver
           withdraw_signee[exactAgreement[_id].signee] += msg.value - exactAgreement[_id].amount;
           //checking if this is the last payment
@@ -234,16 +216,6 @@ contract AgreementBetweenSubjects {
     (bool sent, ) = exactAgreement[_id].receiver.call{value: withdraw_receiver[exactAgreement[_id].receiver]}("");
     require(sent, "Failed to send Ether");
     withdraw_receiver[exactAgreement[_id].receiver] = 0;
-    emit NotifyUser("Withdrawal has been transfered");
-  }
-  
-  /// @notice The owner withdrawing the money that belongs to his address
-  function withdrawAsTheOwner() external payable noReentrant {
-    require(accessingProtectors.whitelist(msg.sender), "You aren't whitelisted");
-		require(withdrawal_amount_owner > 0, "There aren't any funds to withdraw");
-    (bool sent, ) = msg.sender.call{value: withdrawal_amount_owner}("");
-    require(sent, "Failed to send Ether");
-    withdrawal_amount_owner = 0;
     emit NotifyUser("Withdrawal has been transfered");
   }
 
@@ -354,20 +326,6 @@ contract AgreementBetweenSubjects {
     require(exactAgreement[_id].receiver == msg.sender, "Your logged in address isn't the same as the agreement's receiver");
     return withdraw_receiver[exactAgreement[_id].receiver];
   }
-
-  /// @notice Return the withdrawal amount of the owner
-  function getWithdrawalOwner() external view returns(uint256){
-    require(accessingProtectors.whitelist(msg.sender), "You aren't whitelisted");
-    return withdrawal_amount_owner;
-  }
-  
-  /// @notice Changing the commission
-  function changeCommission(uint256 _newCommission) external {
-    require(accessingProtectors.whitelist(msg.sender), "You aren't whitelisted");
-		require(_newCommission > 0 && _newCommission < 10**15 + 1, "Commission doesn't follow the rules");
-		commission = _newCommission;
-		emit NotifyUser("Commission changed");
-	}
    
 
   fallback() external {}
