@@ -73,17 +73,8 @@ def new_agreement_2(deploy, module_isolation):
 
 
 
-'''TESTING CONSTRUCTOR'''
-
-
-    
-def test_new_agreement_accessingProtectors_address(deploy, deploy_addressProtector):
-    '''check if the address of the deploy_addressProtector is the same as accessingProtectors'''
-    assert deploy_addressProtector == deploy.accessingProtectors()
-
-
-
 '''TESTING CREATEAGREEMENT FUNCTION AGREEMENT 1'''
+
     
 
 def test_exactAgreement_id(deploy):
