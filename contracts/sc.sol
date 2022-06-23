@@ -12,19 +12,19 @@ contract AgreementBetweenSubjects {
 
   /// @notice Defining the agreement 
   /// @param id A unique identifier of the agreement
-  /// @param signee The person who commits sending the money to the receiver 
+  /// @param sender The person who commits sending the money to the receiver 
   /// @param receiver The person receiving the money
-  /// @param amount The quantity of money that the signee commits sending to the receiver
+  /// @param amount The quantity of money that the sender commits sending to the receiver
   /// @param transactionCreated Unix timestamp when transaction was sent
   /// @param deposit The first transaction sent to the agreement. Initial state will be zero
   /// @param status Representation of different stages in the agreement: Created, Activated, Terminated
   /// @param agreementStartDate Unix timestamp of the agreement's starting date 
-  /// @param everyTimeUnit The number of days till when the signee's transaction has to be created. First calculated by agreementStartDate + everyTimeUnit. Later just adding everyTimeUnit
+  /// @param everyTimeUnit The number of days till when the sender's transaction has to be created. First calculated by agreementStartDate + everyTimeUnit. Later just adding everyTimeUnit
   /// @param positionPeriod A pointer to the current everyTimeUnit parameter
   /// @param howLong The number of days till the agreement expires
   struct Agreement{
     uint256 id; 
-    address signee;
+    address sender;
     address payable receiver; 
     uint256 amount;
     uint256 transactionCreated;
@@ -57,8 +57,8 @@ contract AgreementBetweenSubjects {
     locked = 1;
   }
 
-  /// @notice Saving the money sent for the signee to withdraw it
-  mapping(address => uint256) private withdraw_signee;
+  /// @notice Saving the money sent for the sender to withdraw it
+  mapping(address => uint256) private withdraw_sender;
 
   /// @notice Saving the money sent for the receiver to withdraw it
   mapping(address => uint256) private withdraw_receiver;
@@ -66,7 +66,7 @@ contract AgreementBetweenSubjects {
   /// @notice A unique identifier of the agreement. The same as the id.
   mapping(uint256 => Agreement) public exactAgreement;
 
-  /// @notice Storing the id's of the agreements that the signee has created
+  /// @notice Storing the id's of the agreements that the sender has created
   mapping(address => uint[]) public mySenderAgreements;
 
   /// @notice Storing the id's of the agreements of the same receiver address
@@ -76,7 +76,7 @@ contract AgreementBetweenSubjects {
   /// @notice Emitting agreement's info 
   event AgreementInfo(
     uint256 agreementId,
-    address agreementSignee, 
+    address agreementsender, 
     address agreementReceiver, 
     uint256 agreementAmount,
     uint256 agreementTransactionCreated,
@@ -135,7 +135,7 @@ contract AgreementBetweenSubjects {
 
   /// @notice Sending the payment based on the status of the agreement
   function sendPayment(uint256 _id) external payable {
-    require(exactAgreement[_id].signee == msg.sender, "Only the signee can pay the agreement's terms");
+    require(exactAgreement[_id].sender == msg.sender, "Only the sender can pay the agreement's terms");
     if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Activated"))){
       //save the time of calling this function
       exactAgreement[_id].transactionCreated = block.timestamp;
@@ -148,11 +148,11 @@ contract AgreementBetweenSubjects {
           //change the total amount of ether sent
           totalEtherCommited += msg.value;
           //returning any excess ethers sent to the receiver
-          withdraw_signee[exactAgreement[_id].signee] += msg.value - exactAgreement[_id].amount;
+          withdraw_sender[exactAgreement[_id].sender] += msg.value - exactAgreement[_id].amount;
           //checking if this is the last payment
           if (isLastPayment(_id)){
-            //sending deposit to the signee
-            withdraw_signee[exactAgreement[_id].signee] += exactAgreement[_id].deposit;
+            //sending deposit to the sender
+            withdraw_sender[exactAgreement[_id].sender] += exactAgreement[_id].deposit;
             //increased the global counter of deposit sent
             totalDepositSent += exactAgreement[_id].deposit;
             //ensure that the deposit is reduced to 0
@@ -165,8 +165,8 @@ contract AgreementBetweenSubjects {
           }
         //if the transaction was on time, but it wasn't enough
         } else {
-            //return the transaction to the signee
-            withdraw_signee[exactAgreement[_id].signee] += msg.value;
+            //return the transaction to the sender
+            withdraw_sender[exactAgreement[_id].sender] += msg.value;
             emit NotifyUser("The amount sent is lower than in the agreement");     
         }
       //if the transaction wasn't sent on time
@@ -178,8 +178,8 @@ contract AgreementBetweenSubjects {
         totalDepositSent += exactAgreement[_id].deposit;
         //ensure that the deposit is reduced to 0
         exactAgreement[_id].deposit = 0;
-        //return the transaction to the signee
-        withdraw_signee[exactAgreement[_id].signee] += msg.value;
+        //return the transaction to the sender
+        withdraw_sender[exactAgreement[_id].sender] += msg.value;
         emit Terminated("The agreement was terminated due to late payment");
       }
     } else if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Created"))){
@@ -191,20 +191,20 @@ contract AgreementBetweenSubjects {
         initializingPositionPeriod(_id);
         emit NotifyUser("The agreement has been activated"); 
     } else if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Terminated"))){
-          //return the transaction to the signee
+          //return the transaction to the sender
           revert("The agreement is already terminated");
     } else {
-          //return the transaction to the signee
+          //return the transaction to the sender
           revert("There is no agreement with this id");
     }
   }  
 
-  /// @notice The signee withdrawing the money that belongs to his/her address
-  function withdrawAsTheSignee() external payable noReentrant {
-    require(withdraw_signee[msg.sender] > 0, "There aren't any funds to withdraw");
-	  (bool sent, ) = msg.sender.call{value:  withdraw_signee[msg.sender]}("");
+  /// @notice The sender withdrawing the money that belongs to his/her address
+  function withdrawAsThesender() external payable noReentrant {
+    require(withdraw_sender[msg.sender] > 0, "There aren't any funds to withdraw");
+	  (bool sent, ) = msg.sender.call{value:  withdraw_sender[msg.sender]}("");
     require(sent, "Failed to send Ether");
-    withdraw_signee[msg.sender] = 0;
+    withdraw_sender[msg.sender] = 0;
 	  emit NotifyUser("Withdrawal has been transfered");
   }
 
@@ -235,7 +235,7 @@ contract AgreementBetweenSubjects {
         //creating a new agreement
         Agreement storage newAgreement = exactAgreement[agreementId];
         newAgreement.id = agreementId;
-        newAgreement.signee = msg.sender;
+        newAgreement.sender = msg.sender;
         newAgreement.receiver = _receiver;
         newAgreement.amount = _amount;
 
@@ -247,7 +247,7 @@ contract AgreementBetweenSubjects {
         newAgreement.agreementStartDate= _startOfTheAgreement;
         //period of the payment
         newAgreement.everyTimeUnit = _everyTimeUnit;
-        //position of the end of the period in which the signee has to send the money (for example: ...every 3 weeks... - this period needs to update itself)
+        //position of the end of the period in which the sender has to send the money (for example: ...every 3 weeks... - this period needs to update itself)
         newAgreement.positionPeriod = 0;
         //how long will the agreement last
         newAgreement.howLong = _howLong;
@@ -258,7 +258,7 @@ contract AgreementBetweenSubjects {
 
         emit AgreementInfo(
           newAgreement.id, 
-          newAgreement.signee, 
+          newAgreement.sender, 
           newAgreement.receiver, 
           newAgreement.amount,
           newAgreement.transactionCreated,
@@ -313,9 +313,9 @@ contract AgreementBetweenSubjects {
     }
   } 
 
-  /// @notice Return the withdrawal amount of the agreement's signee
-  function getWithdrawalSignee() external view returns(uint256){
-    return withdraw_signee[msg.sender];
+  /// @notice Return the withdrawal amount of the agreement's sender
+  function getWithdrawalsender() external view returns(uint256){
+    return withdraw_sender[msg.sender];
   }
 
   /// @notice Return the withdrawal amount of the agreement's receiver
