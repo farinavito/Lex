@@ -147,7 +147,7 @@ contract AgreementBetweenSubjects {
           withdraw_receiver[exactAgreement[_id].receiver] += msg.value;
           //change the total amount of ether sent
           totalEtherCommited += msg.value;
-          //returning any access ethers sent to the receiver
+          //returning any excess ethers sent to the receiver
           withdraw_signee[exactAgreement[_id].signee] += msg.value - exactAgreement[_id].amount;
           //checking if this is the last payment
           if (isLastPayment(_id)){

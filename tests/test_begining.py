@@ -1180,7 +1180,7 @@ def test_getWithdrawalReceiver_uninitialize(deploy):
 def test_getWithdrawalSignee_not_signee(deploy, not_signee):
     '''check if addresses that aren't agreements signee's, have nothing to withdraw'''
     assert deploy.getWithdrawalSignee({'from': accounts[not_signee]}) == 0
-@pytest.mark.aaa
+
 def test_getWithdrawalSignee_uninitialize_signee(deploy):
     '''check if the signee's address, is uninitialized'''
     assert deploy.getWithdrawalSignee({'from': accounts[signee]}) == 0
