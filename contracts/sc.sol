@@ -76,7 +76,7 @@ contract AgreementBetweenSubjects {
   /// @notice Emitting agreement's info 
   event AgreementInfo(
     uint256 agreementId,
-    address agreementsender, 
+    address agreementSender, 
     address agreementReceiver, 
     uint256 agreementAmount,
     uint256 agreementTransactionCreated,
@@ -314,7 +314,7 @@ contract AgreementBetweenSubjects {
   } 
 
   /// @notice Return the withdrawal amount of the agreement's sender
-  function getWithdrawalsender() external view returns(uint256){
+  function getWithdrawalSender() external view returns(uint256){
     return withdraw_sender[msg.sender];
   }
 
