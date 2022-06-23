@@ -303,6 +303,7 @@ def test_exactAgreement_how_long_2(deploy):
     assert deploy.exactAgreement(agreements_number_2)[10] >= seconds_in_day * initial_howLong_2
 
 
+
 '''TESTING EVENT AGREEMENTINFO INSIDE CREATEAGREEMENT FUNCTION'''
 
 
@@ -1174,6 +1175,11 @@ def test_getWithdrawalReceiver_uninitialize(deploy):
 '''TEST GETWITHDRAWALSIGNEE'''
 
 
+
+@pytest.mark.parametrize("not_signee", [2, 3, 4, 5, 6, 7, 8, 9])
+def test_getWithdrawalSignee_not_signee(deploy, not_signee):
+    '''check if addresses that aren't agreements signee's, have nothing to withdraw'''
+    assert deploy.getWithdrawalSignee({'from': accounts[not_signee]}) == 0
 
 @pytest.mark.parametrize("time", [more_than_agreement_duration[0], more_than_agreement_duration[1], more_than_agreement_duration[2]])
 def test_getWithdrawalSignee_reguire_fails_pair(deploy, time):
