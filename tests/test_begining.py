@@ -1182,16 +1182,6 @@ def test_getWithdrawalSignee_not_signee(deploy, not_signee):
     assert deploy.getWithdrawalSignee({'from': accounts[not_signee]}) == 0
 
 @pytest.mark.parametrize("time", [more_than_agreement_duration[0], more_than_agreement_duration[1], more_than_agreement_duration[2]])
-def test_getWithdrawalSignee_reguire_fails_pair(deploy, time):
-    '''require statement exactAgreement[_id].signee == msg.sender doesn't fail'''
-    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': amount_sent})
-    deploy.sendPayment(agreements_number, {'from': accounts[signee], 'value': 4*amount_sent})
-    chain = Chain()
-    chain.sleep(time)
-    function_initialize = deploy.getWithdrawalSignee({'from': accounts[signee]})
-    assert function_initialize == 3*amount_sent
-
-@pytest.mark.parametrize("time", [more_than_agreement_duration[0], more_than_agreement_duration[1], more_than_agreement_duration[2]])
 def test_getWithdrawalSignee_uninitialize(deploy, time):
     '''check if the withdraw_signee is not empty after only sending the deposit'''
     function_initialize = deploy.getWithdrawalSignee({'from': accounts[signee]})
