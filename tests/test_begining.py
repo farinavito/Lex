@@ -311,10 +311,10 @@ def test_exactAgreement_how_long_2(deploy):
 def test_event_AgreementInfo_agreementId(deploy, new_agreement):
     '''check if the event AgreementInfo emits correctly agreementId'''
     assert new_agreement.events[0]["agreementId"] == deploy.exactAgreement(agreements_number)[0]
-
-def test_event_AgreementInfo_agreementsender(deploy, new_agreement):
+@pytest.mark.aaa
+def test_event_AgreementInfo_agreementSender(deploy, new_agreement):
     '''check if the event AgreementInfo emits correctly agreementsender'''
-    assert new_agreement.events[0]["agreementsender"] == deploy.exactAgreement(agreements_number)[1]
+    assert new_agreement.events[0]["agreementSender"] == deploy.exactAgreement(agreements_number)[1]
 
 def test_event_AgreementInfo_agreementReceiver(deploy, new_agreement):
     '''check if the event AgreementInfo emits correctly agreementReceiver'''
