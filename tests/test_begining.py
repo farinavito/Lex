@@ -1174,8 +1174,7 @@ def test_getWithdrawalReceiver_reguire_fails_pair(deploy):
     '''require statement exactAgreement[_id].receiver == msg.sender doesn't fail'''
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': 4*amount_sent})
-    function_initialize = deploy.getWithdrawalReceiver({'from': accounts[receiver]})
-    assert function_initialize == 4*amount_sent
+    assert deploy.getWithdrawalReceiver({'from': accounts[receiver]}) == 4*amount_sent
 
 
 
@@ -1202,6 +1201,13 @@ def test_getWithdrawalSender_uninitialize_sender_2(deploy):
 def test_getWithdrawalSender_return_excess_eth(deploy, amount):
     '''check if the sc returns the excess eth sent by sender'''
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount})
+    deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount})
+    assert deploy.getWithdrawalSender({'from': accounts[sender]}) == amount -  amount_sent
+
+@pytest.mark.parametrize("amount", [10**2])
+def test_getWithdrawalSender_return_excess_eth_2(deploy, amount):
+    '''check if the sc returns the excess eth sent by sender'''
+    deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount})
     assert deploy.getWithdrawalSender({'from': accounts[sender]}) == amount -  amount_sent
 
