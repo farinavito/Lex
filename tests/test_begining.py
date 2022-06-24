@@ -957,10 +957,14 @@ def test_wasContractBreached_agreement_not_activated(deploy):
     function_initialize = deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
     assert function_initialize.events[0][0]['message'] == "The agreement wasn't breached"
 
+#if (exactAgreement[_id].agreementStartDate + (6*60*60*24) > block.timestamp)
+
 def test_wasContractBreached_status_created_notify_user(deploy):
     '''check if the wasContractBreached function emits NotifyUser when exactAgreement[_id].agreementStartDate + (6*60*60*24) > block.timestamp'''
     function_initialize = deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
     assert function_initialize.events[0][0]['message'] == "The agreement wasn't breached"
+
+#else
 
 @pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]])    
 def test_wasContractBreached_status_created_status_terminated(deploy, seconds_sleep):
@@ -1005,7 +1009,27 @@ def test_wasContractBreached_status_created_false_emit_Terminated(deploy, second
     function_initialize = deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
     assert function_initialize.events[0][0]['message'] == "The agreement has been terminated"
 
-
+#status not Created or Activated
+@pytest.mark.aaa
+@pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]])
+def test_wasContractBreached_already_Terminated(deploy, seconds_sleep):
+    '''check if the an event is emitted'''
+    deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
+    chain = Chain()
+    chain.sleep(seconds_sleep)
+    deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
+    deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
+    function_initialize = deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
+    assert function_initialize.events[0][0]['message'] == "The agreement is already terminated"
+@pytest.mark.aaa
+@pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]])    
+def test_wasContractBreached_already_Terminated_2(deploy, seconds_sleep):
+    '''check if the an event is emitted"'''
+    chain = Chain()
+    chain.sleep(seconds_sleep)
+    deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
+    function_initialize = deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
+    assert function_initialize.events[0][0]['message'] == "The agreement is already terminated"
 
 '''TEST WITHDRAWASTHERECEIVER'''
 
