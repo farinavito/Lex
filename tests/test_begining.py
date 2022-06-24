@@ -1125,6 +1125,16 @@ def test_withdrawAsThesender_withdrawal_sent_1(deploy, time):
     deploy.withdrawAsThesender({'from': accounts[sender]})
     assert accounts[sender].balance() == sender_balance + 2*amount_sent
 
+@pytest.mark.parametrize("time", [more_than_agreement_duration[0], more_than_agreement_duration[1], more_than_agreement_duration[2]])
+def test_withdrawAsThesender_withdrawal_sent_1_event(deploy, time):
+    '''check if the event is emitted'''
+    deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
+    deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': 3*amount_sent})
+    chain = Chain()
+    chain.sleep(time)
+    function_initialize = deploy.withdrawAsThesender({'from': accounts[sender]})
+    assert function_initialize.events[0][0]['message'] == "Withdrawal has been transfered"
+
 @pytest.mark.parametrize("amount", [less_than_amount_sent[0], less_than_amount_sent[1], less_than_amount_sent[2]])
 def test_withdrawAsThesender_withdrawal_sent_2(deploy, amount):
     '''Check if the withdrawal is sent'''
