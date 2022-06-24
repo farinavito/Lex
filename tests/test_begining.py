@@ -1177,12 +1177,6 @@ def test_getWithdrawalReceiver_reguire_fails_pair(deploy):
     function_initialize = deploy.getWithdrawalReceiver({'from': accounts[receiver]})
     assert function_initialize == 4*amount_sent
 
-def test_getWithdrawalReceiver_uninitialize(deploy):
-    '''check if the withdraw_receiver is empty after only sending the deposit'''
-    deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
-    function_initialize = deploy.getWithdrawalReceiver({'from': accounts[receiver]})
-    assert function_initialize == 0
-
 
 
 
@@ -1198,7 +1192,7 @@ def test_getWithdrawalSender_not_sender(deploy, not_sender):
 def test_getWithdrawalSender_uninitialize_sender(deploy):
     '''check if the sender's address, is uninitialized'''
     assert deploy.getWithdrawalSender({'from': accounts[sender]}) == 0
-@pytest.mark.aaa
+
 def test_getWithdrawalSender_uninitialize_sender_2(deploy):
     '''check if the sender's address, is uninitialized'''
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
