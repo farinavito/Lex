@@ -1021,13 +1021,13 @@ def test_wasContractBreached_status_created_false_emit_Terminated(deploy, second
 
 
 
-def test_withdrawAsTheReceiver_second_reguire_fails_case_1(deploy):
+def test_withdrawAsTheReceiver_first_reguire_fails_case_1(deploy):
     '''require statement withdraw_receiver[exactAgreement[_id].receiver] > 0 fails, because we send only the deposit'''
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
     with brownie.reverts("There aren't any funds to withdraw"):
         deploy.withdrawAsTheReceiver({'from': accounts[receiver]})
 
-def test_withdrawAsTheReceiver_second_reguire_fails_case_2(deploy):
+def test_withdrawAsTheReceiver_first_reguire_fails_case_2(deploy):
     '''require statement withdraw_receiver[exactAgreement[_id].receiver] > 0 fails, because we already withdraw the funds'''
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
