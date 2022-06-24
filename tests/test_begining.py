@@ -1096,7 +1096,7 @@ def test_wasContractBreached_withdrawal_sent_5(deploy, seconds_sleep):
 
 
 
-'''TEST WITHDRAWASTHEsender'''
+'''TEST WITHDRAWASTHESENDER'''
 
 
 
@@ -1196,6 +1196,14 @@ def test_getWithdrawalReceiver_not_on_time(deploy):
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
     assert deploy.getWithdrawalReceiver({'from': accounts[receiver]}) == amount_sent
 
+def test_getWithdrawalReceiver_wasContractBreached(deploy):
+    '''check if receiver gets the deposit when transaction wasn't sent on time'''
+    deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
+    chain = Chain()
+    chain.sleep(605800)
+    deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
+    deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
+    assert deploy.getWithdrawalReceiver({'from': accounts[receiver]}) == amount_sent
 
 
 
