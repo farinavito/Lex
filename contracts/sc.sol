@@ -144,7 +144,7 @@ contract AgreementBetweenSubjects {
         //if the transaction was on time and it was enough
         if (exactAgreement[_id].amount <= msg.value){
           //send the transaction to the receiver
-          withdraw_receiver[exactAgreement[_id].receiver] += msg.value;
+          withdraw_receiver[exactAgreement[_id].receiver] += exactAgreement[_id].amount;
           //change the total amount of ether sent
           totalEtherCommited += msg.value;
           //returning any excess ethers sent to the receiver
