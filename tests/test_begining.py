@@ -846,17 +846,6 @@ def test_wasContractBreached_require_receiver_equals_msg_sender_pair(deploy, rig
     function_initialize = deploy.wasContractBreached(agreements_number, {'from': accounts[right_accounts]})
     assert function_initialize.events[0][0]['message'] == "The agreement wasn't breached"
 
-
-def test_wasContractBreached_fail_if_statement_in_timeNotBreached(deploy):
-    '''check if the timeNotBreached fails because transaction was sent after the agreement's deadline - it fails because of the check in the confirmAgreement function'''
-    try:
-        chain = Chain()
-        chain.sleep(2629800)
-        deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
-        deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
-    except Exception as e:        
-        assert e.message[50:] == "The agreement's deadline has ended"
-
 #if timeNotBreached is True
 
 def test_wasContractBreached_timeNotBreached_true_emit_NotifyUser(deploy):
