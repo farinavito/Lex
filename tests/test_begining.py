@@ -1170,11 +1170,11 @@ def test_getWithdrawalReceiver_uninitialize_receiver_2(deploy):
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
     assert deploy.getWithdrawalReceiver({'from': accounts[receiver]}) == 0
 
-def test_getWithdrawalReceiver_reguire_fails_pair(deploy):
-    '''require statement exactAgreement[_id].receiver == msg.sender doesn't fail'''
+def test_getWithdrawalReceiver_exact_value(deploy):
+    '''check if the receiver gets the exact value as agreed'''
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
-    deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': 4*amount_sent})
-    assert deploy.getWithdrawalReceiver({'from': accounts[receiver]}) == 4*amount_sent
+    deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
+    assert deploy.getWithdrawalReceiver({'from': accounts[receiver]}) == amount_sent
 
 
 
