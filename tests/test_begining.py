@@ -1205,6 +1205,12 @@ def test_getWithdrawalReceiver_wasContractBreached(deploy):
     deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
     assert deploy.getWithdrawalReceiver({'from': accounts[receiver]}) == amount_sent
 
+def test_getWithdrawalReceiver_wasContractBreached_2(deploy):
+    '''check if receiver gets the deposit when transaction wasn't sent on time and its status is created'''
+    chain = Chain()
+    chain.sleep(6*60*60*24)
+    deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
+    assert deploy.getWithdrawalReceiver({'from': accounts[receiver]}) == amount_sent
 
 
 '''TEST GETWITHDRAWALSENDER'''
