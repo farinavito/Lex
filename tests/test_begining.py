@@ -1161,11 +1161,11 @@ def test_getWithdrawalReceiver_not_receiver(deploy, not_sender):
     '''check if addresses that aren't agreements receiver's, have nothing to withdraw'''
     assert deploy.getWithdrawalReceiver({'from': accounts[receiver]}) == 0
 
-def test_getWithdrawalSender_uninitialize_receiver(deploy):
+def test_getWithdrawalReceiver_uninitialize_receiver(deploy):
     '''check if the receiver's address, is uninitialized'''
     assert deploy.getWithdrawalReceiver({'from': accounts[receiver]}) == 0
 
-def test_getWithdrawalSender_uninitialize_receiver_2(deploy):
+def test_getWithdrawalReceiver_uninitialize_receiver_2(deploy):
     '''check if the receiver's address, is uninitialized'''
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
     assert deploy.getWithdrawalReceiver({'from': accounts[receiver]}) == 0
