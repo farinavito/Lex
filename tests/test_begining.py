@@ -1207,6 +1207,13 @@ def test_getWithdrawalSender_to_small_value_sent(deploy, amount):
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount})
     assert deploy.getWithdrawalSender({'from': accounts[sender]}) == amount
 
+def test_getWithdrawalSender_payment_not_on_time_2(deploy):
+    '''check if the the sender gets back its amount sent, when payment is not on time'''
+    deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
+    chain = Chain()
+    chain.sleep(605000)
+    deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
+    assert deploy.getWithdrawalSender({'from': accounts[sender]}) == amount_sent
 
 @pytest.mark.parametrize("time", [more_than_agreement_duration[0], more_than_agreement_duration[1], more_than_agreement_duration[2]])
 def test_getWithdrawalSender_uninitialize(deploy, time):
