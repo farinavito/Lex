@@ -1192,6 +1192,14 @@ def test_getWithdrawalSender_return_excess_eth(deploy, amount):
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount})
     assert deploy.getWithdrawalSender({'from': accounts[sender]}) == amount -  amount_sent
 
+@pytest.mark.parametrize("amount", [9**1])
+def test_getWithdrawalSender_to_small_value_sent(deploy, amount):
+    '''check if the sc returns eth, when the value sent was to small'''
+    deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': 10**1})
+    deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount})
+    assert deploy.getWithdrawalSender({'from': accounts[sender]}) == amount
+
+
 @pytest.mark.parametrize("time", [more_than_agreement_duration[0], more_than_agreement_duration[1], more_than_agreement_duration[2]])
 def test_getWithdrawalSender_uninitialize(deploy, time):
     '''check if the withdraw_sender is not empty after only sending the deposit'''
