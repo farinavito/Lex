@@ -1101,8 +1101,16 @@ def test_wasContractBreached_withdrawal_sent_5(deploy, seconds_sleep):
 
 
 def test_withdrawAsThesender_first_reguire_fails(deploy):
-    '''require statement withdraw_receiver[exactAgreement[_id].sender] > 0 fails, because we already withdraw the funds'''
+    '''require statement withdraw_receiver[exactAgreement[_id].sender] > 0 fails, because we have no funds'''
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
+    with brownie.reverts("There aren't any funds to withdraw"):
+        deploy.withdrawAsThesender({'from': accounts[sender]})
+
+def test_withdrawAsThesender_first_reguire_fails_2(deploy):
+    '''require statement withdraw_receiver[exactAgreement[_id].sender] > 0 fails, because we have no funds'''
+    deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
+    deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': 4*amount_sent})
+    deploy.withdrawAsThesender({'from': accounts[sender]})
     with brownie.reverts("There aren't any funds to withdraw"):
         deploy.withdrawAsThesender({'from': accounts[sender]})
 
