@@ -1188,6 +1188,14 @@ def test_getWithdrawalReceiver_multiple(deploy):
         deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
     assert deploy.getWithdrawalReceiver({'from': accounts[receiver]}) == 4*amount_sent
 
+def test_getWithdrawalReceiver_not_on_time(deploy):
+    '''check if receiver gets the deposit when transaction wasn't sent on time'''
+    deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
+    chain = Chain()
+    chain.sleep(605800)
+    deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
+    assert deploy.getWithdrawalReceiver({'from': accounts[receiver]}) == amount_sent
+
 
 
 
