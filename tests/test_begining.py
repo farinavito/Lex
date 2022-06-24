@@ -950,7 +950,7 @@ def test_wasContractBreached_timeNotBreached_false_emit_Terminated_pair(deploy, 
     chain.sleep(seconds_sleep)
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': 4*amount_sent})
     function_initialize = deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
-    assert function_initialize.events[0][0]['message'] != "This agreement is already terminated"
+    assert function_initialize.events[0][0]['message'] == "The agreement wasn't breached"
 
 def test_wasContractBreached_agreement_not_activated(deploy):
     '''check if the wasContractBreached function emits NotifyUser when timeNotBreached is false'''
