@@ -1100,12 +1100,9 @@ def test_wasContractBreached_withdrawal_sent_5(deploy, seconds_sleep):
 
 
 
-@pytest.mark.parametrize("time", [more_than_agreement_duration[0], more_than_agreement_duration[1], more_than_agreement_duration[2]])
-def test_withdrawAsThesender_second_reguire_fails(deploy, time):
+def test_withdrawAsThesender_first_reguire_fails(deploy):
     '''require statement withdraw_receiver[exactAgreement[_id].sender] > 0 fails, because we already withdraw the funds'''
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
-    chain = Chain()
-    chain.sleep(time)
     with brownie.reverts("There aren't any funds to withdraw"):
         deploy.withdrawAsThesender({'from': accounts[sender]})
 
