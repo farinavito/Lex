@@ -311,7 +311,7 @@ def test_exactAgreement_how_long_2(deploy):
 def test_event_AgreementInfo_agreementId(deploy, new_agreement):
     '''check if the event AgreementInfo emits correctly agreementId'''
     assert new_agreement.events[0]["agreementId"] == deploy.exactAgreement(agreements_number)[0]
-@pytest.mark.aaa
+
 def test_event_AgreementInfo_agreementSender(deploy, new_agreement):
     '''check if the event AgreementInfo emits correctly agreementsender'''
     assert new_agreement.events[0]["agreementSender"] == deploy.exactAgreement(agreements_number)[1]
@@ -1184,6 +1184,13 @@ def test_getWithdrawalSender_not_sender(deploy, not_sender):
 def test_getWithdrawalSender_uninitialize_sender(deploy):
     '''check if the sender's address, is uninitialized'''
     assert deploy.getWithdrawalSender({'from': accounts[sender]}) == 0
+
+@pytest.mark.parametrize("amount", [10**2])
+def test_getWithdrawalSender_return_excess_eth(deploy, amount):
+    '''check if the sc returns the excess eth sent by sender'''
+    deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount})
+    deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount})
+    assert deploy.getWithdrawalSender({'from': accounts[sender]}) == amount -  amount_sent
 
 @pytest.mark.parametrize("time", [more_than_agreement_duration[0], more_than_agreement_duration[1], more_than_agreement_duration[2]])
 def test_getWithdrawalSender_uninitialize(deploy, time):
