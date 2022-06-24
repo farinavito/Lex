@@ -1043,6 +1043,13 @@ def test_withdrawAsTheReceiver_withdrawal_sent(deploy):
     deploy.withdrawAsTheReceiver({'from': accounts[receiver]})
     assert accounts[receiver].balance() == receiver_balance + amount_sent
 
+def test_withdrawAsTheReceiver_withdrawal_sent_event(deploy):
+    '''check if the event is emitted'''
+    deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
+    deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
+    function_initialize = deploy.withdrawAsTheReceiver({'from': accounts[receiver]})
+    assert function_initialize.events[0][0]['message'] == "Withdrawal has been transfered"
+
 def test_withdrawAsTheReceiver_withdrawal_sent_2(deploy):
     '''Check if the withdrawal was sent to receiver'''
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
