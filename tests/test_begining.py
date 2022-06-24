@@ -1156,6 +1156,15 @@ def test_withdrawAsThesender_withdrawal_sent_3(deploy, time):
 
 
 
+@pytest.mark.parametrize("not_sender", [1, 2, 3, 4, 5, 6, 7, 8])
+def test_getWithdrawalReceiver_not_receiver(deploy, not_sender):
+    '''check if addresses that aren't agreements receiver's, have nothing to withdraw'''
+    assert deploy.getWithdrawalReceiver({'from': accounts[receiver]}) == 0
+
+def test_getWithdrawalSender_uninitialize_receiver(deploy):
+    '''check if the receiver's address, is uninitialized'''
+    assert deploy.getWithdrawalReceiver({'from': accounts[receiver]}) == 0
+
 def test_getWithdrawalReceiver_reguire_fails_pair(deploy):
     '''require statement exactAgreement[_id].receiver == msg.sender doesn't fail'''
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
