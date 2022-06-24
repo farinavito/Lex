@@ -1182,6 +1182,12 @@ def test_getWithdrawalReceiver_exact_value_2(deploy):
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': 4*amount_sent})
     assert deploy.getWithdrawalReceiver({'from': accounts[receiver]}) == amount_sent
 
+def test_getWithdrawalReceiver_multiple(deploy):
+    '''check if the receiver gets the exact value as agreed'''
+    for _ in range(5):
+        deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
+    assert deploy.getWithdrawalReceiver({'from': accounts[receiver]}) == 4*amount_sent
+
 
 
 
