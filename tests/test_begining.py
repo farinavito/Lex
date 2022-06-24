@@ -1021,13 +1021,6 @@ def test_wasContractBreached_status_created_false_emit_Terminated(deploy, second
 
 
 
-def test_withdrawAsTheReceiver_first_reguire_fails_pair(deploy):
-    '''require statement exactAgreement[_id].receiver == msg.sender doesn't fail'''
-    deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
-    deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': 4*amount_sent})
-    function_initialize = deploy.withdrawAsTheReceiver({'from': accounts[receiver]})
-    assert function_initialize.events[0][0]['message'] == "Withdrawal has been transfered"
-
 def test_withdrawAsTheReceiver_second_reguire_fails_case_1(deploy):
     '''require statement withdraw_receiver[exactAgreement[_id].receiver] > 0 fails, because we send only the deposit'''
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
