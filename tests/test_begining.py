@@ -1198,6 +1198,11 @@ def test_getWithdrawalSender_not_sender(deploy, not_sender):
 def test_getWithdrawalSender_uninitialize_sender(deploy):
     '''check if the sender's address, is uninitialized'''
     assert deploy.getWithdrawalSender({'from': accounts[sender]}) == 0
+@pytest.mark.aaa
+def test_getWithdrawalSender_uninitialize_sender_2(deploy):
+    '''check if the sender's address, is uninitialized'''
+    deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
+    assert deploy.getWithdrawalSender({'from': accounts[sender]}) == 0
 
 @pytest.mark.parametrize("amount", [10**2])
 def test_getWithdrawalSender_return_excess_eth(deploy, amount):
