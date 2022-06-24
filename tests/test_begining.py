@@ -1215,14 +1215,6 @@ def test_getWithdrawalSender_payment_not_on_time(deploy):
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
     assert deploy.getWithdrawalSender({'from': accounts[sender]}) == amount_sent
 
-@pytest.mark.parametrize("time", [more_than_agreement_duration[0], more_than_agreement_duration[1], more_than_agreement_duration[2]])
-def test_getWithdrawalSender_uninitialize(deploy, time):
-    '''check if the withdraw_sender is not empty after only sending the deposit'''
-    function_initialize = deploy.getWithdrawalSender({'from': accounts[sender]})
-    deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
-    chain = Chain()
-    chain.sleep(time)
-    assert function_initialize + amount_sent == amount_sent
 
 
 
