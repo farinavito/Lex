@@ -854,6 +854,8 @@ def test_wasContractBreached_timeNotBreached_true_emit_NotifyUser(deploy):
     function_initialize = deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
     assert function_initialize.events[0][0]['message'] == "The agreement wasn't breached"
 
+#else
+
 @pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]])
 def test_wasContractBreached_timeNotBreached_false_status_Terminated(deploy, seconds_sleep):
     '''check if the wasContractBreached function when timeNotBreached is false, changes status to Terminated'''
@@ -931,14 +933,14 @@ def test_wasContractBreached_timeNotBreached_true_totalDepositSent(deploy, secon
     assert deploy.totalDepositSent() == totalDepositBefore + agreementsDeposit
 
 @pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]])
-def test_wasContractBreached_timeNotBreached_false_emit_Terminated(deploy, seconds_sleep):
+def test_wasContractBreached_timeNotBreached_false_emit_Terminated_event(deploy, seconds_sleep):
     '''check if the wasContractBreached function when timeNotBreached is false, emits NotifyUser'''
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
     chain = Chain()
     chain.sleep(seconds_sleep)
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': 4*amount_sent})
     function_initialize = deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
-    assert function_initialize.events[0][0]['message'] == "The agreement is already terminated"
+    assert function_initialize.events[0][0]['message'] == "The agreement has been terminated"
 
 @pytest.mark.parametrize("seconds_sleep",  [0, less_than_every_period[0], less_than_every_period[1], less_than_every_period[2]])
 def test_wasContractBreached_timeNotBreached_false_emit_Terminated_pair(deploy, seconds_sleep):
