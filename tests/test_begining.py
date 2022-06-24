@@ -1101,16 +1101,6 @@ def test_wasContractBreached_withdrawal_sent_5(deploy, seconds_sleep):
 
 
 @pytest.mark.parametrize("time", [more_than_agreement_duration[0], more_than_agreement_duration[1], more_than_agreement_duration[2]])
-def test_withdrawAsThesender_first_reguire_fails_pair(deploy, time):
-    '''require statement exactAgreement[_id].sender == msg.sender doesn't fail'''
-    deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
-    deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': 4*amount_sent})
-    chain = Chain()
-    chain.sleep(time)
-    function_initialize = deploy.withdrawAsThesender({'from': accounts[sender]})
-    assert function_initialize.events[0][0]['message'] == "Withdrawal has been transfered"
-
-@pytest.mark.parametrize("time", [more_than_agreement_duration[0], more_than_agreement_duration[1], more_than_agreement_duration[2]])
 def test_withdrawAsThesender_second_reguire_fails(deploy, time):
     '''require statement withdraw_receiver[exactAgreement[_id].sender] > 0 fails, because we already withdraw the funds'''
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
