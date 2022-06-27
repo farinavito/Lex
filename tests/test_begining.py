@@ -129,6 +129,7 @@ def test_new_agreement_fails_require(deploy):
         startAgreement = now + 10000
         #length of the agreement is longer than _everyTimeUnit
         deploy.createAgreement('0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2', 2, 500, 5, startAgreement, {'from': accounts[sender], 'value': amount_sent})
+        pytest.fail("The try-except concept has failed in test_new_agreement_fails_require")
     except Exception as e:
         assert e.message[50:] == 'The period of the payment is greater than the duration of the contract'
 
@@ -141,6 +142,7 @@ def test_new_agreement_fails_require_larger_than_zero(possibilities, deploy):
             now = chain.time()
             startAgreement = now + 10000
             deploy.createAgreement('0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2', possibilities[0], possibilities[1], possibilities[2], startAgreement, {'from': accounts[sender], 'value': amount_sent})
+            pytest.fail("The try-except concept has failed in test_new_agreement_fails_require_larger_than_zero")
         except Exception as e:
             assert e.message[50:] == 'All input data must be larger than 0'
 
@@ -152,6 +154,7 @@ def test_new_agreement_fails_require_msg_value_larger_than_amount(deploy, _amoun
         now = chain.time()
         startAgreement = now + 10000
         deploy.createAgreement(accounts[receiver], amount_sent, every_period, agreement_duration, startAgreement, {'from': accounts[sender], 'value': _amount})
+        pytest.fail("The try-except concept has failed in test_new_agreement_fails_require_msg_value_larger_than_amount")
     except Exception as e:
             assert e.message[50:] == 'Deposit has to be at least the size of the amount'
 
@@ -162,6 +165,7 @@ def test_new_agreement_fails_require_agreementStart_larger_than_block_timestamp(
         now = chain.time()
         startAgreement = now - 10000
         deploy.createAgreement(accounts[receiver], amount_sent, every_period, agreement_duration, startAgreement, {'from': accounts[sender], 'value': amount_sent})
+        pytest.fail("The try-except concept has failed in test_new_agreement_fails_require_agreementStart_larger_than_block_timestamp")
     except Exception as e:
             assert e.message[50:] == "The agreement can't be created in the past"
 
@@ -398,17 +402,17 @@ def test_sendPayments_fails_require_wrong_address(deploy, accounts_number):
     try:
         #wrong signer's address
         deploy.sendPayment(agreements_number, {'from': accounts[accounts_number], 'value': amount_sent})
+        pytest.fail("The try-except concept has failed in test_sendPayments_fails_require_wrong_address")
     except Exception as e:
         assert e.message[50:] == "Only the sender can pay the agreement's terms"
 
 @pytest.mark.parametrize("accounts_number", [sender])
 def test_sendPayments_fails_require_wrong_address_pair(deploy, accounts_number):
     '''check if the sendPayments doesn't fail, because exactAgreement[_id].sender == msg.sender in the require statement'''
-    try:
-        #right signer's address
-        deploy.sendPayment(agreements_number, {'from': accounts[accounts_number], 'value': amount_sent})
-    except Exception as e:
-        assert e.message[50:] != "Only the sender can pay the agreement's terms"
+    #right signer's address
+    deploy.sendPayment(agreements_number, {'from': accounts[accounts_number], 'value': amount_sent})
+    assert deploy.exactAgreement(agreements_number)[6] == 'Activated'
+        
 
 #Checking when the agreement's status is "Created"
 def test_sendPayments_require_statement_fails_agreement_not_started(deploy):
@@ -420,6 +424,7 @@ def test_sendPayments_require_statement_fails_agreement_not_started(deploy):
         
         deploy.createAgreement(accounts[receiver], amount_sent, every_period, agreement_duration, _startAgreement, {'from': accounts[sender], 'value': amount_sent})
         deploy.sendPayment(3, {'from': accounts[sender], 'value': amount_sent})
+        pytest.fail("The try-except concept has failed in test_sendPayments_require_statement_fails_agreement_not_started")
     except Exception as e:
         assert e.message[50:] == "The agreement hasn't started yet"
 
@@ -437,7 +442,8 @@ def test_sendPayments_require_statement_fails_agreement_not_ended(deploy, second
     try:
         chain = Chain()
         chain.sleep(seconds_sleep)
-        deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})      
+        deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
+        pytest.fail("The try-except concept has failed in test_sendPayments_require_statement_fails_agreement_not_ended")      
     except Exception as e:
         assert e.message[50:] == "The agreement's deadline has ended"
 
@@ -454,6 +460,7 @@ def test_sendPayments_fails_require_smaller_deposit_initial_status_created(deplo
     '''check if the sendPayments fails, because exactAgreement[_id].amount <= msg.value in the require statement'''
     try:
         deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': value_sent})
+        pytest.fail("The try-except concept has failed in test_sendPayments_fails_require_smaller_deposit_initial_status_created") 
     except Exception as e:
         assert e.message[50:] == "The deposit is not the same as agreed in the terms"
 
@@ -661,6 +668,7 @@ def test_timeNotBreached_value_smaller_amount_send_deposit(deploy, value_sent):
         deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
         deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': value_sent}) 
         deploy.withdrawAsTheReceiver({'from': accounts[receiver]})
+        pytest.fail("The try-except concept has failed in test_timeNotBreached_value_smaller_amount_send_deposit") 
     except Exception as e :
         assert e.message[50:] == "There aren't any funds to withdraw"
 
@@ -1010,7 +1018,7 @@ def test_wasContractBreached_status_created_false_emit_Terminated(deploy, second
     assert function_initialize.events[0][0]['message'] == "The agreement has been terminated"
 
 #status not Created or Activated
-@pytest.mark.aaa
+
 @pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]])
 def test_wasContractBreached_already_Terminated(deploy, seconds_sleep):
     '''check if the an event is emitted'''
@@ -1021,7 +1029,7 @@ def test_wasContractBreached_already_Terminated(deploy, seconds_sleep):
     deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
     function_initialize = deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
     assert function_initialize.events[0][0]['message'] == "The agreement is already terminated"
-@pytest.mark.aaa
+
 @pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]])    
 def test_wasContractBreached_already_Terminated_2(deploy, seconds_sleep):
     '''check if the an event is emitted"'''
@@ -1030,6 +1038,8 @@ def test_wasContractBreached_already_Terminated_2(deploy, seconds_sleep):
     deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
     function_initialize = deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
     assert function_initialize.events[0][0]['message'] == "The agreement is already terminated"
+
+
 
 '''TEST WITHDRAWASTHERECEIVER'''
 
