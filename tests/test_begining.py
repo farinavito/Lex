@@ -939,10 +939,10 @@ def test_wasContractBreached_timeNotBreached_true_totalDepositSent(deploy, secon
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': 4*amount_sent})
     deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
     assert deploy.totalDepositSent() == totalDepositBefore + agreementsDeposit
-@pytest.mark.aaa
-@pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0] + 1000000, more_than_every_period[1] + 1000000, more_than_every_period[2] + 1000000])
+@pytest.mark.bbb
+@pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0] + 2700000, more_than_every_period[1] + 2700000, more_than_every_period[2] + 2700000])
 def test_wasContractBreached_timeNotBreached_false_emit_Terminated_event(deploy, seconds_sleep):
-    '''check if the wasContractBreached function when timeNotBreached is false, emits NotifyUser'''
+    '''check if the wasContractBreached function when timeNotBreached is false, emits NotifyUser - longer than agreement's duration'''
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
     chain = Chain()
     chain.sleep(seconds_sleep)
