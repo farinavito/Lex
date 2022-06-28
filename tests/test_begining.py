@@ -678,17 +678,8 @@ def test_timeNotBreached_received_on_time_false_1st_part_if_statement(deploy, se
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
     assert deploy.exactAgreement(agreements_number)[6] == 'Terminated' 
 
-@pytest.mark.parametrize("seconds_sleep",  [60*60*24*8, 60*60*24*9, 60*60*24*10])
-def test_timeNotBreached_received_on_time_false_2nd_part_if_statement(deploy, seconds_sleep):
-    '''check if the timeNotBreached returns false, when transaction received wasn't on time'''
-    deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
-    chain = Chain()
-    chain.sleep(seconds_sleep)
-    deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
-    assert deploy.exactAgreement(agreements_number)[6] == 'Terminated'
-
 @pytest.mark.parametrize("seconds_sleep",  [agreement_duration, 2629744, 26297440])
-def test_timeNotBreached_breached_on_time_false_3rd_part_if_statement(deploy, seconds_sleep):
+def test_timeNotBreached_breached_on_time_false_2nd_part_if_statement(deploy, seconds_sleep):
     '''check if the timeNotBreached returns false, when the deadline of the agreement has ended'''
     chain = Chain()
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
