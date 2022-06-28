@@ -1040,7 +1040,7 @@ def test_wasContractBreached_already_Terminated_2(deploy, seconds_sleep):
     deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
     function_initialize = deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
     assert function_initialize.events[0][0]['message'] == "The agreement is already terminated"
-@pytest.mark.aaa
+
 @pytest.mark.parametrize("loops", [2, 3, 4, 5, 6])
 def test_wasContractBreached_already_Terminated_3(deploy, loops):
     '''check if the an event is emitted'''
@@ -1051,6 +1051,20 @@ def test_wasContractBreached_already_Terminated_3(deploy, loops):
     deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
     function_initialize = deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
     assert function_initialize.events[0][0]['message'] == "The agreement is already terminated"
+@pytest.mark.aaa
+@pytest.mark.parametrize("loops", [4, 5, 6])
+def test_wasContractBreached_already_Terminated_4(deploy, loops):
+    '''check if the an event is emitted'''
+    deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
+    chain = Chain()
+    chain.sleep(2700000)
+    try:
+        for _ in range(2, loops):
+            deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
+        pytest.fail("try except concept has failed in test_wasContractBreached_already_Terminated_4")
+    except Exception as e:
+        assert e.message[50:] == "The agreement is already terminated"
+    
 
 
 
