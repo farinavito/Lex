@@ -651,9 +651,9 @@ def test_timeNotBreached_value_smaller_amount_status(deploy, value_sent):
 @pytest.mark.parametrize("value_sent",  [0, less_than_amount_sent[0], less_than_amount_sent[1], less_than_amount_sent[2]])
 def test_timeNotBreached_value_smaller_amount_send_deposit(deploy, value_sent):
     '''check if the deposit isn't sent to the receiver when amount > msg.value in the timeNotBreached'''
+    deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
+    deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': value_sent}) 
     try:
-        deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
-        deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': value_sent}) 
         deploy.withdrawAsTheReceiver({'from': accounts[receiver]})
         pytest.fail("The try-except concept has failed in test_timeNotBreached_value_smaller_amount_send_deposit") 
     except Exception as e :
