@@ -956,6 +956,17 @@ def test_wasContractBreached_timeNotBreached_false_emit_Terminated_event(deploy)
     function_initialize = deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
     assert function_initialize.events[0][0]['message'] == "The agreement has been terminated"
 
+@pytest.mark.parametrize("loops", [3, 4, 5, 6])
+def test_wasContractBreached_timeNotBreached_false_emit_Terminated_event_2(deploy, loops):
+    '''check if the wasContractBreached function when timeNotBreached is false, emits NotifyUser - longer than agreement's duration (agreement's duration was breached)'''
+    #Activated
+    for _ in range(2, loops):
+        deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
+    chain = Chain()
+    chain.sleep(2700000)
+    function_initialize = deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
+    assert function_initialize.events[0][0]['message'] == "The agreement has been terminated"
+
 #Created
 
 def test_wasContractBreached_agreement_not_activated(deploy):
