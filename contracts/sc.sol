@@ -294,7 +294,7 @@ contract AgreementBetweenSubjects {
       } 
     } else if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Created"))){
       if (exactAgreement[_id].agreementStartDate + (6*60*60*24) > block.timestamp){
-        emit NotifyUser("The agreement wasn't breached");
+        emit NotifyUser("The agreement hasn't been breached");
       } else {
         //receiver has to wait 7 days after the breached date to withdraw the deposit -> doesn't work
         require(exactAgreement[_id].positionPeriod + (60*60*24*7) < block.timestamp, "You can't withdraw the deposit before 7 days after breached deadline");
@@ -306,7 +306,7 @@ contract AgreementBetweenSubjects {
         exactAgreement[_id].deposit = 0;
         //change the total amount of deposit sent to the receiver
         totalDepositSent += exactAgreement[_id].deposit;
-        emit Terminated("The agreement has been terminated");
+        emit Terminated("The agreement was terminated");
       }
     } else {
         emit NotifyUser("The agreement is already terminated");
