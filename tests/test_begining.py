@@ -512,7 +512,7 @@ def test_transactionCreated_updated_once_again(deploy):
 
 @pytest.mark.parametrize("seconds_sleep",  [more_than_agreement_duration[0], more_than_agreement_duration[1], more_than_agreement_duration[2]])
 def test_timeNotBreached_fail_if_statement(deploy, seconds_sleep):
-    '''check if the timeNotBreached fails because transaction was sent after the agreement's deadline - it fails because of the check in the confirmAgreement function'''
+    '''check if the timeNotBreached fails because transaction was sent after the agreement's deadline'''
     chain = Chain()
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
     chain.sleep(seconds_sleep)
