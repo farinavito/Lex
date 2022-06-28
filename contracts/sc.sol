@@ -194,7 +194,7 @@ contract AgreementBetweenSubjects {
   }  
 
   /// @notice The sender withdrawing the money that belongs to his/her address
-  function withdrawAsThesender() external payable noReentrant {
+  function withdrawAsTheSender() external payable noReentrant {
     require(withdraw_sender[msg.sender] > 0, "There aren't any funds to withdraw");
 	  (bool sent, ) = msg.sender.call{value:  withdraw_sender[msg.sender]}("");
     require(sent, "Failed to send Ether");
