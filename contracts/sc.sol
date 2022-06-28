@@ -280,10 +280,10 @@ contract AgreementBetweenSubjects {
         exactAgreement[_id].status = "Terminated";
         //return deposit to receiver
         withdraw_receiver[exactAgreement[_id].receiver] += exactAgreement[_id].deposit;
-        //ensure that the deposit is reduced to 0
-        exactAgreement[_id].deposit = 0;
         //change the total amount of deposit sent to the receiver
         totalDepositSent += exactAgreement[_id].deposit;
+        //ensure that the deposit is reduced to 0
+        exactAgreement[_id].deposit = 0;
         emit Terminated("The agreement has been terminated");
       } 
     } else if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Created"))){
@@ -294,10 +294,10 @@ contract AgreementBetweenSubjects {
         exactAgreement[_id].status = "Terminated";
         //return deposit to receiver
         withdraw_receiver[exactAgreement[_id].receiver] += exactAgreement[_id].deposit;
-        //ensure that the deposit is reduced to 0
-        exactAgreement[_id].deposit = 0;
         //change the total amount of deposit sent to the receiver
         totalDepositSent += exactAgreement[_id].deposit;
+        //ensure that the deposit is reduced to 0
+        exactAgreement[_id].deposit = 0;
         emit Terminated("The agreement was terminated");
       }
     } else {
