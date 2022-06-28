@@ -939,7 +939,7 @@ def test_wasContractBreached_timeNotBreached_true_totalDepositSent(deploy, secon
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': 4*amount_sent})
     deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
     assert deploy.totalDepositSent() == totalDepositBefore + agreementsDeposit
-@pytest.mark.bbb
+@pytest.mark.aaa
 @pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0] + 1000000, more_than_every_period[1] + 1000000, more_than_every_period[2] + 1000000])
 def test_wasContractBreached_timeNotBreached_false_emit_Terminated_event(deploy, seconds_sleep):
     '''check if the wasContractBreached function when timeNotBreached is false, emits NotifyUser'''
@@ -963,7 +963,7 @@ def test_wasContractBreached_timeNotBreached_false_emit_Terminated_pair(deploy, 
 def test_wasContractBreached_agreement_not_activated(deploy):
     '''check if the wasContractBreached function emits NotifyUser when timeNotBreached is false'''
     function_initialize = deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
-    assert function_initialize.events[0][0]['message'] == "The agreement wasn't breached"
+    assert function_initialize.events[0][0]['message'] == "The agreement hasn't been breached"
 
 #if (exactAgreement[_id].agreementStartDate + (6*60*60*24) > block.timestamp)
 @pytest.mark.aaa
