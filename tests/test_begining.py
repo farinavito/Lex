@@ -936,6 +936,17 @@ def test_wasContractBreached_timeNotBreached_false_status_deposit_equals_zero_1(
     deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
     assert deploy.exactAgreement(agreements_number)[5] == '0'
 
+@pytest.mark.parametrize("loops", [3, 4, 5, 6])
+def test_wasContractBreached_timeNotBreached_false_status_deposit_equals_zero_2(deploy, loops):
+    '''check if the wasContractBreached function when timeNotBreached is false (agreement's duration was breached), changes deposit to 0'''
+    #Activated
+    for _ in range(2, loops):
+        deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
+    chain = Chain()
+    chain.sleep(2700000)
+    deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
+    assert deploy.exactAgreement(agreements_number)[5] == '0'
+
 def test_wasContractBreached_timeNotBreached_false_emit_Terminated_event(deploy):
     '''check if the wasContractBreached function when timeNotBreached is false, emits NotifyUser - longer than agreement's duration (agreement's duration was breached)'''
     #Activated
