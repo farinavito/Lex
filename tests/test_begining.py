@@ -1041,9 +1041,11 @@ def test_wasContractBreached_already_Terminated_2(deploy, seconds_sleep):
     function_initialize = deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
     assert function_initialize.events[0][0]['message'] == "The agreement is already terminated"
 @pytest.mark.aaa
-def test_wasContractBreached_already_Terminated_3(deploy):
+@pytest.mark.parametrize("loops", [2, 3, 4, 5, 6])
+def test_wasContractBreached_already_Terminated_3(deploy, loops):
     '''check if the an event is emitted'''
-    deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
+    for _ in range(1, loops):
+        deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
     chain = Chain()
     chain.sleep(2700000)
     deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
