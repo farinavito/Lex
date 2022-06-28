@@ -991,9 +991,14 @@ def test_wasContractBreached_status_created_totalDepositsent(deploy, seconds_sle
 
 @pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]])
 def test_wasContractBreached_status_created_false_emit_Terminated(deploy, seconds_sleep):
-    '''check if the wasContractBreached function emits NotifyUser when exactAgreement[_id].agreementStartDate + (6*60*60*24) > block.timestamp fails'''
+    '''check if the wasContractBreached function emits NotifyUser, because startAgreement < block.timestamp'''
     chain = Chain()
     chain.sleep(seconds_sleep)
+    function_initialize = deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
+    assert function_initialize.events[0][0]['message'] == "The agreement was terminated"
+
+def test_wasContractBreached_status_created_false_emit_Terminated_2(deploy):
+    '''check if the wasContractBreached function emits NotifyUser, because startAgreement < block.timestamps'''
     function_initialize = deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
     assert function_initialize.events[0][0]['message'] == "The agreement was terminated"
 
