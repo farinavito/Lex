@@ -982,7 +982,7 @@ def test_wasContractBreached_agreement_not_activated(deploy):
     assert function_initialize.events[0][0]['message'] == "The agreement hasn't been breached"
 
 #else
-@pytest.mark.aaa
+
 @pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]])    
 def test_wasContractBreached_status_created_status_terminated(deploy, seconds_sleep):
     '''check if the wasContractBreached function changes its status to "Terminated"'''
@@ -990,7 +990,7 @@ def test_wasContractBreached_status_created_status_terminated(deploy, seconds_sl
     chain.sleep(seconds_sleep)
     deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
     assert deploy.exactAgreement(agreements_number)[6] == "Terminated" 
-@pytest.mark.aaa
+
 @pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]])    
 def test_wasContractBreached_status_deposit(deploy, seconds_sleep):
     '''check if the wasContractBreached function returns deposit if the agreement was breached'''
@@ -1000,7 +1000,7 @@ def test_wasContractBreached_status_deposit(deploy, seconds_sleep):
     deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
     deploy.withdrawAsTheReceiver({'from': accounts[receiver]})
     assert accounts[receiver].balance() == balance_receiver + amount_sent
-@pytest.mark.aaa
+
 @pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]]) 
 def test_wasContractBreached_status_created_deposit_zero(deploy, seconds_sleep):
     '''check if the deposit of the breached agreement is equal 0'''
@@ -1008,7 +1008,7 @@ def test_wasContractBreached_status_created_deposit_zero(deploy, seconds_sleep):
     chain.sleep(seconds_sleep)
     deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
     assert deploy.exactAgreement(agreements_number)[5] == '0'
-@pytest.mark.aaa
+
 @pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]]) 
 def test_wasContractBreached_status_created_totalDepositsent(deploy, seconds_sleep):
     '''check if the totalDepositSent is increased by the deposit'''
@@ -1017,7 +1017,7 @@ def test_wasContractBreached_status_created_totalDepositsent(deploy, seconds_sle
     chain.sleep(seconds_sleep)
     deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
     assert deploy.totalDepositSent() == totalDepositBefore + deploy.totalDepositSent()
-@pytest.mark.aaa
+
 @pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]])
 def test_wasContractBreached_status_created_false_emit_Terminated(deploy, seconds_sleep):
     '''check if the wasContractBreached function emits NotifyUser when exactAgreement[_id].agreementStartDate + (6*60*60*24) > block.timestamp fails'''
@@ -1027,7 +1027,7 @@ def test_wasContractBreached_status_created_false_emit_Terminated(deploy, second
     assert function_initialize.events[0][0]['message'] == "The agreement was terminated"
 
 #status not Created or Activated
-@pytest.mark.aaa
+
 @pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]])
 def test_wasContractBreached_already_Terminated(deploy, seconds_sleep):
     '''check if the an event is emitted'''
@@ -1038,7 +1038,7 @@ def test_wasContractBreached_already_Terminated(deploy, seconds_sleep):
     deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
     function_initialize = deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
     assert function_initialize.events[0][0]['message'] == "The agreement is already terminated"
-@pytest.mark.aaa
+@
 @pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]])    
 def test_wasContractBreached_already_Terminated_2(deploy, seconds_sleep):
     '''check if the an event is emitted"'''
