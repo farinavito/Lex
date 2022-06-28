@@ -538,7 +538,7 @@ def test_timeNotBreached_value_large_amount_send_value(deploy, value_sent):
     balance_receiver = accounts[receiver].balance() 
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': value_sent})
     deploy.withdrawAsTheReceiver({'from': accounts[receiver]})
-    assert accounts[receiver].balance() == balance_receiver + value_sent
+    assert accounts[receiver].balance() == balance_receiver + amount_sent
 
 @pytest.mark.parametrize("value_sent",  [amount_sent, more_than_amount_sent[0], more_than_amount_sent[1], more_than_amount_sent[2]])
 def test_timeNotBreached_value_larger_amount_send_value_totalEtherCommited_increased(deploy, value_sent):
