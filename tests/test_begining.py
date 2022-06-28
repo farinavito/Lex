@@ -465,7 +465,7 @@ def test_sendPayments_fails_require_smaller_deposit_initial_status_created(deplo
         assert e.message[50:] == "The deposit is not the same as agreed in the terms"
 
 @pytest.mark.parametrize("value_sent",  [more_than_amount_sent[0], more_than_amount_sent[1], more_than_amount_sent[2]])
-def test_sendPayments_fails_require_smaller_deposit_initial_status_created_pair(deploy, value_sent):
+def test_sendPayments_change_status_to_activated(deploy, value_sent):
     '''checking if the status is changed to "Activated" when msg.value is larger or equal to agreedDeposit'''
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': value_sent})
     assert deploy.exactAgreement(agreements_number)[6] == 'Activated'
@@ -1051,7 +1051,7 @@ def test_wasContractBreached_already_Terminated_3(deploy, loops):
     deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
     function_initialize = deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
     assert function_initialize.events[0][0]['message'] == "The agreement is already terminated"
-@pytest.mark.aaa
+
 @pytest.mark.parametrize("loops", [4, 5, 6])
 def test_wasContractBreached_already_Terminated_4(deploy, loops):
     '''check if the an event is emitted'''
