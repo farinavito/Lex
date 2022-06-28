@@ -949,7 +949,11 @@ def test_wasContractBreached_timeNotBreached_false_emit_Terminated_event_2(deplo
 
 def test_wasContractBreached_agreement_not_activated(deploy):
     '''check if the wasContractBreached function emits NotifyUser when timeNotBreached is false (agreement's duration was breached)'''
-    function_initialize = deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
+    chain = Chain()
+    now = chain.time()
+    startAgreement2 = now + 10
+    deploy.createAgreement(accounts[receiver], amount_sent, every_period, agreement_duration, startAgreement2, {'from': accounts[sender], 'value': amount_sent})
+    function_initialize = deploy.wasContractBreached(2, {'from': accounts[receiver]})
     assert function_initialize.events[0][0]['message'] == "The agreement hasn't been breached"
 
 #else
