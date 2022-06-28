@@ -981,13 +981,6 @@ def test_wasContractBreached_agreement_not_activated(deploy):
     function_initialize = deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
     assert function_initialize.events[0][0]['message'] == "The agreement hasn't been breached"
 
-#if (exactAgreement[_id].agreementStartDate + (6*60*60*24) > block.timestamp)
-@pytest.mark.aaa
-def test_wasContractBreached_status_created_notify_user(deploy):
-    '''check if the wasContractBreached function emits NotifyUser when exactAgreement[_id].agreementStartDate + (6*60*60*24) > block.timestamp'''
-    function_initialize = deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
-    assert function_initialize.events[0][0]['message'] == "The agreement hasn't been breached"
-
 #else
 @pytest.mark.aaa
 @pytest.mark.parametrize("seconds_sleep",  [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]])    
