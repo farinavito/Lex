@@ -149,8 +149,6 @@ contract AgreementBetweenSubjects {
           if (isLastPayment(_id)){
             //sending deposit to the sender
             withdraw_sender[exactAgreement[_id].sender] += exactAgreement[_id].deposit;
-            //increased the global counter of deposit sent
-            totalDepositSent += exactAgreement[_id].deposit;
             //ensure that the deposit is reduced to 0
             exactAgreement[_id].deposit = 0;
             //terminate the contract
