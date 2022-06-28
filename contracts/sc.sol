@@ -102,7 +102,7 @@ contract AgreementBetweenSubjects {
   /// @notice Verifying that the transaction created was sooner than its deadline 
   function timeNotBreached(uint256 _id) private returns(bool){
     //if the transaction sent was on time and transaction was sent before the agreement's deadline
-    if (exactAgreement[_id].positionPeriod  >= exactAgreement[_id].transactionCreated && exactAgreement[_id].howLong + exactAgreement[_id].agreementStartDate>= block.timestamp){ 
+    if (exactAgreement[_id].positionPeriod  >= exactAgreement[_id].transactionCreated && exactAgreement[_id].howLong + exactAgreement[_id].agreementStartDate >= block.timestamp){ 
       exactAgreement[_id].positionPeriod += exactAgreement[_id].everyTimeUnit;
       return true;
     } else{
@@ -113,7 +113,7 @@ contract AgreementBetweenSubjects {
   /// @notice Verifying that the transaction created was sooner than its deadline without incrementing positionPeriod
   function timeWasntBreached(uint256 _id) private view returns(bool){
     //if the transaction sent was on time and transaction was sent before the agreement's deadline
-    if (exactAgreement[_id].positionPeriod  >= exactAgreement[_id].transactionCreated  && exactAgreement[_id].howLong + exactAgreement[_id].agreementStartDate>= block.timestamp){ 
+    if (exactAgreement[_id].positionPeriod  >= exactAgreement[_id].transactionCreated  && exactAgreement[_id].howLong + exactAgreement[_id].agreementStartDate >= block.timestamp){ 
       return true;
     } else{
       return false;
@@ -287,7 +287,7 @@ contract AgreementBetweenSubjects {
         emit Terminated("The agreement has been terminated");
       } 
     } else if (keccak256(bytes(exactAgreement[_id].status)) == keccak256(bytes("Created"))){
-      if (exactAgreement[_id].agreementStartDate + (6*60*60*24) > block.timestamp){
+      if (exactAgreement[_id].agreementStartDate > block.timestamp){
         emit NotifyUser("The agreement hasn't been breached");
       } else {
         //terminate the agreement
