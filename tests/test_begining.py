@@ -562,7 +562,7 @@ def test_timeNotBreached_value_large_amount_send_value_check_sender_returned_exc
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': value_sent})
     balance_sender = accounts[sender].balance() 
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': value_sent})
-    deploy.withdrawAsThesender({'from': accounts[sender]}) 
+    deploy.withdrawAsTheSender({'from': accounts[sender]}) 
     assert accounts[sender].balance() == balance_sender - value_sent + (value_sent - deploy.exactAgreement(agreements_number)[3])
 
 def test_timeNotBreached_value_large_amount_emit_NotifyUser(deploy):
@@ -585,7 +585,7 @@ def test_timeNotBreached_breached_on_time_last_payment_deposit_sender(deploy):
         deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
         chain.sleep(60400)
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
-    deploy.withdrawAsThesender({'from': accounts[sender]}) 
+    deploy.withdrawAsTheSender({'from': accounts[sender]}) 
     assert accounts[sender].balance() == balance_sender  - 3*amount_sent - deposit
 
 def test_timeNotBreached_breached_on_time_last_payment_deposit_0(deploy):
@@ -630,7 +630,7 @@ def test_timeNotBreached_value_large_amount_send_value_withdraw_sender(deploy, v
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': value_sent})
     balance_sender = accounts[sender].balance() 
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': value_sent - value_decreased})
-    deploy.withdrawAsThesender({'from': accounts[sender]}) 
+    deploy.withdrawAsTheSender({'from': accounts[sender]}) 
     assert accounts[sender].balance() == balance_sender 
 
 @pytest.mark.parametrize("value_sent",  [amount_sent])
@@ -768,7 +768,7 @@ def test_timeNotBreached_breached_on_time_false_return_transaction(deploy, secon
     chain = Chain()
     chain.sleep(seconds_sleep)
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent}) 
-    deploy.withdrawAsThesender({'from': accounts[sender]})
+    deploy.withdrawAsTheSender({'from': accounts[sender]})
     assert accounts[sender].balance() == balance_sender
 
 @pytest.mark.parametrize("seconds_sleep",  [0, less_than_every_period[0], less_than_every_period[1], less_than_every_period[2]])
@@ -1164,81 +1164,81 @@ def test_wasContractBreached_withdrawal_sent_5_event(deploy, seconds_sleep):
 
 
 
-'''TEST WITHDRAWASTHESENDER'''
+'''TEST withdrawAsTheSender'''
 
 
 
-def test_withdrawAsThesender_first_reguire_fails(deploy):
+def test_withdrawAsTheSender_first_reguire_fails(deploy):
     '''require statement withdraw_receiver[exactAgreement[_id].sender] > 0 fails, because we have no funds'''
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
     with brownie.reverts("There aren't any funds to withdraw"):
-        deploy.withdrawAsThesender({'from': accounts[sender]})
+        deploy.withdrawAsTheSender({'from': accounts[sender]})
 
-def test_withdrawAsThesender_first_reguire_fails_2(deploy):
+def test_withdrawAsTheSender_first_reguire_fails_2(deploy):
     '''require statement withdraw_receiver[exactAgreement[_id].sender] > 0 fails, because we have no funds'''
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': 4*amount_sent})
-    deploy.withdrawAsThesender({'from': accounts[sender]})
+    deploy.withdrawAsTheSender({'from': accounts[sender]})
     with brownie.reverts("There aren't any funds to withdraw"):
-        deploy.withdrawAsThesender({'from': accounts[sender]})
+        deploy.withdrawAsTheSender({'from': accounts[sender]})
 
 @pytest.mark.parametrize("time", [more_than_agreement_duration[0], more_than_agreement_duration[1], more_than_agreement_duration[2]])
-def test_withdrawAsThesender_withdrawal_sent_1(deploy, time):
+def test_withdrawAsTheSender_withdrawal_sent_1(deploy, time):
     '''Check if the withdrawal is sent'''
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': 3*amount_sent})
     sender_balance = accounts[sender].balance()
     chain = Chain()
     chain.sleep(time)
-    deploy.withdrawAsThesender({'from': accounts[sender]})
+    deploy.withdrawAsTheSender({'from': accounts[sender]})
     assert accounts[sender].balance() == sender_balance + 2*amount_sent
 
 @pytest.mark.parametrize("time", [more_than_agreement_duration[0], more_than_agreement_duration[1], more_than_agreement_duration[2]])
-def test_withdrawAsThesender_withdrawal_sent_1_event(deploy, time):
+def test_withdrawAsTheSender_withdrawal_sent_1_event(deploy, time):
     '''check if the event is emitted'''
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': 3*amount_sent})
     chain = Chain()
     chain.sleep(time)
-    function_initialize = deploy.withdrawAsThesender({'from': accounts[sender]})
+    function_initialize = deploy.withdrawAsTheSender({'from': accounts[sender]})
     assert function_initialize.events[0][0]['message'] == "Withdrawal has been transfered"
 
 @pytest.mark.parametrize("amount", [less_than_amount_sent[0], less_than_amount_sent[1], less_than_amount_sent[2]])
-def test_withdrawAsThesender_withdrawal_sent_2(deploy, amount):
+def test_withdrawAsTheSender_withdrawal_sent_2(deploy, amount):
     '''Check if the withdrawal is sent'''
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
     sender_balance = accounts[sender].balance()
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount})
-    deploy.withdrawAsThesender({'from': accounts[sender]})
+    deploy.withdrawAsTheSender({'from': accounts[sender]})
     assert accounts[sender].balance() == sender_balance
 
 @pytest.mark.parametrize("amount", [less_than_amount_sent[0], less_than_amount_sent[1], less_than_amount_sent[2]])
-def test_withdrawAsThesender_withdrawal_sent_2_event(deploy, amount):
+def test_withdrawAsTheSender_withdrawal_sent_2_event(deploy, amount):
     '''check if the even is emitted'''
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount})
-    function_initialize = deploy.withdrawAsThesender({'from': accounts[sender]})
+    function_initialize = deploy.withdrawAsTheSender({'from': accounts[sender]})
     assert function_initialize.events[0][0]['message'] == "Withdrawal has been transfered"
 
 @pytest.mark.parametrize("time", [more_than_agreement_duration[0], more_than_agreement_duration[1], more_than_agreement_duration[2]])
-def test_withdrawAsThesender_withdrawal_sent_3(deploy, time):
+def test_withdrawAsTheSender_withdrawal_sent_3(deploy, time):
     '''Check if the withdrawal is sent'''
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
     sender_balance = accounts[sender].balance()
     chain = Chain()
     chain.sleep(time)
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
-    deploy.withdrawAsThesender({'from': accounts[sender]})
+    deploy.withdrawAsTheSender({'from': accounts[sender]})
     assert accounts[sender].balance() == sender_balance 
 
 @pytest.mark.parametrize("time", [more_than_agreement_duration[0], more_than_agreement_duration[1], more_than_agreement_duration[2]])
-def test_withdrawAsThesender_withdrawal_sent_3_event(deploy, time):
+def test_withdrawAsTheSender_withdrawal_sent_3_event(deploy, time):
     '''Check if the event is emitted'''
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
     chain = Chain()
     chain.sleep(time)
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
-    function_initialize = deploy.withdrawAsThesender({'from': accounts[sender]})
+    function_initialize = deploy.withdrawAsTheSender({'from': accounts[sender]})
     assert function_initialize.events[0][0]['message'] == "Withdrawal has been transfered"
 
 
