@@ -890,6 +890,19 @@ def test_wasContractBreached_timeNotBreached_false_send_deposit(deploy):
     deploy.withdrawAsTheReceiver({'from': accounts[receiver]})
     assert accounts[receiver].balance() == balance_receiver + deposit
 
+@pytest.mark.parametrize("loops", [3, 4, 5, 6])
+def test_wasContractBreached_timeNotBreached_false_send_deposit_2(deploy, loops):
+    '''check if the wasContractBreached function when timeNotBreached is false (agreement's duration was breached), sends a deposit to the receiver'''
+    #Activated
+    balance_receiver = accounts[receiver].balance()
+    for _ in range(2, loops):
+        deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
+    chain = Chain()
+    chain.sleep(2700000)
+    deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
+    deploy.withdrawAsTheReceiver({'from': accounts[receiver]})
+    assert accounts[receiver].balance() == balance_receiver + (loops - 2)*amount_sent
+
 def test_wasContractBreached_timeNotBreached_true_totalDepositSent(deploy):
     '''check if the totalDepositSent() is incremented by the deposit (agreement's duration was breached)'''
     totalDepositBefore = deploy.totalDepositSent()
