@@ -855,10 +855,9 @@ def test_wasContractBreached_timeNotBreached_false_status_Terminated_2(deploy, l
     chain.sleep(2700000)
     deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
     assert deploy.exactAgreement(agreements_number)[6] == "Terminated"
-@pytest.mark.aaa
+
 @pytest.mark.parametrize("loops", [2, 3, 4, 5])
-@pytest.mark.parametrize("time", [more_than_every_period[0], more_than_every_period[1], more_than_every_period[2]])
-def test_wasContractBreached_timeNotBreached_false_status_Terminated_3(deploy, loops, time):
+def test_wasContractBreached_timeNotBreached_false_status_Terminated_3(deploy, loops):
     '''check if the wasContractBreached function when timeNotBreached is false (agreement's duration was breached), changes status to Terminated'''
     for _ in range(1,loops):
         deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
@@ -870,7 +869,7 @@ def test_wasContractBreached_timeNotBreached_false_status_Terminated_3(deploy, l
     assert deploy.exactAgreement(agreements_number)[6] == "Terminated"
 
 def test_wasContractBreached_timeNotBreached_false_send_deposit(deploy):
-    '''check if the wasContractBreached function when timeNotBreached is false (agreement's duration was breached), sends a deposit to the receiver'''
+    '''check if the wasContractBreached function when timeNotBreached is false (agreement's every period was breached), sends a deposit to the receiver'''
     #Activated
     deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
     balance_receiver = accounts[receiver].balance()
@@ -893,6 +892,21 @@ def test_wasContractBreached_timeNotBreached_false_send_deposit_2(deploy, loops)
     deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
     deploy.withdrawAsTheReceiver({'from': accounts[receiver]})
     assert accounts[receiver].balance() == balance_receiver + (loops - 2)*amount_sent
+@pytest.mark.aaa
+@pytest.mark.parametrize("loops", [2, 3, 4, 5])
+def test_wasContractBreached_timeNotBreached_false_send_deposit_3(deploy, loops):
+    '''check if the wasContractBreached function when timeNotBreached is false (agreement's every period was breached), sends a deposit to the receiver'''
+    #Activated
+    balance_receiver = accounts[receiver].balance()
+    for _ in range(1,loops):
+        deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
+        chain = Chain()
+        chain.sleep(15000)
+    chain = Chain()
+    chain.sleep((loops - 1) * every_period + (every_period - loops*15000))
+    deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
+    deploy.withdrawAsTheReceiver({'from': accounts[receiver]})
+    assert accounts[receiver].balance() == balance_receiver + (loops - 1)*amount_sent
 
 def test_wasContractBreached_timeNotBreached_true_totalDepositSent(deploy):
     '''check if the totalDepositSent() is incremented by the deposit (agreement's duration was breached)'''
