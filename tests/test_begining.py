@@ -893,7 +893,7 @@ def test_wasContractBreached_timeNotBreached_false_send_deposit_2(deploy, loops)
     deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
     deploy.withdrawAsTheReceiver({'from': accounts[receiver]})
     assert accounts[receiver].balance() == balance_receiver + (loops - 2)*amount_sent
-@pytest.mark.aaa
+
 @pytest.mark.parametrize("loops", [2, 3, 4, 5])
 @pytest.mark.parametrize("time", [10, 100, 1000, 15000])
 def test_wasContractBreached_timeNotBreached_false_send_deposit_3(deploy, loops, time):
@@ -933,19 +933,20 @@ def test_wasContractBreached_timeNotBreached_true_totalDepositSent_2(deploy, loo
     chain.sleep(2700000)
     deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
     assert deploy.totalDepositSent() == totalDepositBefore + agreementsDeposit
-
+@pytest.mark.aaa
 @pytest.mark.parametrize("loops", [2, 3, 4, 5])
-def test_wasContractBreached_timeNotBreached_true_totalDepositSent_3(deploy, loops):
+@pytest.mark.parametrize("time", [10, 100, 1000, 15000])
+def test_wasContractBreached_timeNotBreached_true_totalDepositSent_3(deploy, loops, time):
     '''check if the totalDepositSent() is incremented by the deposit (agreement's every period was breached)'''
     totalDepositBefore = deploy.totalDepositSent()
     #Activated
     for _ in range(1,loops):
         deploy.sendPayment(agreements_number, {'from': accounts[sender], 'value': amount_sent})
         chain = Chain()
-        chain.sleep(15000)
+        chain.sleep(time)
     agreementsDeposit = deploy.exactAgreement(agreements_number)[5]
     chain = Chain()
-    chain.sleep((loops - 1) * every_period + (every_period - loops*15000))
+    chain.sleep((loops - 1) * every_period + (every_period - loops*time))
     deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
     assert deploy.totalDepositSent() == totalDepositBefore + agreementsDeposit
 
