@@ -1003,7 +1003,7 @@ def test_wasContractBreached_timeNotBreached_false_emit_Terminated_event_2(deplo
     chain.sleep(2700000)
     function_initialize = deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
     assert function_initialize.events[0][0]['message'] == "The agreement has been terminated"
-@pytest.mark.aaa
+
 @pytest.mark.parametrize("loops", [2, 3, 4, 5])
 @pytest.mark.parametrize("time", [10, 100, 1000, 15000])
 def test_wasContractBreached_timeNotBreached_false_emit_Terminated_event_3(deploy, loops, time):
