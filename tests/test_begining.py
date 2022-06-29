@@ -856,6 +856,7 @@ def test_wasContractBreached_timeNotBreached_false_status_Terminated_2(deploy, l
     deploy.wasContractBreached(agreements_number, {'from': accounts[receiver]})
     assert deploy.exactAgreement(agreements_number)[6] == "Terminated"
 
+
 def test_wasContractBreached_timeNotBreached_false_send_deposit(deploy):
     '''check if the wasContractBreached function when timeNotBreached is false (agreement's duration was breached), sends a deposit to the receiver'''
     #Activated
