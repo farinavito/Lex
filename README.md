@@ -42,7 +42,4 @@ The purpose of this smart contract is to check if the subject who commited sendi
 	4) once the sender sends the last deposit, the contract will be terminated and he/she will be able to retrieve his/her deposit.
 	5) The sender and receiver can withdraw the money that belongs to them by calling a withdraw function.
 
-------------------------------------------------------------------
-* Why are there 2 contracts in this repo?
-------------------------------------------------------------------
-This contract is attended to be deployed with AddressProtector smart contract, which provides more safety towards people who deploy smart contract. If you want to learn more, please check our ProtectSmartContracts repository
+
