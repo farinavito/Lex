@@ -1442,6 +1442,42 @@ def test_getWithdrawalSender_payment_not_on_time(deploy):
 
 
 
+'''TESTING GETMYNUMAGREEMENTSRECEIVER'''
+
+
+
+def test__getMyNumAgreementsReceiver_fail(deploy):
+    '''check if the getMyNumAgreementsReceiver fails'''
+    try:
+        assert deploy.getMyNumAgreementsReceiver({'from': accounts[5]}) == 0
+        pytest.fail("try except concept has failed in test_exactAgreement_getMyNumAgreementsReceiver")
+    except Exception as e:
+        assert e.message[50:] == "You don't have any agreements as a receiver"
+
+def test_getMyNumAgreementsReceiver_success(deploy):
+    '''check if the initial getMyNumAgreementsReceiver is equal to 1'''
+    chain = Chain()
+    now = chain.time()
+    startAgreement = now + 1
+    deploy.createAgreement(accounts[1], amount_sent, every_period, agreement_duration, startAgreement, {'from': accounts[sender], 'value': amount_sent})
+    assert deploy.getMyNumAgreementsReceiver({'from': accounts[1]}) == 1
+
+def test_getMyNumAgreementsReceiver_success_2(deploy):
+    '''check if the initial getMyNumAgreementsReceiver is equal to 2'''
+    chain = Chain()
+    now = chain.time()
+    startAgreement = now + 1
+    deploy.createAgreement(accounts[1], amount_sent, every_period, agreement_duration, startAgreement, {'from': accounts[sender], 'value': amount_sent})
+    deploy.createAgreement(accounts[1], amount_sent, every_period, agreement_duration, startAgreement, {'from': accounts[sender], 'value': amount_sent})
+    assert deploy.getMyNumAgreementsReceiver({'from': accounts[1]}) == 2
+
+'''TESTING'''
+
+
+@pytest.mark.aaa
+def test_exactAgreement_myNumAgreementsSender(deploy):
+    '''check if the initial myNumAgreementsSender is equal to 1'''
+    assert deploy.myNumAgreementsReceiver(accounts[sender]) == 1
 
 
 
