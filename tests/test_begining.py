@@ -1471,6 +1471,8 @@ def test_getMyNumAgreementsReceiver_success_2(deploy):
     deploy.createAgreement(accounts[1], amount_sent, every_period, agreement_duration, startAgreement, {'from': accounts[sender], 'value': amount_sent})
     assert deploy.getMyNumAgreementsReceiver({'from': accounts[1]}) == 2
 
+
+
 '''TESTING GETMYNUMAGREEMENTSSENDER'''
 
 
@@ -1492,7 +1494,7 @@ def test_getMyNumAgreementsSender_success(deploy):
     assert deploy.getMyNumAgreementsSender({'from': accounts[2]}) == 1
 
 def test_getMyNumAgreementsSender_success_2(deploy):
-    '''check if the initial getMyNumAgreementsSender is equal to 1'''
+    '''check if the initial getMyNumAgreementsSender is equal to 2'''
     chain = Chain()
     now = chain.time()
     startAgreement = now + 1
